@@ -323,6 +323,61 @@ body::before {
   border-radius: 50%;
   pointer-events: none; /* allow container to receive click */
 }
+@media (min-width: 400px) and (orientation: landscape) {
+  .music-player {
+  position: fixed;
+  bottom: 16px;
+  left: 10%;
+  transform: translateX(-10%);
+  width: 100px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  padding: 16px;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.controls i {
+  font-size: 20px;
+  cursor: pointer;
+  margin: 3px;
+}
+
+.info {
+  display: none;
+}
+
+.title {
+  display: none;
+}
+
+.artist {
+  display: none;
+}
+
+.like {
+  display: none;
+}
+
+.progress-container {
+  display: none;
+}
+
+.progress {
+  display: none;
+}
+
+.progress-thumb {
+  display: none;
+}
+
+ 
+}
+
   </style>
 </head>
 <body>
