@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kodok Kyun</title>
+
+  <!-- Fonts + Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background: url('images/bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(180, 255, 180, 0.35); /* greenish tint */
+  backdrop-filter: blur(3px);
+  z-index: -1; /* Make sure it's behind EVERYTHING */
+}
+
+.container {
+  width: 340px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  background: #fff;
+  position: relative;
+  z-index: 1; /* stays above the blur overlay */
+}
+
+    .header {
+      background: #ffffff;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .header img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+    }
+
+    .header .text h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .header .text p {
+      margin: 0;
+      font-size: 14px;
+      color: gray;
+      font-weight: 500;
+    }
+
+    .card {
+      background: #f4fcef;
+      padding: 50px;
+    }
+
+    .toggle-wrapper {
+      margin-bottom: 26px;
+    }
+
+    .toggle-button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .toggle-button i {
+      color: #88c057;
+      font-size: 18px;
+    }
+
+    .button-box-wrapper {
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+      max-height: 0;
+      padding-top: 0;
+    }
+
+    .button-box-wrapper.open {
+      max-height: 200px; /* Enough to show contents */
+      padding-top: 10px;
+    }
+
+    .button-box {
+      background: white;
+      padding: 10px 15px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 0px solid #e0e0e0;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+      margin-left: 28px;
+    }
+
+    .button-box .info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .button-box .info strong {
+      font-size: 12px;
+    }
+
+    .button-box .info span {
+      font-size: 8px;
+      color: #666;
+    }
+
+    .button-box .action {
+      background: #88c057;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .footer {
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+  margin-Top: 60px;
+  margin-Bottom: -30px;
+
+}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <img src="images/dp.jpg" alt="Avatar" />
+      <div class="text">
+        <h1>Kodok Kyun</h1>
+        <p>Gamer Streamer</p>
+      </div>
+    </div>
+
+    <!-- Card Section -->
+    <div class="card">
+      <!-- Saweria -->
+      <div class="toggle-wrapper">
+        <div class="toggle-button" onclick="toggleBox('saweriaBox')">
+          <i class="fa-solid fa-gem"></i> Saweria
+        </div>
+        <div id="saweriaBox" class="button-box-wrapper">
+          <div class="button-box">
+            <div class="info">
+              <strong>Kodokkyunn99</strong>
+              <span>Dukung Aku Melalui</span>
+            </div>
+            <button class="action" onclick="window.open('https://saweria.co/Kodokkyunn99', '_blank')">Saweria</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trakteer -->
+      <div class="toggle-wrapper">
+        <div class="toggle-button" onclick="toggleBox('trakteerBox')">
+          <i class="fa-solid fa-gem"></i> Trakteer.id
+        </div>
+        <div id="trakteerBox" class="button-box-wrapper">
+          <div class="button-box">
+            <div class="info">
+              <strong>TrakteerUser</strong>
+              <span>Support konten</span>
+            </div>
+            <button class="action" onclick="window.open('https://trakteer.id/', '_blank')">Trakteer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TikTok -->
+      <div class="toggle-wrapper">
+        <div class="toggle-button" onclick="toggleBox('tiktokBox')">
+          <i class="fa-solid fa-gem"></i> TikTok
+        </div>
+        <div id="tiktokBox" class="button-box-wrapper">
+          <div class="button-box">
+            <div class="info">
+              <strong>@kodokkyun</strong>
+              <span>Follow Tiktok-ku</span>
+            </div>
+            <button class="action" onclick="window.open('https://tiktok.com/', '_blank')">TikTok</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Joki HSR -->
+      <div class="toggle-wrapper">
+        <div class="toggle-button" onclick="toggleBox('hsrBox')">
+          <i class="fa-solid fa-gem"></i> Joki HSR
+        </div>
+        <div id="hsrBox" class="button-box-wrapper">
+          <div class="button-box">
+            <div class="info">
+              <strong>Order via DM</strong>
+              <span>Fast & Trusted</span>
+            </div>
+            <button class="action" onclick="window.open('#', '_blank')">Chat Me</button>
+          </div>
+        </div>
+      </div>
+       <div class="footer">powered by Kodokkyunn | IA Sama</div>
+    </div>
+    
+   
+  </div>
+
+  <script>
+    function toggleBox(id) {
+      const allBoxes = document.querySelectorAll('.button-box-wrapper');
+      allBoxes.forEach(box => {
+        if (box.id !== id) {
+          box.classList.remove('open');
+        }
+      });
+
+      const target = document.getElementById(id);
+      target.classList.toggle('open');
+    }
+  </script>
+
+</body>
+</html>
