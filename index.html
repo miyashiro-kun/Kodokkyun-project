@@ -305,23 +305,48 @@ body::before {
 
 .progress {
   height: 100%;
-  background: #2f49b5;
+  background: #88c057;
   width: 0%;
   position: relative;
 }
 
 .progress-thumb {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translate(50%, -50%);
-  width: 12px;
-  height: 12px;
-  z-index: 4;
-  background: white;
-  border: 0px solid #2f49b5;
-  border-radius: 50%;
-  pointer-events: none; /* allow container to receive click */
+  transform: translate(50%, -50%) skewX(-20deg);
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 10px;
+  background: #4caf50;
+  transform: skewX(-20deg);
+  border: none;
+  margin-top: -6px; /* Aligns it vertically */
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 16px;
+  width: 10px;
+  background: #4caf50;
+  transform: skewX(-20deg);
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+input[type="range"]::-ms-thumb {
+  height: 16px;
+  width: 10px;
+  background: #4caf50;
+  transform: skewX(-20deg);
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
 }
 @media (min-width: 400px) and (orientation: landscape) {
   .music-player {
@@ -437,7 +462,7 @@ body::before {
         <div id="tiktokBox" class="button-box-wrapper">
           <div class="button-box">
             <div class="info">
-              <strong>@kodok.kyun</strong>
+              <strong>@kodokkyun</strong>
               <span>Follow Tiktok-ku</span>
             </div>
             <button class="action" onclick="window.open('https://tiktok.com/@kodok.kyun', '_blank')">TikTok</button>
@@ -454,7 +479,7 @@ body::before {
           <div class="button-box">
             <div class="info">
               <strong>Order via DM</strong>
-              <span>langsung di livekan</span>
+              <span>Fast & Trusted</span>
             </div>
             <button class="action" onclick="window.open('#', '_blank')">Chat Me</button>
           </div>
@@ -479,10 +504,11 @@ body::before {
   </div>
   <i class="fa-solid fa-heart like"></i>
   <div class="progress-container" id="progressContainer">
-  <div class="progress" id="progressBar">
-    <div class="progress-thumb" id="progressThumb"></div>
+    <div class="progress" id="progressBar">
+      <div class="progress-thumb" id="progressThumb"></div>
+    </div>
+    <input type="range" id="progressSlider" value="0" step="1" />
   </div>
-</div>
 </div>
 
 <audio id="audio" muted autoplay></audio>
@@ -643,6 +669,23 @@ progressContainer.addEventListener('click', (e) => {
 
 
 </script>
+<script>
+    const slider = document.getElementById('progressSlider');
+
+    audio.addEventListener('timeupdate', () => {
+      const percent = (audio.currentTime / audio.duration) * 100;
+      progress.style.width = percent + '%';
+      slider.value = audio.currentTime;
+    });
+
+    audio.addEventListener('loadedmetadata', () => {
+      slider.max = audio.duration;
+    });
+
+    slider.addEventListener('input', () => {
+      audio.currentTime = slider.value;
+    });
+  </script>
 
 </body>
 </html>
