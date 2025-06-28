@@ -509,10 +509,26 @@ body::before {
   window.addEventListener('DOMContentLoaded', () => {
   loadSong(index); // Preload first song silently
   audio.play();     // Try autoplay muted
-     audio.addEventListener('play', () => {
+   audio.play().then(() => {
     playBtn.classList.replace('fa-play', 'fa-pause');
     isPlaying = true;
+  }).catch(err => {
+    console.warn('Autoplay blocked on mobile:', err);
   });
+  const resumeAudio = () => {
+  audio.muted = false;
+  if (audio.paused) {
+    audio.play().then(() => {
+      playBtn.classList.replace('fa-play', 'fa-pause');
+      isPlaying = true;
+    });
+  }
+  window.removeEventListener('click', resumeAudio);
+  window.removeEventListener('touchstart', resumeAudio);
+};
+
+window.addEventListener('click', resumeAudio, { once: true });
+window.addEventListener('touchstart', resumeAudio, { once: true });
 
   audio.addEventListener('pause', () => {
     playBtn.classList.replace('fa-pause', 'fa-play');
