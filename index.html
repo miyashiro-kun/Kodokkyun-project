@@ -232,6 +232,7 @@ body::before {
   height: 20px;
   background: rgba(255, 255, 255, 0.432);
   animation: drop 0.7s linear infinite;
+  border-radius: 50%;
 }
 
 @keyframes drop {
@@ -246,6 +247,58 @@ body::before {
     transform: translateY(100vh);
     opacity: 0;
   }
+}
+
+.music-player {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 340px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.controls i {
+  font-size: 20px;
+  cursor: pointer;
+  margin-right: 12px;
+}
+
+.info {
+  flex: 1;
+}
+
+.title {
+  font-weight: bold;
+}
+
+.artist {
+  font-size: 12px;
+  color: #666;
+}
+
+.like {
+  color: #e74c3c;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: #2f49b5;
+  width: 0%;
+  transition: width 0.2s;
 }
   </style>
 </head>
@@ -336,6 +389,23 @@ body::before {
    
   </div>
 
+<div class="music-player">
+  <div class="controls">
+    <i class="fa-solid fa-backward-step" id="prev"></i>
+    <i class="fa-solid fa-play" id="play"></i>
+    <i class="fa-solid fa-forward-step" id="next"></i>
+  </div>
+  <div class="info">
+    <div class="title" id="trackTitle">Song Title</div>
+    <div class="artist" id="trackArtist">Artist Name</div>
+  </div>
+  <i class="fa-solid fa-heart like"></i>
+  <div class="progress" id="progressBar"></div>
+</div>
+
+<audio id="audio" muted autoplay></audio>
+
+
   <script>
     function toggleBox(id) {
       const allBoxes = document.querySelectorAll('.button-box-wrapper');
@@ -369,6 +439,98 @@ body::before {
       rainContainer.style.opacity = 1;
     }, 3000); // Wait 2 seconds
   });
+</script>
+<script>
+  const audio = document.getElementById('audio');
+  const playBtn = document.getElementById('play');
+  const nextBtn = document.getElementById('next');
+  const prevBtn = document.getElementById('prev');
+  const title = document.getElementById('trackTitle');
+  const artist = document.getElementById('trackArtist');
+  const progress = document.getElementById('progressBar');
+
+  const playlist = [
+    { src: 'music/1.mp3', title: 'Sway to My Beat in Cosmos', artist: 'Robin' },
+    { src: 'music/2.mp3', title: 'My Song 2', artist: 'Robin' },
+  ];
+
+  let index = 0;
+  let isPlaying = false;
+
+  function loadSong(i, autoplay = false) {
+  audio.src = playlist[i].src;
+  title.textContent = playlist[i].title;
+  artist.textContent = playlist[i].artist;
+  if (autoplay) {
+    audio.play().then(() => {
+      playBtn.classList.replace('fa-play', 'fa-pause');
+        isPlaying = true;
+    }).catch(err => {
+      // Most browsers block autoplay unless user has interacted
+      console.warn('Autoplay blocked:', err);
+    });
+  }
+}
+
+  function playPause() {
+    if (audio.paused) {
+      audio.play();
+      playBtn.classList.replace('fa-play', 'fa-pause');
+        isPlaying = true;
+    } else {
+      audio.pause();
+      playBtn.classList.replace('fa-pause', 'fa-play');
+        isPlaying = false;
+    }
+  }
+
+  playBtn.addEventListener('click', playPause);
+
+  nextBtn.addEventListener('click', () => {
+    index = (index + 1) % playlist.length;
+    loadSong(index);
+    audio.play();
+    playBtn.classList.replace('fa-play', 'fa-pause');
+  });
+
+  prevBtn.addEventListener('click', () => {
+    index = (index - 1 + playlist.length) % playlist.length;
+    loadSong(index);
+    audio.play();
+    playBtn.classList.replace('fa-play', 'fa-pause');
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    const percent = (audio.currentTime / audio.duration) * 100;
+    progress.style.width = percent + '%';
+  });
+
+  loadSong(index, true);
+  window.addEventListener('DOMContentLoaded', () => {
+  loadSong(index); // Preload first song silently
+  audio.play();     // Try autoplay muted
+     audio.addEventListener('play', () => {
+    playBtn.classList.replace('fa-play', 'fa-pause');
+    isPlaying = true;
+  });
+
+  audio.addEventListener('pause', () => {
+    playBtn.classList.replace('fa-pause', 'fa-play');
+    isPlaying = false;
+  });
+  // Unmute on first interaction
+  const unmute = () => {
+    audio.muted = false;
+    if (audio.paused) {
+      audio.play();
+    }
+    window.removeEventListener('click', unmute);
+    window.removeEventListener('touchstart', unmute);
+  };
+
+  window.addEventListener('click', unmute, { once: true });
+  window.addEventListener('touchstart', unmute, { once: true });
+});
 </script>
 
 </body>
