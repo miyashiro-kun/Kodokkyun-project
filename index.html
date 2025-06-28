@@ -85,19 +85,23 @@ body::before {
     }
 
     .toggle-button {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 16px;
-      font-weight: 600;
-      color: #333;
-      cursor: pointer;
-    }
-
-    .toggle-button i {
-      color: #88c057;
-      font-size: 18px;
-    }
+  display: flex;
+  align-items: flex-start; /* fix for vertical shift */
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  line-height: 1.5;
+}
+.toggle-button i {
+  color: #88c057;
+  font-size: 18px;
+  line-height: 1.5;
+  margin-top: 2px; /* slight visual correction */
+  width: 20px;
+  text-align: center;
+}
 
     .button-box-wrapper {
       overflow: hidden;
@@ -174,7 +178,7 @@ body::before {
       <!-- Saweria -->
       <div class="toggle-wrapper">
         <div class="toggle-button" onclick="toggleBox('saweriaBox')">
-          <i class="fa-solid fa-gem"></i> Saweria
+          <i class="fa-solid fa-bowl-food"></i> Saweria
         </div>
         <div id="saweriaBox" class="button-box-wrapper">
           <div class="button-box">
@@ -190,7 +194,7 @@ body::before {
       <!-- Trakteer -->
       <div class="toggle-wrapper">
         <div class="toggle-button" onclick="toggleBox('trakteerBox')">
-          <i class="fa-solid fa-gem"></i> Trakteer.id
+          <i class="fa-solid fa-mug-saucer"></i> Trakteer.id
         </div>
         <div id="trakteerBox" class="button-box-wrapper">
           <div class="button-box">
@@ -206,7 +210,7 @@ body::before {
       <!-- TikTok -->
       <div class="toggle-wrapper">
         <div class="toggle-button" onclick="toggleBox('tiktokBox')">
-          <i class="fa-solid fa-gem"></i> TikTok
+          <i class="fa-solid fa-music"></i> TikTok
         </div>
         <div id="tiktokBox" class="button-box-wrapper">
           <div class="button-box">
@@ -222,7 +226,7 @@ body::before {
       <!-- Joki HSR -->
       <div class="toggle-wrapper">
         <div class="toggle-button" onclick="toggleBox('hsrBox')">
-          <i class="fa-solid fa-gem"></i> Joki HSR
+          <i class="fa-solid fa-gamepad"></i> Joki HSR
         </div>
         <div id="hsrBox" class="button-box-wrapper">
           <div class="button-box">
