@@ -86,21 +86,24 @@ body::before {
 
     .toggle-button {
   display: flex;
-  align-items: flex-start; /* fix for vertical shift */
+  align-items: center; /* ✅ this aligns icon and text vertically */
   gap: 12px;
   font-size: 16px;
   font-weight: 600;
   color: #333;
   cursor: pointer;
-  line-height: 1.5;
+  line-height: 1.2;
 }
+
 .toggle-button i {
   color: #88c057;
-  font-size: 18px;
-  line-height: 1.5;
-  margin-top: 2px; /* slight visual correction */
+  font-size: 20px;
+  line-height: 1;
   width: 20px;
-  text-align: center;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
     .button-box-wrapper {
