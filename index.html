@@ -217,21 +217,24 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;         /* ✅ keep drops inside */
   pointer-events: none;
   z-index: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
 .rain-drop {
   position: absolute;
-  width: 2px;
+  width: 3px;
   height: 20px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.432);
   animation: drop 0.7s linear infinite;
 }
 
 @keyframes drop {
   0% {
-    transform: translateY(-100px);
+    transform: translateY(-20px);  /* ✅ no more top flash */
     opacity: 0;
   }
   30% {
@@ -345,15 +348,25 @@ body::before {
     }
   </script>
   <script>
-  const rainContainer = document.querySelector('.rain');
-  for (let i = 0; i < 80; i++) {
-    const drop = document.createElement('div');
-    drop.classList.add('rain-drop');
-    drop.style.left = Math.random() * 100 + 'vw';
-    drop.style.animationDelay = Math.random() * 2 + 's';
-    drop.style.animationDuration = (0.5 + Math.random()) + 's';
-    rainContainer.appendChild(drop);
-  }
+  window.addEventListener('DOMContentLoaded', () => {
+    const rainContainer = document.querySelector('.rain');
+
+    setTimeout(() => {
+      // Generate rain drops
+      for (let i = 0; i < 80; i++) {
+        const drop = document.createElement('div');
+        drop.classList.add('rain-drop');
+        drop.style.left = Math.random() * 100 + 'vw';
+        drop.style.top = Math.random() * -40 + 'px'; // Start slightly off screen
+        drop.style.animationDelay = Math.random() * 2 + 's';
+        drop.style.animationDuration = (0.5 + Math.random()) + 's';
+        rainContainer.appendChild(drop);
+      }
+
+      // Fade in rain smoothly
+      rainContainer.style.opacity = 1;
+    }, 3000); // Wait 2 seconds
+  });
 </script>
 
 </body>
