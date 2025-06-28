@@ -317,6 +317,7 @@ body::before {
   background: #88c057;
   width: 0%;
   position: relative;
+  transition: width 0.4s ease;
 }
 
 .progress-thumb {
@@ -676,7 +677,18 @@ progressContainer.addEventListener('click', (e) => {
   audio.currentTime = percent * audio.duration;
 });
 
+function nextTrack() {
+  // Animate progress shrinking
+  const progressBar = document.getElementById('progressBar');
+  progressBar.style.width = '0%';
 
+  // Delay next track load until animation ends
+  setTimeout(() => {
+    currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+    loadTrack(currentTrackIndex);
+    audio.play();
+  }, 400); // match transition duration
+}
 </script>
 <script>
     const slider = document.getElementById('progressSlider');
