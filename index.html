@@ -38,13 +38,23 @@ body::before {
 }
 
 .container {
-  width: 340px;
+  width: 100%;
+  max-width: 340px;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   background: #fff;
+  transition: max-width 0.4s ease;
   position: relative;
-  z-index: 1; /* stays above the blur overlay */
+  z-index: 1;
+}
+
+/* Landscape: smooth grow */
+@media (min-width: 600px) and (orientation: landscape) {
+  .container {
+    max-width: 600px;
+  }
+
 }
 
     .header {
@@ -53,7 +63,9 @@ body::before {
       display: flex;
       align-items: center;
       gap: 15px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 2px rgba(0, 0, 0, 0.03);
+      position: relative;
+      z-index: 2;
     }
 
     .header img {
@@ -162,6 +174,33 @@ body::before {
   margin-Bottom: -30px;
 
 }
+
+.button-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* On landscape / wider screen (≥ 600px) switch to 2x2 grid */
+@media (min-width: 600px) and (orientation: landscape) {
+  .button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .toggle-wrapper {
+    margin-bottom: 0; /* remove bottom margin so gap works consistently */
+  }
+
+  .button-box-wrapper {
+    grid-column: span 2; /* make the expanded box span full width */
+  }
+
+  .button-box {
+    margin-left: 30; /* prevent horizontal misalignment */
+  }
+}
   </style>
 </head>
 <body>
@@ -179,6 +218,8 @@ body::before {
     <!-- Card Section -->
     <div class="card">
       <!-- Saweria -->
+<div class="button-grid">
+
       <div class="toggle-wrapper">
         <div class="toggle-button" onclick="toggleBox('saweriaBox')">
           <i class="fa-solid fa-bowl-food"></i> Saweria
@@ -240,6 +281,7 @@ body::before {
             <button class="action" onclick="window.open('#', '_blank')">Chat Me</button>
           </div>
         </div>
+      </div>
       </div>
        <div class="footer">powered by Kodokkyunn | IA Sama</div>
     </div>
