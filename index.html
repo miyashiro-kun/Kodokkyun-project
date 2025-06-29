@@ -276,10 +276,12 @@ body::before {
   padding: 16px 20px;
   z-index: 2;
   overflow: hidden;
+  transition: transform 0.5s ease;
 }
 
 .musicplayer.slide-out {
-  transform: translatey(100%);
+  transform: translateY(100%);
+  transition: transform 0.5s ease;
 }
 
 .controls i {
