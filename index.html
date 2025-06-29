@@ -69,6 +69,7 @@ body::before {
   transition: max-width 0.4s ease;
   position: relative;
   z-index: 1;
+  transition: transform 0.5s ease;
 }
 
 /* Landscape: smooth grow */
@@ -412,7 +413,13 @@ input[type="range"]::-ms-thumb {
 
  
 }
+.container.slide-out {
+  transform: translateX(-240%);
+}
 
+.iframe-slide.slide-in {
+  transform: translateX(0%);
+}
 
 .slide-wrapper {
   display: flex;
