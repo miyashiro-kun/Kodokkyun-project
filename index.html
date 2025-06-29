@@ -277,8 +277,8 @@ body::before {
   z-index: 2;
   overflow: hidden;
   transition: transform 0.5s ease;
-  -webkit-animation-duration: 3s;
-            animation-duration: 3s;
+  -webkit-animation-duration: 0.5s;
+            animation-duration: 0.5s;
             -webkit-animation-fill-mode: both;
             animation-fill-mode: both;
 }
@@ -301,6 +301,25 @@ body::before {
                 opacity: 0;
             }
         }
+    @-webkit-keyframes slide-in  {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slide-in {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
 .musicplayer.slide-out {
             -webkit-animation-name: slide-out ;
             animation-name: slide-out ;
@@ -308,6 +327,14 @@ body::before {
     .slide-out {
             -webkit-animation-name: slide-out ;
             animation-name: slide-out ;
+        }
+    .musicplayer.slide-in {
+            -webkit-animation-name: slide-in ;
+            animation-name: slide-in ;
+        }
+    .slide-in {
+            -webkit-animation-name: slide-in ;
+            animation-name: slide-in ;
         }
 .controls i {
   font-size: 20px;
@@ -833,12 +860,14 @@ function nextTrack() {
     if (!iframe.src) iframe.src = 'pages/joki.html';
 
     container.classList.add('slide-out');
+    musicplayer.classList.remove('slide-in');
     musicplayer.classList.add('slide-out');
     iframeSlide.classList.add('slide-in');
   }
 
   function backToMain() {
     document.querySelector('.container').classList.remove('slide-out');
+    document.querySelector('.musicplayer').classList.add('slide-in');
     document.querySelector('.musicplayer').classList.remove('slide-out');
     document.getElementById('jokiSlide').classList.remove('slide-in');
   }
