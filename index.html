@@ -416,6 +416,9 @@ input[type="range"]::-ms-thumb {
 .container.slide-out {
   transform: translateX(-240%);
 }
+    .music-player.slide-out {
+  transform: translateY(100%);
+    }
 
 .iframe-slide.slide-in {
   transform: translateX(0%);
@@ -795,17 +798,19 @@ function nextTrack() {
 <script>
   function slideToJoki() {
     const container = document.querySelector('.container');
+    const container = document.querySelector('.music-player');
     const iframeSlide = document.getElementById('jokiSlide');
     const iframe = document.getElementById('jokiIframe');
 
     if (!iframe.src) iframe.src = 'pages/joki.html';
-
+    music-player.classList.add('slide-out');
     container.classList.add('slide-out');
     iframeSlide.classList.add('slide-in');
   }
 
   function backToMain() {
     document.querySelector('.container').classList.remove('slide-out');
+    document.querySelector('.music-player').classList.remove('slide-out');
     document.getElementById('jokiSlide').classList.remove('slide-in');
   }
 </script>
