@@ -416,9 +416,6 @@ input[type="range"]::-ms-thumb {
 .container.slide-out {
   transform: translateX(-240%);
 }
-    .music-player.slide-out {
-  transform: translateY(100%);
-    }
 
 .iframe-slide.slide-in {
   transform: translateX(0%);
@@ -584,8 +581,7 @@ input[type="range"]::-ms-thumb {
   </div>
   <div class="iframe-slide" id="jokiSlide">
   <iframe style="border-radius: 30px;" class="" src="pages/joki.html" id="jokiIframe" frameborder="0"></iframe>
-  <div style="height:30px;"></div>
-    <div class="iframe-overlay"></div>
+  <div class="iframe-overlay"></div>
 </div>
   
   </div>
@@ -802,14 +798,19 @@ function nextTrack() {
     const iframe = document.getElementById('jokiIframe');
 
     if (!iframe.src) iframe.src = 'pages/joki.html';
-    
+
     container.classList.add('slide-out');
     iframeSlide.classList.add('slide-in');
   }
 
   function backToMain() {
     document.querySelector('.container').classList.remove('slide-out');
-    document.querySelector('.music-player').classList.remove('slide-out');
+    document.getElementById('jokiSlide').classList.remove('slide-in');
+  }
+</script>
+<script>
+  function backToMain() {
+    document.querySelector('.container').classList.remove('slide-out');
     document.getElementById('jokiSlide').classList.remove('slide-in');
   }
 </script>
