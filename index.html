@@ -241,7 +241,7 @@ body::before {
   position: absolute;
   width: 3px;
   height: 20px;
-  background: rgba(255, 255, 255, 0.432);
+  background: #ff0000;
   animation: drop 0.7s linear infinite;
   border-radius: 50%;
 }
@@ -413,10 +413,68 @@ input[type="range"]::-ms-thumb {
  
 }
 
+
+.slide-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  z-index: 2
+  background: #eaffea; /* atau sesuai warna latar belakang kamu */
+}
+
+.iframe-slide {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  transition: transform 0.5s ease;
+  padding:7px;
+}
+
+/* Awal posisi iframe di luar layar kanan */
+.iframe-slide {
+  transform: translateX(100%);
+  z-index: 2;
+}
+
+/* Saat keluar masuk */
+.container.slide-out {
+  transform: translateX(-240%);
+}
+
+.iframe-slide.slide-in {
+  transform: translateX(0%);
+}
+
+/* Frame isi penuh */
+.iframe-slide iframe {
+  width: 100%;
+  height: 100vh;
+  border: none;
+  padding:20px;
+  border-radius: 16px;
+}
+
+.iframe-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.2), transparent);
+  z-index: 22;
+  pointer-events: none; /* tidak menghalangi klik iframe */
+}
+
   </style>
 </head>
 <body>
     <div class="rain"></div>
+    <div class="slide-wrapper">
 
   <div class="container">
     <!-- Header -->
@@ -491,7 +549,7 @@ input[type="range"]::-ms-thumb {
               <strong>Order via DM</strong>
               <span>Fast & Trusted</span>
             </div>
-            <button class="action" onclick="window.open('#', '_blank')">Chat Me</button>
+            <button class="action" onclick="slideToJoki()">Cek Harga</button>
           </div>
         </div>
       </div>
@@ -500,6 +558,12 @@ input[type="range"]::-ms-thumb {
     </div>
     
    
+  </div>
+  <div class="iframe-slide" id="jokiSlide">
+  <iframe class="" src="pages/joki.html" id="jokiIframe" frameborder="0"></iframe>
+  <div class="iframe-overlay"></div>
+</div>
+  
   </div>
 
 <div class="music-player">
@@ -707,6 +771,28 @@ function nextTrack() {
       audio.currentTime = slider.value;
     });
   </script>
+<script>
+  function slideToJoki() {
+    const container = document.querySelector('.container');
+    const iframeSlide = document.getElementById('jokiSlide');
+    const iframe = document.getElementById('jokiIframe');
 
+    if (!iframe.src) iframe.src = 'pages/joki.html';
+
+    container.classList.add('slide-out');
+    iframeSlide.classList.add('slide-in');
+  }
+
+  function backToMain() {
+    document.querySelector('.container').classList.remove('slide-out');
+    document.getElementById('jokiSlide').classList.remove('slide-in');
+  }
+</script>
+<script>
+  function backToMain() {
+    document.querySelector('.container').classList.remove('slide-out');
+    document.getElementById('jokiSlide').classList.remove('slide-in');
+  }
+</script>
 </body>
 </html>
