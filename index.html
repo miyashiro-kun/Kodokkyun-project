@@ -798,11 +798,11 @@ function nextTrack() {
 <script>
   function slideToJoki() {
     const container = document.querySelector('.container');
-    const container = document.querySelector('.music-player');
     const iframeSlide = document.getElementById('jokiSlide');
     const iframe = document.getElementById('jokiIframe');
 
     if (!iframe.src) iframe.src = 'pages/joki.html';
+    
     container.classList.add('slide-out');
     iframeSlide.classList.add('slide-in');
   }
@@ -810,12 +810,6 @@ function nextTrack() {
   function backToMain() {
     document.querySelector('.container').classList.remove('slide-out');
     document.querySelector('.music-player').classList.remove('slide-out');
-    document.getElementById('jokiSlide').classList.remove('slide-in');
-  }
-</script>
-<script>
-  function backToMain() {
-    document.querySelector('.container').classList.remove('slide-out');
     document.getElementById('jokiSlide').classList.remove('slide-in');
   }
 </script>
