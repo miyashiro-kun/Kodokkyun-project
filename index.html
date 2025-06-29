@@ -242,7 +242,7 @@ body::before {
   position: absolute;
   width: 3px;
   height: 20px;
-  background: #ff0000;
+  background: rgba(255, 255, 255, 0.432);
   animation: drop 0.7s linear infinite;
   border-radius: 50%;
 }
@@ -465,6 +465,19 @@ input[type="range"]::-ms-thumb {
   padding:20px;
   border-radius: 16px;
 }
+    @keyframes iframe {
+  0% {
+      /* ✅ no more top flash */
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    
+    opacity: 0;
+  }
+}
 
 .iframe-overlay {
   position: absolute;
@@ -567,7 +580,7 @@ input[type="range"]::-ms-thumb {
    
   </div>
   <div class="iframe-slide" id="jokiSlide">
-  <iframe style="border-radius: 16px; margin-bottom: 30px;" class="" src="pages/joki.html" id="jokiIframe" frameborder="0"></iframe>
+  <iframe style="border-radius: 30px;" class="" src="pages/joki.html" id="jokiIframe" frameborder="0"></iframe>
   <div class="iframe-overlay"></div>
 </div>
   
