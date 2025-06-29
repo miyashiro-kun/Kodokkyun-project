@@ -277,8 +277,12 @@ body::before {
   z-index: 2;
   overflow: hidden;
   transition: transform 0.5s ease;
+  -webkit-animation-duration: 3s;
+            animation-duration: 3s;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
 }
-@-webkit-keyframes fadeOut {
+@-webkit-keyframes slide-out  {
             0% {
                 opacity: 1;
             }
@@ -288,7 +292,7 @@ body::before {
             }
         }
 
-        @keyframes fadeOut {
+        @keyframes slide-out  {
             0% {
                 opacity: 1;
             }
@@ -298,8 +302,12 @@ body::before {
             }
         }
 .musicplayer.slide-out {
-            -webkit-animation-name: fadeOut;
-            animation-name: fadeOut;
+            -webkit-animation-name: slide-out ;
+            animation-name: slide-out ;
+        }
+    .slide-out {
+            -webkit-animation-name: slide-out ;
+            animation-name: slide-out ;
         }
 .controls i {
   font-size: 20px;
