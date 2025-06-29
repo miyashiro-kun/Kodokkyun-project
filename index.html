@@ -435,7 +435,7 @@ input[type="range"]::-ms-thumb {
   top: 0;
   left: 0;
   transition: transform 0.5s ease;
-  padding:50px;
+  padding:7px;
 }
 
 /* Awal posisi iframe di luar layar kanan */
@@ -460,17 +460,7 @@ input[type="range"]::-ms-thumb {
   border: none;
   border-radius: 16px;
 }
-.iframe-slide::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 10%; /* Bagian bawah 20% */
-  background: linear-gradient(to top, rgba(255, 255, 255, 0), transparent);
-  pointer-events: none; /* Supaya tidak mengganggu klik ke iframe */
-  z-index: 10; /* Di atas iframe */
-}
+
 .iframe-overlay {
   position: absolute;
   bottom: 0;
