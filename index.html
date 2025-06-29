@@ -279,7 +279,7 @@ body::before {
 }
 
 .musicplayer.slide-out {
-  transform: translateX(-240%);
+  transform: translatey(100%);
 }
 
 .controls i {
@@ -812,6 +812,7 @@ function nextTrack() {
 
   function backToMain() {
     document.querySelector('.container').classList.remove('slide-out');
+    document.querySelector('.musicplayer').classList.remove('slide-out');
     document.getElementById('jokiSlide').classList.remove('slide-in');
   }
 </script>
