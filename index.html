@@ -29,8 +29,7 @@
 }
 
     body {
-        background-position: center;
-        background-attachment: fixed;
+        
   margin: 0;
   padding: 0;
   font-family: 'Inter', sans-serif;
@@ -52,9 +51,12 @@ body::before {
   content: "";
   position: absolute;
   inset: 0;
+  background-position: center;
+  background-attachment: fixed;
   background: rgba(180, 255, 180, 0.35),
     url('images/bg.jpg') no-repeat center center fixed; /* greenish tint */
-  backdrop-filter: blur(3px);
+  background-size: cover;
+backdrop-filter: blur(3px);
   z-index: -1; /* Make sure it's behind EVERYTHING */
 }
 
@@ -69,7 +71,7 @@ body::before {
   transition: max-width 0.4s ease;
   position: relative;
   transition: transform 0.5s ease;
-  z-index: 1;
+  z-index: 2;
 }
 
 /* Landscape: smooth grow */
@@ -237,7 +239,7 @@ body::before {
   height: 100%;
   overflow: hidden;         /* ✅ keep drops inside */
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
   opacity: 0;
   transition: opacity 0.5s ease;
 }
@@ -426,6 +428,7 @@ input[type="range"]::-ms-thumb {
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
+  z-index: 2
   background: #eaffea; /* atau sesuai warna latar belakang kamu */
 }
 
