@@ -278,11 +278,29 @@ body::before {
   overflow: hidden;
   transition: transform 0.5s ease;
 }
+@-webkit-keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
 
+            100% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
 .musicplayer.slide-out {
-  transform: translateY(140%);
-}
-
+            -webkit-animation-name: fadeOut;
+            animation-name: fadeOut;
+        }
 .controls i {
   font-size: 20px;
   cursor: pointer;
