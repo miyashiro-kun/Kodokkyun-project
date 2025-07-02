@@ -9,9 +9,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
+
+  @font-face {
+  font-family: 'ZeroesOne';
+  src: url('../font/Dyson Sans Modern.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
     * { box-sizing: border-box; }
     body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'ZeroesOne', sans-serif;
   background: rgba(255, 255, 255, 0.6); /* semi transparan */
   backdrop-filter: blur(10px);          /* efek blur */
   -webkit-backdrop-filter: blur(20px);  /* Safari */
@@ -51,13 +58,13 @@
     0 0 40px #00f0ff;
 }
 
-    @media (min-width: 560px) and (orientation: landscape) {
+    @media (min-width: 580px) and (orientation: landscape) {
       .divider-container {
         display: none !important;
       }
 
     }
-    @media (min-width: 559px) and (orientation: portrait) {
+    @media (min-width: 589px) and (orientation: portrait) {
       .divider-container {
         display: none !important;
       }
@@ -136,20 +143,71 @@
     }
 
     .card {
-      background: #f4fcef;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.06);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+  position: relative;
+  background: linear-gradient(135deg, #f4fcef, #00000000);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.6s ease, box-shadow 0.6s ease;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+  z-index: 1;
+  cursor: pointer;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%);
+  transform: rotate(4deg);
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  animation: swirl-light 6s linear infinite;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-radial-gradient(circle at center, rgba(136, 255, 187, 0.2) 0px, transparent 5px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  animation: ripple 8s infinite linear;
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+.card:hover {
+  transform: scale(1.03) rotateZ(1deg);
+  box-shadow: 0 10px 40px rgba(80, 255, 177, 0.3);
+}
+@keyframes swirl-light {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes ripple {
+  0% { background-size: 20% 20%; }
+  100% { background-size: 100% 100%; }
+}
 
    @media (min-width: 558px) and (orientation: landscape) {
   .card-grid {
-    column-width: 280px;
+    column-width: 305px;
     column-gap: 20px;
     display: block;
     margin: 0 auto;             /* ⬅️ tengah */
-    max-width: 90%;            /* pastikan tidak melewati */
+    max-width: 100%;            /* pastikan tidak melewati */
   }
 
   .card {
@@ -161,10 +219,7 @@
   }
 }
 
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-    }
+
 
     .card-image {
       position: relative;
@@ -209,7 +264,7 @@
       padding: 16px 16px 20px;
     }
 
-    .card-content h3 {
+    .card-content text {
       margin-top: 0;
       margin-bottom: 10px;
       font-size: 17px;
@@ -217,7 +272,7 @@
     }
 
     .card-content p {
-      font-size: 14px;
+      font-size: 10px;
       color: #555;
       margin-bottom: 10px;
     }
@@ -319,7 +374,7 @@
           </div>
         </div>
         <div class="card-content">
-          <h3>Rawat Akun</h3>
+          <text>Rawat Akun</text>
           <p>Spend Trailblazer power , daily point , assignment</p>
           <div class="abox">
           <div class="price-container">
@@ -355,7 +410,7 @@
           </div>
         </div>
         <div class="card-content">
-          <h3>Farming Relic & Karakter Level up</h3>
+          <text>Farming Relic & Karakter Level up</text>
           <p>Farming Relic Sesuai Kebutuhan</p>
           <div class="abox">
             <div class="price-container">
@@ -394,7 +449,7 @@
           </div>
         </div>
         <div class="card-content">
-          <h3>Main Story</h3>
+          <text>Main Story</text>
           <p>Selesaikan Main Misi yang ga bisa di skip 😂</p>
           <div class="abox">
             <div class="price-container">
@@ -418,7 +473,7 @@
           </div>
         </div>
         <div class="card-content">
-          <h3>Pure Fiction</h3>
+          <text>Pure Fiction</text>
           <p>Team Harus Siap Battle</p>
           <div class="abox">
             <div class="price-container">
@@ -450,7 +505,7 @@
           </div>
         </div>
         <div class="card-content">
-          <h3>Apocalyptic Shadow</h3>
+          <text>Apocalyptic Shadow</text>
           <p>Team Harus Siap Battle</p>
           <div class="abox">
             <div class="price-container">
@@ -482,7 +537,7 @@
           </div>
         </div>
         <div class="card-content">
-          <h3>Memory Of Chaos</h3>
+          <text>Memory Of Chaos</text>
           <p>Team Harus Siap Battle</p>
           <div class="abox">
             <div class="price-container">
@@ -518,7 +573,7 @@
           </div>
         </div>
         <div class="card-content">
-          <h3>Event Terbatas</h3>
+          <text>Event Terbatas</text>
           <p>Quest event & misi story spesial</p>
           <div class="abox">
             <div class="price-container">
