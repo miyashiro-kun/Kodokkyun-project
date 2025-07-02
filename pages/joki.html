@@ -11,31 +11,57 @@
   <style>
     * { box-sizing: border-box; }
     body {
-      
-      font-family: 'Inter', sans-serif;
-      background: #f4fcef;
-      color: #333;
-      
-      scrollbar-width: none;       /* Firefox */
-     -ms-overflow-style: none;    /* IE/Edge */
-    }
+  font-family: 'Inter', sans-serif;
+  background: rgba(255, 255, 255, 0.6); /* semi transparan */
+  backdrop-filter: blur(10px);          /* efek blur */
+  -webkit-backdrop-filter: blur(20px);  /* Safari */
+  color: #333;
+
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE/Edge */
+  margin: 0;
+  padding: 0;
+}
 
     body::-webkit-scrollbar,
 *::-webkit-scrollbar {
   display: none;
 }
     header {
-      background: #fff;
-      padding: 24px 16px;
-      text-align: center;
-      border-bottom: 3px solid #88c057;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.04);
-    }
-    
-    @media (orientation: landscape) {
+  background-position: center;
+  background-attachment: fixed;
+  margin: 0;
+  padding: 24px 16px;
+  font-family: 'Inter', sans-serif;
+  background: url('../images/head.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  text-align: center;
+  border-bottom: 3px solid #88c057;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+   
+}
+.glow-text {
+  -webkit-text-stroke: 1px white; /* 1px garis putih */
+  text-shadow:
+    0 0 5px #00f0ff,
+    0 0 10px #00f0ff,
+    0 0 20px #00f0ff,
+    0 0 40px #00f0ff;
+}
+
+    @media (min-width: 560px) and (orientation: landscape) {
       .divider-container {
         display: none !important;
       }
+
+    }
+    @media (min-width: 559px) and (orientation: portrait) {
+      .divider-container {
+        display: none !important;
+      }
+      
     }
 
     .divider-container {
@@ -70,7 +96,11 @@
     }
 
     .container {
-      max-width: 920px;
+ 
+      display: flex;
+
+  align-items: center;
+ justify-content: center;
       margin: 0 auto;
       padding: 24px 16px;
     }
@@ -78,10 +108,27 @@
     .section-title {
       font-size: 20px;
       font-weight: 600;
+      width: fit-content;
+      padding-right: 12px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      background-color: white;
       color: #4caf50;
       margin-bottom: 24px;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
       border-left: 5px solid #88c057;
       padding-left: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .abox {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      border: 0px solid #e0e0e0;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     .card-grid {
@@ -91,13 +138,46 @@
     }
 
     .card {
-      background: white;
+      background: #f4fcef;
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 8px 16px rgba(0,0,0,0.06);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
+   @media (orientation: landscape) {
+  .card-grid {
+    column-count: auto;
+    column-gap: 20px;
+    max-width: calc(300px * 5 + 20px * 4); /* 5 kolom max */
+    margin: 0 auto;
+    display: block;
+    padding: 0 12px;
+  }
+
+  .card {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 20px;
+    break-inside: avoid;
+    vertical-align: top;
+  }
+}
+@media (min-width: 1400px) {
+  .card-grid { column-count: 5; }
+}
+@media (min-width: 1100px) and (max-width: 1399px) {
+  .card-grid { column-count: 4; }
+}
+@media (min-width: 800px) and (max-width: 1099px) {
+  .card-grid { column-count: 3; }
+}
+@media (min-width: 600px) and (max-width: 799px) {
+  .card-grid { column-count: 2; }
+}
+@media (max-width: 599px) {
+  .card-grid { column-count: 1; }
+}
     .card:hover {
       transform: translateY(-4px);
       box-shadow: 0 12px 24px rgba(0,0,0,0.1);
@@ -105,7 +185,7 @@
 
     .card-image {
       position: relative;
-      height: 140px;
+
       overflow: hidden;
     }
 
@@ -182,6 +262,30 @@
       transition: background 0.3s ease;
       width: fit-content;
     }
+    .price-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.order-btn2 {
+    display: flex;
+  background: #88c057;
+  color: white;
+  align-items: center;
+ justify-content: center;
+  width: 100px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.order-btn2:hover {
+  background: #9fd66d;
+}
 
     .order-btn:hover {
       background: #9fd66d;
@@ -214,17 +318,15 @@
 <body>
 
   <header>
-    <h1>Joki Honkai: Star Rail</h1>
-    <p style="margin-top:6px; color:#555; font-size:14px;">Powered by Kodok Kyun</p>
+    <h1 class="glow-text">Joki Honkai: Star Rail</h1>
+    <p class="glow-text" style="margin-top:6px; color:#555; font-size:14px;">by Kodok Kyun</p>
     <button class="back-btn" onclick="window.parent.backToMain()">← Kembali</button>
   </header>
 
   <div class="container">
-    <div class="section-title">Paket Layanan Joki</div>
-
-    <div class="card-grid">
+        <div class="card-grid">
       <!-- CARD 1 -->
-      <div class="card">
+      <div style="height: fit-content;" class="card">
         <div class="card-image">
             <div class="image-wrapper">
           <div class="kenburns-wrapper">
@@ -233,9 +335,29 @@
           </div>
         </div>
         <div class="card-content">
-          <h3>Leveling Trailblazer</h3>
-          <p>Naikkan level akun dari 1 sampai 70.</p>
-          <div class="price">?????</div>
+          <h3>Rawat Akun</h3>
+          <p>Spend Trailblazer power , daily point , assignment</p>
+          <div class="abox">
+          <div class="price-container">
+            <div class="price">Harian</div>
+            <div class="order-btn2">Rp.5000</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Mingguan</div>
+            <div class="order-btn2">Rp.30.000</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Bulanan</div>
+            <div class="order-btn2">Rp.90.000</div>
+          </div>
+          <div class="price-container">
+            <div class="">
+            <div class="price">Paket Lengkap</div>
+            <div class="" style="font-size: smaller;word-wrap: break-word;opacity: 50%;">rawat akun + echo of war , simulated / divergent universe </div>
+          </div>
+            <div class="order-btn2">Rp.150.000</div>
+          </div>
+          </div>
         </div>
       </div>
 
@@ -249,59 +371,179 @@
           </div>
         </div>
         <div class="card-content">
-          <h3>Farming Relic 5★</h3>
-          <p>Max run domain 40x farming relic.</p>
-          <div class="price">?????</div>
+          <h3>Farming Relic & Karakter Level up</h3>
+          <p>Farming Relic Sesuai Kebutuhan</p>
+          <div class="abox">
+            <div class="price-container">
+            <div class="price">Farming Relic </div>
+            <div class="order-btn2">Rp.5000</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Lv 1-80</div>
+            <div class="order-btn2">Rp.50.000</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Full Trace lv 10</div>
+            <div class="order-btn2">Rp.35.000</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Lightcone lv max </div>
+            <div class="order-btn2">Rp.45.000</div>
+          </div>
+          <div class="price-container">
+            <div class="">
+            <div class="price">Paket Character</div>
+            <div class="" style="font-size: smaller;word-wrap: break-word;opacity: 50%;">Character + trace + Lightcone</div>
+          </div>
+            <div class="order-btn2">Rp.110.000</div>
+          </div>
+          </div>
         </div>
       </div>
 
-      <!-- CARD 3 -->
-      <div class="card">
+      <div style="height: fit-content;" class="card">
         <div class="card-image">
           <div class="image-wrapper">
           <div class="kenburns-wrapper">
-            <img src="https://static1.thegamerimages.com/wordpress/wp-content/uploads/wm/2025/01/titan-nikodor-ready-for-battle-in-honkai-star-rail.jpg" alt="Memory of Chaos" class="parallax-img">
+            <img src="https://img.game8.co/4201163/c21d03dabfc372d0698863d2e0516aed.png/show" alt="Daily" class="parallax-img">
           </div>
           </div>
         </div>
         <div class="card-content">
-          <h3>Clear Memory of Chaos</h3>
-          <p>Boost sampai lantai 12 challenge mode.</p>
-          <div class="price">?????</div>
+          <h3>Main Story</h3>
+          <p>Selesaikan Main Misi yang ga bisa di skip 😂</p>
+          <div class="abox">
+            <div class="price-container">
+            <div class="">
+            <div class="price">Per Story</div>
+            <div class="" style="font-size: smaller;word-wrap: break-word;opacity: 50%;">Harga Tergantung Berapa Panjang Dan Lama Story</div>
+          </div>
+            <div  class="order-btn2">Rp.50.000 - 200.000</div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- CARD 3 -->
+      <div style="height: fit-content;" class="card">
+        <div class="card-image">
+          <div class="image-wrapper">
+          <div class="kenburns-wrapper">
+            <img src="../images/pf.jpg" alt="Memory of Chaos" class="parallax-img">
+          </div>
+          </div>
+        </div>
+        <div class="card-content">
+          <h3>Pure Fiction</h3>
+          <p>Team Harus Siap Battle</p>
+          <div class="abox">
+            <div class="price-container">
+            <div class="price">Floor 1</div>
+            <div class="order-btn2">Rp.4.000</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Floor 2</div>
+            <div class="order-btn2">Rp.8.000</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Floor 3</div>
+            <div class="order-btn2">Rp.12.000</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Floor 4</div>
+            <div class="order-btn2">Rp.18.000</div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div style="height: fit-content;" class="card">
+        <div class="card-image">
+          <div class="image-wrapper">
+          <div class="kenburns-wrapper">
+            <img src="../images/as.png" alt="Memory of Chaos" class="parallax-img">
+          </div>
+          </div>
+        </div>
+        <div class="card-content">
+          <h3>Apocalyptic Shadow</h3>
+          <p>Team Harus Siap Battle</p>
+          <div class="abox">
+            <div class="price-container">
+            <div class="price">Floor 1</div>
+            <div  class="order-btn2">Rp.4.000</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Floor 2</div>
+            <div class="order-btn2">Rp.8.000</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Floor 3</div>
+            <div class="order-btn2">Rp.12.000</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Floor 4</div>
+            <div class="order-btn2">Rp.18.000</div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div style="height: fit-content;" class="card">
+        <div class="card-image">
+          <div class="image-wrapper">
+          <div class="kenburns-wrapper">
+            <img src="../images/moc.jpeg" alt="Memory of Chaos" class="parallax-img">
+          </div>
+          </div>
+        </div>
+        <div class="card-content">
+          <h3>Memory Of Chaos</h3>
+          <p>Team Harus Siap Battle</p>
+          <div class="abox">
+            <div class="price-container">
+            <div class="price">Floor 1 - 4</div>
+            <div style="width: 150px;" class="order-btn2">Rp.4.000 / floor</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Floor 5 - 7</div>
+            <div  style="width: 150px;" class="order-btn2">Rp.7.000 / floor</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Floor 8 - 10</div>
+            <div style="width: 150px;" class="order-btn2">Rp.10.000 / floor</div>
+          </div>
+          <div class="price-container">
+            <div class="price">Floor 11 - 12</div>
+            <div style="width: 150px;" class="order-btn2">Rp.13.000 / floor</div>
+          </div>
+        </div>
         </div>
       </div>
 
       <!-- CARD 4 -->
-      <div class="card">
-        <div class="card-image">
-          <div class="image-wrapper">
-          <div class="kenburns-wrapper">
-            <img src="https://staticg.sportskeeda.com/editor/2023/06/91cdc-16880280539456-1920.jpg" alt="Daily" class="parallax-img">
-          </div>
-          </div>
-        </div>
-        <div class="card-content">
-          <h3>Misi Harian & Weekly</h3>
-          <p>Komisi harian & mingguan selesai rutin.</p>
-          <div class="price">?????</div>
-        </div>
-      </div>
+      
 
       <!-- CARD 5 -->
-      <div class="card">
+      <div style="height: fit-content;" class="card">
         <div class="card-image">
           <div class="image-wrapper">
           <div class="kenburns-wrapper">
-            <img src="https://assetsio.gnwcdn.com/Honkai-Star-Rail-3.3-release-date%2C-3.3-Banner-and-event-details-cover.jpg" alt="Event" class="parallax-img">
+            <img src="../images/ev.jpg" alt="Event" class="parallax-img">
           </div>
           </div>
         </div>
         <div class="card-content">
           <h3>Event Terbatas</h3>
-          <p>Quest event & misi story spesial.</p>
-          <div class="price">?????</div>
+          <p>Quest event & misi story spesial</p>
+          <div class="abox">
+            <div class="price-container">
+            <div class="price">Clear Event 1 Versi</div>
+            <div  class="order-btn2">Rp.35.000</div>
+          </div>
         </div>
       </div>
+    </div>
     </div>
     
     <div style="height:0px;"></div>
