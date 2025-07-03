@@ -28,7 +28,7 @@
   -ms-overflow-style: none;    /* IE/Edge */
   margin: 0;
   padding: 0;
-overflow: hidden;
+
 }
 
     body::-webkit-scrollbar,
@@ -363,17 +363,10 @@ align-items: center;
       cursor: pointer;
       font-size: 14px;
     }
-#my-scroll {
-      height: fit-content;
-      overflow: hidden;
-    }
 
-#my-scroll .scrollbar-track {
-  display: none !important;
-}
   </style>
 </head>
-<body id="my-scroll">
+<body>
 
   <header>
     <h1 class="glow-text">Joki Honkai: Star Rail</h1>
@@ -635,7 +628,6 @@ align-items: center;
     </svg>
   </div>
 </template>
-<script src="https://cdn.jsdelivr.net/npm/smooth-scrollbar@8.8.4/dist/smooth-scrollbar.js"></script>
 
 <script>
   
@@ -650,13 +642,6 @@ align-items: center;
   }
 }
 </script>
-<script>
-  Scrollbar.init(document.querySelector('#my-scroll'), {
-    damping: 0.08,
-    overscrollEffect: 'bounce',
-    overscrollDamping: 0.15,
-    alwaysShowTracks: false, // Hide tracks
-  });
-</script>
+
 </body>
 </html>
