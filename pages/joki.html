@@ -43,10 +43,10 @@
     }
 
     .scroll-content {
-      position: absolute;
-      top: 0;
-      left: 0;
+      position: relative;
       width: 100%;
+      will-change: transform;
+      transition: transform 0.05s linear;
     }
 
     header {
@@ -667,9 +667,9 @@ let isDragging = false;
 let startY = 0;
 let lastY = 0;
 
-// Dynamic calculation of max scroll
+// Dynamically calculate max scroll based on content height
 function getMaxScroll() {
-  return Math.max(0, content.offsetHeight - container.offsetHeight);
+  return Math.max(0, content.scrollHeight - container.clientHeight);
 }
 
 function animate() {
@@ -677,7 +677,7 @@ function animate() {
 
   const maxScroll = getMaxScroll();
 
-  // Bounce effect when overscroll happens
+  // Bounce effect
   if (scrollY < -50) {
     velocity *= -0.4;
     scrollY = -30;
@@ -686,28 +686,28 @@ function animate() {
     scrollY = maxScroll + 30;
   }
 
-  // Clamp to limits
+  // Clamp scroll
   if (scrollY < 0) scrollY = Math.min(scrollY, 0);
   if (scrollY > maxScroll) scrollY = Math.max(scrollY, maxScroll);
 
   content.style.transform = `translateY(${-scrollY}px)`;
 
-  // Apply friction to velocity
+  // Apply friction
   velocity *= 0.92;
 
-  // Keep animating if needed
+  // Continue animating if needed
   if (Math.abs(velocity) > 0.1 || isDragging) {
     requestAnimationFrame(animate);
   }
 }
 
-// Mouse wheel scroll
+// Wheel scroll
 function onWheel(e) {
   velocity += e.deltaY * 0.5;
   requestAnimationFrame(animate);
 }
 
-// Touch support
+// Touch scroll
 function onTouchStart(e) {
   isDragging = true;
   startY = e.touches[0].clientY;
@@ -724,21 +724,20 @@ function onTouchMove(e) {
 
 function onTouchEnd() {
   isDragging = false;
-  velocity = (startY - lastY) * 1.5; // Add momentum after release
+  velocity = (startY - lastY) * 1.5;
   requestAnimationFrame(animate);
 }
 
-// Recalculate on resize
+// Resize recalculates boundaries
 window.addEventListener('resize', () => {
-  // No need to reset scrollY because getMaxScroll() is dynamic
   requestAnimationFrame(animate);
 });
 
-// Event listeners
 container.addEventListener('wheel', onWheel, { passive: true });
 container.addEventListener('touchstart', onTouchStart, { passive: true });
 container.addEventListener('touchmove', onTouchMove, { passive: true });
 container.addEventListener('touchend', onTouchEnd);
+
 </script>
 </body>
 </html>
