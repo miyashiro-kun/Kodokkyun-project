@@ -23,7 +23,7 @@
   backdrop-filter: blur(10px);          /* efek blur */
   -webkit-backdrop-filter: blur(20px);  /* Safari */
   color: #333;
-
+  overflow: hidden;
   scrollbar-width: none;       /* Firefox */
   -ms-overflow-style: none;    /* IE/Edge */
   margin: 0;
@@ -35,6 +35,20 @@
 *::-webkit-scrollbar {
   display: none;
 }
+.scroll-container {
+      max-height: 100vh;
+      overflow: hidden;
+      position: relative;
+      background: #222;
+    }
+
+    .scroll-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+
     header {
   background-position: center;
   background-attachment: fixed;
@@ -367,7 +381,8 @@ align-items: center;
   </style>
 </head>
 <body>
-
+<div class="scroll-container" id="scrollContainer">
+  <div class="scroll-content" id="scrollContent">
   <header>
     <h1 class="glow-text">Joki Honkai: Star Rail</h1>
     <p class="glow-text" style="margin-top:6px; color:#555; font-size:14px;">by Kodok Kyun</p>
@@ -603,7 +618,7 @@ align-items: center;
     </div>
     
     <div style="height:0px;"></div>
-
+</div></div>
    <template id="divider-template">
    <div class="divider-container">
     <!-- Small star left -->
@@ -642,6 +657,88 @@ align-items: center;
   }
 }
 </script>
+<script>
+const container = document.getElementById('scrollContainer');
+const content = document.getElementById('scrollContent');
 
+let scrollY = 0;
+let velocity = 0;
+let isDragging = false;
+let startY = 0;
+let lastY = 0;
+
+// Dynamic calculation of max scroll
+function getMaxScroll() {
+  return Math.max(0, content.offsetHeight - container.offsetHeight);
+}
+
+function animate() {
+  scrollY += velocity;
+
+  const maxScroll = getMaxScroll();
+
+  // Bounce effect when overscroll happens
+  if (scrollY < -50) {
+    velocity *= -0.4;
+    scrollY = -30;
+  } else if (scrollY > maxScroll + 50) {
+    velocity *= -0.4;
+    scrollY = maxScroll + 30;
+  }
+
+  // Clamp to limits
+  if (scrollY < 0) scrollY = Math.min(scrollY, 0);
+  if (scrollY > maxScroll) scrollY = Math.max(scrollY, maxScroll);
+
+  content.style.transform = `translateY(${-scrollY}px)`;
+
+  // Apply friction to velocity
+  velocity *= 0.92;
+
+  // Keep animating if needed
+  if (Math.abs(velocity) > 0.1 || isDragging) {
+    requestAnimationFrame(animate);
+  }
+}
+
+// Mouse wheel scroll
+function onWheel(e) {
+  velocity += e.deltaY * 0.5;
+  requestAnimationFrame(animate);
+}
+
+// Touch support
+function onTouchStart(e) {
+  isDragging = true;
+  startY = e.touches[0].clientY;
+  lastY = startY;
+}
+
+function onTouchMove(e) {
+  const y = e.touches[0].clientY;
+  const delta = lastY - y;
+  scrollY += delta;
+  lastY = y;
+  content.style.transform = `translateY(${-scrollY}px)`;
+}
+
+function onTouchEnd() {
+  isDragging = false;
+  velocity = (startY - lastY) * 1.5; // Add momentum after release
+  requestAnimationFrame(animate);
+}
+
+// Recalculate on resize
+window.addEventListener('resize', () => {
+  // No need to reset scrollY because getMaxScroll() is dynamic
+  requestAnimationFrame(animate);
+});
+
+// Event listeners
+container.addEventListener('wheel', onWheel, { passive: true });
+container.addEventListener('touchstart', onTouchStart, { passive: true });
+container.addEventListener('touchmove', onTouchMove, { passive: true });
+container.addEventListener('touchend', onTouchEnd);
+</script>
 </body>
 </html>
