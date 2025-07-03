@@ -58,54 +58,6 @@ body::before {
   z-index: -1; /* Make sure it's behind EVERYTHING */
 }
 
-.fab-container {
-  position: fixed;
-  bottom: 40px;
-  left: 40px;
-  z-index: 9999;
-}
-
-/* Main FAB */
-.fab-main {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: #6200ea;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: transform 0.3s;
-  z-index: 2;
-}
-
-/* Child FABs */
-.fab {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #03dac6;
-  color: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: transform 0.4s ease, opacity 0.4s ease;
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Hover effect */
-.fab:hover {
-  transform: scale(1.3);
-}
-
 .container {
   width: 100%;
   margin-top: -20%;
@@ -712,20 +664,6 @@ input[type="range"]::-ms-thumb {
   </div>
 </div>
 
-<div class="fab-container">
-  <!-- 7 FAB Buttons (stacked vertically when opened) -->
-  <div class="fab" data-offset="1" onclick="scrollToTarget('section1')">1</div>
-  <div class="fab" data-offset="2" onclick="scrollToTarget('section2')">2</div>
-  <div class="fab" data-offset="3" onclick="scrollToTarget('section3')">3</div>
-  <div class="fab" data-offset="4" onclick="scrollToTarget('section4')">4</div>
-  <div class="fab" data-offset="5" onclick="scrollToTarget('section5')">5</div>
-  <div class="fab" data-offset="6" onclick="scrollToTarget('section6')">6</div>
-  <div class="fab" data-offset="7" onclick="scrollToTarget('section7')">7</div>
-
-  <!-- Main FAB -->
-  <div class="fab-main" onclick="toggleFAB()">+</div>
-</div>
-
 <audio id="audio" muted autoplay></audio>
 
 
@@ -896,34 +834,44 @@ function nextTrack() {
 }
 </script>
 <script>
-let isOpen = false;
+    const slider = document.getElementById('progressSlider');
 
-function toggleFAB() {
-  isOpen = !isOpen;
-  const buttons = document.querySelectorAll('.fab');
-  const spacing = 70; // Vertical space between FABs
+    audio.addEventListener('timeupdate', () => {
+      const percent = (audio.currentTime / audio.duration) * 100;
+      progress.style.width = percent + '%';
+      slider.value = audio.currentTime;
+    });
 
-  buttons.forEach(btn => {
-    const offset = parseInt(btn.getAttribute('data-offset'));
-    if (isOpen) {
-      const y = spacing * offset;
-      btn.style.transform = `translateY(-${y}px)`; // ➡️ Move upward
-      btn.style.opacity = '1';
-      btn.style.pointerEvents = 'auto';
-    } else {
-      btn.style.transform = `translateY(0)`;
-      btn.style.opacity = '0';
-      btn.style.pointerEvents = 'none';
-    }
-  });
-}
+    audio.addEventListener('loadedmetadata', () => {
+      slider.max = audio.duration;
+    });
 
-function scrollToTarget(id) {
-  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-  toggleFAB(); // Collapse menu after click
-}
+    slider.addEventListener('input', () => {
+      audio.currentTime = slider.value;
+    });
+  </script>
+<script>
+  function slideToJoki() {
+    const container = document.querySelector('.container');
+    const musicplayer = document.querySelector('.musicplayer');
+    const iframeSlide = document.getElementById('jokiSlide');
+    const iframe = document.getElementById('jokiIframe');
+
+    if (!iframe.src) iframe.src = 'pages/joki.html';
+
+    container.classList.add('slide-out');
+    musicplayer.classList.remove('slide-in');
+    musicplayer.classList.add('slide-out');
+    iframeSlide.classList.add('slide-in');
+  }
+
+  function backToMain() {
+    document.querySelector('.container').classList.remove('slide-out');
+    document.querySelector('.musicplayer').classList.add('slide-in');
+    document.querySelector('.musicplayer').classList.remove('slide-out');
+    document.getElementById('jokiSlide').classList.remove('slide-in');
+  }
 </script>
-
 
 </body>
 </html>
