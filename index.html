@@ -60,10 +60,8 @@ body::before {
 
 .fab-container {
   position: fixed;
-  bottom: 140px;
+  bottom: 40px;
   left: 40px;
-  width: 0;
-  height: 0;
   z-index: 9999;
 }
 
@@ -86,6 +84,8 @@ body::before {
 /* Child FABs */
 .fab {
   position: absolute;
+  left: 0;
+  bottom: 0;
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -101,6 +101,7 @@ body::before {
   pointer-events: none;
 }
 
+/* Hover effect */
 .fab:hover {
   transform: scale(1.3);
 }
@@ -712,14 +713,14 @@ input[type="range"]::-ms-thumb {
 </div>
 
 <div class="fab-container">
-  <!-- 7 FAB Buttons -->
-  <div class="fab" data-angle="0"   onclick="scrollToTarget('section1')">1</div>
-  <div class="fab" data-angle="20"  onclick="scrollToTarget('section2')">2</div>
-  <div class="fab" data-angle="40"  onclick="scrollToTarget('section3')">3</div>
-  <div class="fab" data-angle="60"  onclick="scrollToTarget('section4')">4</div>
-  <div class="fab" data-angle="80"  onclick="scrollToTarget('section5')">5</div>
-  <div class="fab" data-angle="100" onclick="scrollToTarget('section6')">6</div>
-  <div class="fab" data-angle="120" onclick="scrollToTarget('section7')">7</div>
+  <!-- 7 FAB Buttons (stacked vertically when opened) -->
+  <div class="fab" data-offset="1" onclick="scrollToTarget('section1')">1</div>
+  <div class="fab" data-offset="2" onclick="scrollToTarget('section2')">2</div>
+  <div class="fab" data-offset="3" onclick="scrollToTarget('section3')">3</div>
+  <div class="fab" data-offset="4" onclick="scrollToTarget('section4')">4</div>
+  <div class="fab" data-offset="5" onclick="scrollToTarget('section5')">5</div>
+  <div class="fab" data-offset="6" onclick="scrollToTarget('section6')">6</div>
+  <div class="fab" data-offset="7" onclick="scrollToTarget('section7')">7</div>
 
   <!-- Main FAB -->
   <div class="fab-main" onclick="toggleFAB()">+</div>
@@ -895,73 +896,31 @@ function nextTrack() {
 }
 </script>
 <script>
-    const slider = document.getElementById('progressSlider');
-
-    audio.addEventListener('timeupdate', () => {
-      const percent = (audio.currentTime / audio.duration) * 100;
-      progress.style.width = percent + '%';
-      slider.value = audio.currentTime;
-    });
-
-    audio.addEventListener('loadedmetadata', () => {
-      slider.max = audio.duration;
-    });
-
-    slider.addEventListener('input', () => {
-      audio.currentTime = slider.value;
-    });
-  </script>
-<script>
-  function slideToJoki() {
-    const container = document.querySelector('.container');
-    const musicplayer = document.querySelector('.musicplayer');
-    const iframeSlide = document.getElementById('jokiSlide');
-    const iframe = document.getElementById('jokiIframe');
-
-    if (!iframe.src) iframe.src = 'pages/joki.html';
-
-    container.classList.add('slide-out');
-    musicplayer.classList.remove('slide-in');
-    musicplayer.classList.add('slide-out');
-    iframeSlide.classList.add('slide-in');
-  }
-
-  function backToMain() {
-    document.querySelector('.container').classList.remove('slide-out');
-    document.querySelector('.musicplayer').classList.add('slide-in');
-    document.querySelector('.musicplayer').classList.remove('slide-out');
-    document.getElementById('jokiSlide').classList.remove('slide-in');
-  }
-</script>
-<script>
-// Toggle open/close of the menu
 let isOpen = false;
 
 function toggleFAB() {
   isOpen = !isOpen;
   const buttons = document.querySelectorAll('.fab');
-  const radius = 100; // Distance of buttons from main FAB
+  const spacing = 70; // Vertical space between FABs
 
   buttons.forEach(btn => {
-    const angle = parseFloat(btn.getAttribute('data-angle'));
+    const offset = parseInt(btn.getAttribute('data-offset'));
     if (isOpen) {
-      const x = radius * Math.cos(angle * Math.PI / 180);
-      const y = radius * Math.sin(angle * Math.PI / 180);
-      btn.style.transform = `translate(${x}px, ${y}px)`;
+      const y = spacing * offset;
+      btn.style.transform = `translateY(-${y}px)`; // ➡️ Move upward
       btn.style.opacity = '1';
       btn.style.pointerEvents = 'auto';
     } else {
-      btn.style.transform = `translate(0, 0)`;
+      btn.style.transform = `translateY(0)`;
       btn.style.opacity = '0';
       btn.style.pointerEvents = 'none';
     }
   });
 }
 
-// Scroll to the target section and close the FAB menu
 function scrollToTarget(id) {
   document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-  toggleFAB();
+  toggleFAB(); // Collapse menu after click
 }
 </script>
 
