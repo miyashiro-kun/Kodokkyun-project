@@ -58,6 +58,46 @@ body::before {
   z-index: -1; /* Make sure it's behind EVERYTHING */
 }
 
+.fab-container {
+  position: fixed;
+  bottom: 40px;
+  left: 40px;
+  width: 150px;
+  height: 150px;
+  pointer-events: none; /* So only FABs are clickable */
+}
+
+.fab {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #6200ea;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: transform 0.3s, background-color 0.3s;
+  pointer-events: auto; /* Enable click */
+}
+
+/* Hover animation */
+.fab:hover {
+  transform: scale(1.2) rotate(20deg);
+  background-color: #3700b3;
+}
+
+/* Circle positions (using transform) */
+.fab[data-pos="1"] { transform: translate(0, 0); }
+.fab[data-pos="2"] { transform: translate(40px, -10px); }
+.fab[data-pos="3"] { transform: translate(70px, -40px); }
+.fab[data-pos="4"] { transform: translate(90px, -80px); }
+.fab[data-pos="5"] { transform: translate(70px, -120px); }
+.fab[data-pos="6"] { transform: translate(40px, -150px); }
+.fab[data-pos="7"] { transform: translate(0, -160px); }
+
 .container {
   width: 100%;
   margin-top: -20%;
@@ -872,6 +912,11 @@ function nextTrack() {
     document.getElementById('jokiSlide').classList.remove('slide-in');
   }
 </script>
-
+<script>
+// Smooth scroll to target
+function scrollToTarget(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+}
+</script>
 </body>
 </html>
