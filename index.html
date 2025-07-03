@@ -62,41 +62,49 @@ body::before {
   position: fixed;
   bottom: 40px;
   left: 40px;
-  width: 150px;
-  height: 150px;
-  pointer-events: none; /* So only FABs are clickable */
+  width: 0;
+  height: 0;
+  z-index: 9999; /* ✅ Always on top */
 }
 
-.fab {
-  position: absolute;
-  width: 50px;
-  height: 50px;
+/* Main FAB */
+.fab-main {
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: #6200ea;
-  color: #fff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: transform 0.3s;
+  z-index: 2;
+}
+
+/* Child FAB buttons */
+.fab {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #03dac6;
+  color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   cursor: pointer;
-  transition: transform 0.3s, background-color 0.3s;
-  pointer-events: auto; /* Enable click */
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  opacity: 0;
+  pointer-events: none;
 }
 
-/* Hover animation */
+/* Hover effect for FAB buttons */
 .fab:hover {
-  transform: scale(1.2) rotate(20deg);
-  background-color: #3700b3;
+  transform: scale(1.3);
 }
-
-/* Circle positions (using transform) */
-.fab[data-pos="1"] { transform: translate(0, 0); }
-.fab[data-pos="2"] { transform: translate(40px, -10px); }
-.fab[data-pos="3"] { transform: translate(70px, -40px); }
-.fab[data-pos="4"] { transform: translate(90px, -80px); }
-.fab[data-pos="5"] { transform: translate(70px, -120px); }
-.fab[data-pos="6"] { transform: translate(40px, -150px); }
-.fab[data-pos="7"] { transform: translate(0, -160px); }
 
 .container {
   width: 100%;
@@ -705,13 +713,17 @@ input[type="range"]::-ms-thumb {
 </div>
 
 <div class="fab-container">
-  <div class="fab" data-pos="1" onclick="scrollToTarget('section1')">1</div>
-  <div class="fab" data-pos="2" onclick="scrollToTarget('section2')">2</div>
-  <div class="fab" data-pos="3" onclick="scrollToTarget('section3')">3</div>
-  <div class="fab" data-pos="4" onclick="scrollToTarget('section4')">4</div>
-  <div class="fab" data-pos="5" onclick="scrollToTarget('section5')">5</div>
-  <div class="fab" data-pos="6" onclick="scrollToTarget('section6')">6</div>
-  <div class="fab" data-pos="7" onclick="scrollToTarget('section7')">7</div>
+  <!-- 7 FAB Buttons -->
+  <div class="fab" data-angle="270" onclick="scrollToTarget('section1')">1</div>
+  <div class="fab" data-angle="230" onclick="scrollToTarget('section2')">2</div>
+  <div class="fab" data-angle="200" onclick="scrollToTarget('section3')">3</div>
+  <div class="fab" data-angle="170" onclick="scrollToTarget('section4')">4</div>
+  <div class="fab" data-angle="140" onclick="scrollToTarget('section5')">5</div>
+  <div class="fab" data-angle="110" onclick="scrollToTarget('section6')">6</div>
+  <div class="fab" data-angle="80"  onclick="scrollToTarget('section7')">7</div>
+
+  <!-- Main FAB -->
+  <div class="fab-main" onclick="toggleFAB()">+</div>
 </div>
 
 <audio id="audio" muted autoplay></audio>
@@ -923,10 +935,36 @@ function nextTrack() {
   }
 </script>
 <script>
-// Smooth scroll to target
+// Toggle open/close of the menu
+let isOpen = false;
+
+function toggleFAB() {
+  isOpen = !isOpen;
+  const buttons = document.querySelectorAll('.fab');
+  const radius = 100; // Distance of buttons from main FAB
+
+  buttons.forEach(btn => {
+    const angle = parseFloat(btn.getAttribute('data-angle'));
+    if (isOpen) {
+      const x = radius * Math.cos(angle * Math.PI / 180);
+      const y = radius * Math.sin(angle * Math.PI / 180);
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'auto';
+    } else {
+      btn.style.transform = `translate(0, 0)`;
+      btn.style.opacity = '0';
+      btn.style.pointerEvents = 'none';
+    }
+  });
+}
+
+// Scroll to the target section and close the FAB menu
 function scrollToTarget(id) {
   document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  toggleFAB();
 }
 </script>
+
 </body>
 </html>
