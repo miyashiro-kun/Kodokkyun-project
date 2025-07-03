@@ -362,9 +362,13 @@ align-items: center;
       cursor: pointer;
       font-size: 14px;
     }
+
+#my-scroll .scrollbar-track {
+  display: none !important;
+}
   </style>
 </head>
-<body>
+<body id="my-scroll">
 
   <header>
     <h1 class="glow-text">Joki Honkai: Star Rail</h1>
@@ -626,6 +630,15 @@ align-items: center;
     </svg>
   </div>
 </template>
+<script src="https://cdn.jsdelivr.net/npm/smooth-scrollbar@8.8.4/dist/smooth-scrollbar.js"></script>
+<script>
+  Scrollbar.init(document.querySelector('#my-scroll'), {
+    damping: 0.08,
+    overscrollEffect: 'bounce',
+    overscrollDamping: 0.15,
+    alwaysShowTracks: false, // Hide tracks
+  });
+</script>
 <script>
   
   if (window.matchMedia("(orientation: portrait)").matches) {
@@ -639,6 +652,13 @@ align-items: center;
   }
 }
 </script>
-
+<script>
+  Scrollbar.init(document.querySelector('#my-scroll'), {
+    damping: 0.08,
+    overscrollEffect: 'bounce',
+    overscrollDamping: 0.15,
+    alwaysShowTracks: false, // Hide tracks
+  });
+</script>
 </body>
 </html>
