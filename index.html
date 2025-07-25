@@ -667,8 +667,10 @@ input[type="range"]::-ms-thumb {
 <audio id="audio" muted autoplay></audio>
 
   <script>
-    history.pushState({}, '', 'waa.ai/kodokyun');
-  </script>
+  window.addEventListener('load', () => {
+    history.replaceState({}, '', 'waa.ai/kodokkyun');
+  });
+</script>
   <script>
 
   
