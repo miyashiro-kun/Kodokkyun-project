@@ -1349,6 +1349,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         /* TAB BUTTONS */
         .gc-tabs {
             display: flex;
+            width: 100%;
             gap: 6px;
             margin-bottom: 20px;
             overflow-x: auto;
@@ -1357,18 +1358,17 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 
         .gc-tab-btn {
             flex: 1;
-            min-width: 80px;
+            width: 200px;
             padding: 10px 5px;
             border: 1px solid var(--border);
             background: var(--glass);
             color: #fff;
-            border-radius: 10px;
+            border-radius: 7px;
             font-weight: bold;
             font-size: 0.7rem;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.2s;
-            white-space: nowrap;
         }
 
         .gc-tab-btn.active[data-game="genshin"] { background: var(--accent); color: #000; border-color: var(--accent); }
