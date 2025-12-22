@@ -1320,7 +1320,6 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       :root {
         --sr-blue: #007bff;
         --sr-accent: #f29d38;
-        --hi3-accent: #ec4c4c; /* Honkai Impact Red */
         --sr-bg-card: rgba(255, 255, 255, 0.08);
         --sr-border: rgba(255, 255, 255, 0.15);
       }
@@ -1330,11 +1329,11 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         padding: 20px;
         width: 100%;
       }
-        .extra-tilt {
+    
+    .extra-tilt2 {
   display: inline-block; /* Required for transform to work */
   transform: skewX(-15deg); /* Negative degrees tilt to the right */
 }
-
       /* Game Selector Tabs */
       .resource-tabs {
         display: flex;
@@ -1342,6 +1341,16 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         margin-top: 25px;
         justify-content: center;
         flex-wrap: wrap;
+      }
+
+      /* TRANSITION LOGIC */
+      .content-fade {
+        transition: opacity 0.4s ease-in-out, transform 0.4s ease-out;
+        opacity: 1;
+      }
+      .content-fade.is-hidden {
+        opacity: 0;
+        transform: translateY(10px);
       }
 
       /* Banner Container */
@@ -1386,23 +1395,23 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       .resource-banner-content h1 { margin: 0; font-size: 20px; color: #fff; text-transform: uppercase; }
       .resource-banner-content h2 { margin: 5px 0 0; font-size: 13px; color: var(--sr-accent); font-weight: 400; border:none;}
 
-      /* Tilted UI Tags (Gaming Style) */
+      /* Tilted UI Tags */
       .type-tag { 
         position: absolute; 
         top: 0; right: 0; 
         font-size: 9px; 
         padding: 4px 12px; 
-        background: rgba(0,0,0,0.6); 
+        background: rgba(0,0,0,0.7); 
         border-bottom-left-radius: 10px; 
         color: #fff; 
         text-transform: uppercase;
-        font-style: italic;
+        font-style: italic; /* Tilt Effect */
         font-weight: bold;
-        transform: skewX(-15deg); /* Added tilt effect */
-        border-left: 2px solid var(--sr-accent);
+        transform: skewX(-15deg); /* Tilt Effect */
+        border-left: 3px solid var(--sr-accent);
       }
 
-      /* Package Grid */
+      /* Package Grid Layout */
       .resource-section { margin-top: 30px; color: white; }
       .resource-section h2 { border-bottom: 1px solid var(--sr-border); padding-bottom: 10px; font-size: 1.1rem; }
       .package-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px;}
@@ -1411,14 +1420,14 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         background: var(--sr-bg-card);
         border: 1px solid var(--sr-border);
         border-radius: 10px;
-        padding: 18px 15px;
+        padding: 20px 15px;
         display: flex;
         flex-direction: column;
         position: relative;
         overflow: hidden;
       }
 
-      .package-item .title { font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #fff; overflow-wrap: anywhere;}
+      .package-item .title { font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #fff; overflow-wrap: anywhere; line-height: 1.4; }
       .package-item .size { font-size: 11px; color: #aaa; margin-bottom: 15px; font-style: italic; }
       
       .dl-link {
@@ -1427,9 +1436,9 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         text-decoration: none;
         text-align: center;
         padding: 10px;
-        border-radius: 5px;
+        border-radius: 6px;
         font-weight: bold;
-        font-size: 13px;
+        font-size: 12px;
         text-transform: uppercase;
         letter-spacing: 1px;
       }
@@ -1437,7 +1446,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 
     
 
-    <div class="resource-banner" id="res-banner">
+    <div class="resource-banner content-fade" id="res-banner">
       <div id="slide-container"></div>
       <div class="resource-banner-content">
         <h1 id="res-title">Manual Update Patch</h1>
@@ -1446,19 +1455,21 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     </div>
     
     <div class="resource-tabs">
-      <button class="tab-btn active title-font extra-tilt" id="tab-sr" onclick="switchGameResource('sr')">STAR RAIL</button>
-      <button class="tab-btn title-font extra-tilt" id="tab-zzz" onclick="switchGameResource('zzz')">ZENLESS</button>
-      <button class="tab-btn title-font extra-tilt" id="tab-hi3" onclick="switchGameResource('hi3')">HONKAI IMPACT 3</button>
+      <button class="tab-btn active title-font extra-tilt2" id="tab-sr" onclick="switchGameResource('sr')">STAR RAIL</button>
+      <button class="tab-btn title-font extra-tilt2" id="tab-zzz" onclick="switchGameResource('zzz')">ZENLESS</button>
+      <button class="tab-btn title-font extra-tilt2" id="tab-hi3" onclick="switchGameResource('hi3')">HONKAI IMPACT 3</button>
     </div>
 
-    <div class="resource-section">
-      <h2>Main Full Packages</h2>
-      <div id="main-list" class="package-grid"></div>
-    </div>
+    <div id="fade-wrapper" class="content-fade">
+        <div class="resource-section">
+            <h2>Main Full Packages</h2>
+            <div id="main-list" class="package-grid"></div>
+        </div>
 
-    <div class="resource-section">
-      <h2>Update Patches</h2>
-      <div id="patch-list" class="package-grid"></div>
+        <div class="resource-section">
+            <h2>Update Patches</h2>
+            <div id="patch-list" class="package-grid"></div>
+        </div>
     </div>
 
     <script>
@@ -1500,24 +1511,35 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 
         let currentIdx = 0;
         let slideTimer = null;
+        const banner = document.getElementById('res-banner');
+        const fadeWrapper = document.getElementById('fade-wrapper');
         const slideContainer = document.getElementById('slide-container');
 
-        window.switchGameResource = function(gameKey) {
-          // Update Tab Active State
-          document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-          document.getElementById(`tab-${gameKey}`).classList.add('active');
-          
-          const cfg = CONFIG[gameKey];
-          document.getElementById('res-title').textContent = cfg.title;
-          const sub = document.getElementById('res-subtitle');
-          sub.textContent = cfg.subtitle;
-          sub.style.color = cfg.accent;
+        window.switchGameResource = async function(gameKey) {
+          // Fade Out current content
+          banner.classList.add('is-hidden');
+          fadeWrapper.classList.add('is-hidden');
 
-          // CSS Variable for accented tag borders
-          document.documentElement.style.setProperty('--sr-accent', cfg.accent);
+          setTimeout(async () => {
+            // Update Active Tab
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${gameKey}`).classList.add('active');
+            
+            const cfg = CONFIG[gameKey];
+            document.getElementById('res-title').textContent = cfg.title;
+            const sub = document.getElementById('res-subtitle');
+            sub.textContent = cfg.subtitle;
+            sub.style.color = cfg.accent;
+            document.documentElement.style.setProperty('--sr-accent', cfg.accent);
 
-          initSlideshow(cfg.links);
-          renderResources(cfg.api);
+            // Re-init slideshow and load API data
+            initSlideshow(cfg.links);
+            await renderResources(cfg.api);
+
+            // Fade In new content
+            banner.classList.remove('is-hidden');
+            fadeWrapper.classList.remove('is-hidden');
+          }, 350); // Matches the 0.4s transition
         };
 
         function initSlideshow(urls) {
@@ -1542,6 +1564,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
           if (urls.length > 1) {
             slideTimer = setInterval(() => {
               const slides = slideContainer.querySelectorAll('.slide-layer');
+              if(!slides[currentIdx]) return;
               slides[currentIdx].classList.remove('active');
               currentIdx = (currentIdx + 1) % slides.length;
               slides[currentIdx].classList.add('active');
@@ -1553,8 +1576,6 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         async function renderResources(apiUrl) {
           const mList = document.getElementById('main-list');
           const pList = document.getElementById('patch-list');
-          mList.innerHTML = '<p>Retrieving manifests...</p>';
-          pList.innerHTML = '';
 
           try {
             const res = await fetch(apiUrl);
@@ -1562,6 +1583,8 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             const data = json.data.game_packages[0];
 
             mList.innerHTML = '';
+            pList.innerHTML = '';
+
             data.main.major.game_pkgs.forEach(p => createItem(mList, p, 'Game'));
             data.main.major.audio_pkgs.forEach(p => createItem(mList, p, 'Audio'));
             
@@ -1569,7 +1592,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
               pSet.game_pkgs.forEach(p => createItem(pList, p, 'Patch'));
               pSet.audio_pkgs.forEach(p => createItem(pList, p, 'Audio Patch'));
             });
-          } catch (e) { mList.innerHTML = '<p>Error loading files.</p>'; }
+          } catch (e) { mList.innerHTML = '<p>Manifest Offline.</p>'; }
         }
 
         function createItem(container, pkg, type) {
@@ -1584,6 +1607,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
           container.appendChild(div);
         }
 
+        // Start with Star Rail by default
         switchGameResource('sr');
       })();
     </script>
