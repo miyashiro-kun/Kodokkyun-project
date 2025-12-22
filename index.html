@@ -52,6 +52,59 @@ html, body {
 
 /* --- Page 1: Link Tree --- */
 /* Container Page 1 */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .page1 {
+    flex-direction: row !important; /* Side-by-side layout */
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 2vh 5vw;
+  }
+
+  .profile-header {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .avatar-wrapper {
+    width: 80px; /* Smaller avatar */
+    height: 80px;
+    margin-bottom: 10px;
+  }
+
+  .name-premium {
+    font-size: 1.2rem;
+    margin: 10px 0 5px;
+  }
+
+  .tagline {
+    font-size: 0.7rem;
+    padding: 5px 12px;
+  }
+
+  .links-container {
+    max-width: 350px;
+    gap: 8px; /* Tighter links */
+    overflow-y: auto;
+    max-height: 90vh;
+  }
+
+  .modern-link {
+    padding: 10px 15px;
+  }
+
+  .icon-box {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+  
+  .link-subtitle {
+    display: none; /* Hide subtitles to save vertical space */
+  }
+}
+
 .page1 {
     padding: 5vh 3vw;
     position: relative;
