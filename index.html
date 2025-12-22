@@ -1333,6 +1333,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         :root {
             --accent: #ffd369;
             --hsr-accent: #69d3ff;
+            --zzz-accent: #9dff69; 
             --glass: rgba(255, 255, 255, 0.08);
             --border: rgba(255, 255, 255, 0.15);
         }
@@ -1341,41 +1342,34 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             padding: 10px;
             color: #fff;
             max-width: 100%;
-            /* Reverted: Allows both vertical scroll and horizontal swipe */
+            /* Important: Allow both vertical scrolling and horizontal swiping */
             touch-action: pan-x pan-y !important; 
         }
 
         /* TAB BUTTONS */
         .gc-tabs {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 20px;
         }
 
         .gc-tab-btn {
             flex: 1;
-            padding: 12px;
+            padding: 10px 5px;
             border: 1px solid var(--border);
             background: var(--glass);
             color: #fff;
             border-radius: 10px;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .gc-tab-btn.active[data-game="genshin"] {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-        }
-
-        .gc-tab-btn.active[data-game="hsr"] {
-            background: var(--hsr-accent);
-            color: #000;
-            border-color: var(--hsr-accent);
-        }
+        .gc-tab-btn.active[data-game="genshin"] { background: var(--accent); color: #000; border-color: var(--accent); }
+        .gc-tab-btn.active[data-game="hsr"] { background: var(--hsr-accent); color: #000; border-color: var(--hsr-accent); }
+        .gc-tab-btn.active[data-game="zzz"] { background: var(--zzz-accent); color: #000; border-color: var(--zzz-accent); }
 
         .gc-title {
             font-size: 1.1rem;
@@ -1394,49 +1388,48 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         .m-icon { width: 45px; height: 45px; border-radius: 8px; background: var(--glass); border: 1px solid var(--border); object-fit: cover;}
 
         .e-grid { display: flex; flex-direction: column; gap: 15px; }
-        .e-card { background: var(--glass); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; }
-        .e-thumb { width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; }
-        .e-body { padding: 12px; text-align: center; }
+        .e-card { background: var(--glass); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; text-decoration: none; color: inherit; display: block; }
+        .e-thumb { width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block; }
+        .e-body { padding: 12px; }
         
         .e-date {
             display: inline-block;
             background: var(--accent);
             color: #000;
             font-weight: 800;
-            font-size: 0.75rem;
-            padding: 3px 12px;
-            border-radius: 20px;
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            border-radius: 4px;
             margin-bottom: 8px;
+            text-transform: uppercase;
         }
 
-        .e-name { font-weight: bold; font-size: 1rem; margin-bottom: 5px; }
-        .e-desc { font-size: 0.82rem; color: #ccc; line-height: 1.4; margin-bottom: 10px; text-align: left; }
+        .e-name { font-weight: bold; font-size: 1rem; margin-bottom: 5px; line-height: 1.2; }
+        .e-desc { font-size: 0.82rem; color: #ccc; line-height: 1.4; margin-bottom: 10px; }
 
         .r-row {
-            display: flex;
-            gap: 8px;
-            background: rgba(0,0,0,0.4);
-            padding: 8px;
-            border-radius: 8px;
-            overflow-x: auto;
-            justify-content: center;
+            display: flex; gap: 8px; background: rgba(0,0,0,0.4);
+            padding: 8px; border-radius: 8px; overflow-x: auto;
         }
         .r-item { display: flex; flex-direction: column; align-items: center; min-width: 35px; }
         .r-img { width: 25px; height: 25px; object-fit: contain; }
         .r-amt { font-size: 0.6rem; color: var(--accent); }
 
-        .loader { text-align: center; padding: 50px; font-size: 0.8rem; color: #888; }
+        .loader { text-align: center; padding: 50px; font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px;}
     </style>
 
     <div class="gc-tabs">
         <button class="gc-tab-btn active" data-game="genshin">Genshin</button>
         <button class="gc-tab-btn" data-game="hsr">Star Rail</button>
+        <button class="gc-tab-btn" data-game="zzz">ZZZ</button>
     </div>
 
     <div id="calendar-content">
-        <div class="gc-title">Active Banners</div>
-        <div id="banner-list" class="banner-row"></div>
-        <div class="gc-title">Current Events</div>
+        <div id="banner-section">
+            <div class="gc-title">Active Banners</div>
+            <div id="banner-list" class="banner-row"></div>
+        </div>
+        <div class="gc-title">Latest News & Events</div>
         <div id="event-list" class="e-grid">
             <div class="loader">Loading...</div>
         </div>
@@ -1445,11 +1438,12 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     <script>
         const CONFIG = {
             genshin: { api: 'https://kodokkyun-project.vercel.app/api/gc', accent: '#ffd369' },
-            hsr: { api: 'https://kodokkyun-project.vercel.app/api/sc', accent: '#69d3ff' }
+            hsr: { api: 'https://kodokkyun-project.vercel.app/api/sc', accent: '#69d3ff' },
+            zzz: { api: 'https://kodokkyun-project.vercel.app/api/zc', accent: '#9dff69' }
         };
 
         const formatTs = (ts) => {
-            if (!ts) return "";
+            if (!ts) return "Latest";
             const date = new Date(ts < 10000000000 ? ts * 1000 : ts);
             return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         };
@@ -1459,46 +1453,68 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         async function loadGame(gameKey) {
             const content = document.getElementById('event-list');
             const banners = document.getElementById('banner-list');
-            document.documentElement.style.setProperty('--accent', CONFIG[gameKey].accent);
+            const bannerSection = document.getElementById('banner-section');
             
-            content.innerHTML = '<div class="loader">Syncing...</div>';
+            document.documentElement.style.setProperty('--accent', CONFIG[gameKey].accent);
+            content.innerHTML = '<div class="loader">Syncing Data...</div>';
 
             try {
                 const res = await fetch(CONFIG[gameKey].api);
                 const data = await res.json();
 
-                banners.innerHTML = data.banners.map(b => `
-                    <div class="b-card">
-                        <div class="b-head">
-                            <span style="color:var(--accent)">${b.name || (gameKey === 'hsr' ? 'Warp Event' : 'Event Wish')}</span>
-                            <span style="opacity:0.6">v${b.version}</span>
-                        </div>
-                        <div class="b-icons">
-                            ${[...(b.characters||[]), ...(b.weapons||[]), ...(b.light_cones||[])].map(i => `
-                                <img src="${fixImg(i.icon)}" referrerpolicy="no-referrer" class="m-icon">
-                            `).join('')}
-                        </div>
-                    </div>
-                `).join('');
-
-                content.innerHTML = data.events.filter(e => e.image_url || e.name).map(e => {
-                    const hasRewards = e.rewards && e.rewards.length > 0;
-                    return `
-                        <div class="e-card">
-                            ${e.image_url ? `<img src="${fixImg(e.image_url)}" referrerpolicy="no-referrer" class="e-thumb">` : ''}
+                // ZZZ Mode (Array of News)
+                if (Array.isArray(data)) {
+                    bannerSection.style.display = 'none';
+                    // slice().reverse() puts the last JSON entry (newest) at the top
+                    content.innerHTML = data.slice().reverse().map(e => `
+                        <a href="${e.url}" target="_blank" class="e-card">
+                            <img src="${e.banner[0]}" referrerpolicy="no-referrer" class="e-thumb">
                             <div class="e-body">
-                                <div class="e-date">${formatTs(e.start_time)} — ${formatTs(e.end_time)}</div>
-                                <div class="e-name">${e.name}</div>
-                                <div class="e-desc">${(e.description||'').replace(/\\n/g, '<br>')}</div>
-                                ${hasRewards ? `<div class="r-row">${e.rewards.map(r => `
-                                    <div class="r-item">
-                                        <img src="${fixImg(r.icon)}" referrerpolicy="no-referrer" class="r-img">
-                                        <span class="r-amt">${r.amount > 0 ? r.amount : ''}</span>
-                                    </div>`).join('')}</div>` : ''}
+                                <div class="e-date">${formatTs(e.createdAt)}</div>
+                                <div class="e-name">${e.title}</div>
+                                <div class="e-desc">${e.description}</div>
                             </div>
-                        </div>`;
-                }).join('');
-            } catch (err) { content.innerHTML = '<div class="loader">Error.</div>'; }
+                        </a>
+                    `).join('');
+                } 
+                // Genshin / HSR Mode (Object with banners/events)
+                else {
+                    bannerSection.style.display = 'block';
+                    banners.innerHTML = (data.banners || []).map(b => `
+                        <div class="b-card">
+                            <div class="b-head">
+                                <span style="color:var(--accent)">${b.name || 'Warp Event'}</span>
+                                <span style="opacity:0.6">v${b.version}</span>
+                            </div>
+                            <div class="b-icons">
+                                ${[...(b.characters||[]), ...(b.weapons||[]), ...(b.light_cones||[])].map(i => `
+                                    <img src="${fixImg(i.icon)}" referrerpolicy="no-referrer" class="m-icon">
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('');
+
+                    content.innerHTML = (data.events || []).slice().reverse().map(e => {
+                        const hasRewards = e.rewards && e.rewards.length > 0;
+                        return `
+                            <div class="e-card">
+                                ${e.image_url ? `<img src="${fixImg(e.image_url)}" referrerpolicy="no-referrer" class="e-thumb">` : ''}
+                                <div class="e-body">
+                                    <div class="e-date">${formatTs(e.start_time)} — ${formatTs(e.end_time)}</div>
+                                    <div class="e-name">${e.name}</div>
+                                    <div class="e-desc">${(e.description||'').replace(/\\n/g, '<br>')}</div>
+                                    ${hasRewards ? `<div class="r-row">${e.rewards.map(r => `
+                                        <div class="r-item">
+                                            <img src="${fixImg(r.icon)}" referrerpolicy="no-referrer" class="r-img">
+                                            <span class="r-amt">${r.amount > 0 ? r.amount : ''}</span>
+                                        </div>`).join('')}</div>` : ''}
+                                </div>
+                            </div>`;
+                    }).join('');
+                }
+            } catch (err) { 
+                content.innerHTML = '<div class="loader">Failed to connect</div>'; 
+            }
         }
 
         document.querySelectorAll('.gc-tab-btn').forEach(btn => {
