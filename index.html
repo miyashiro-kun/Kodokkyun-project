@@ -1331,7 +1331,8 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     <div class="gc-container" id="gc-scroll-area">
     <style>
         :root {
-            --accent: #ffd369;
+            --accent: #ffd369; /* Genshin Gold */
+            --hsr-accent: #69d3ff; /* Star Rail Blue */
             --glass: rgba(255, 255, 255, 0.08);
             --border: rgba(255, 255, 255, 0.15);
         }
@@ -1344,6 +1345,39 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             -webkit-overflow-scrolling: touch;
         }
 
+        /* TAB BUTTONS */
+        .gc-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .gc-tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border);
+            background: var(--glass);
+            color: #fff;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .gc-tab-btn.active[data-game="genshin"] {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .gc-tab-btn.active[data-game="hsr"] {
+            background: var(--hsr-accent);
+            color: #000;
+            border-color: var(--hsr-accent);
+        }
+
         .gc-title {
             font-size: 1.1rem;
             font-weight: bold;
@@ -1354,20 +1388,19 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             padding-left: 10px;
         }
 
-        /* BANNERS Section */
+        /* BANNERS */
         .banner-row { display: flex; flex-direction: column; gap: 12px; padding-bottom: 10px; }
         .b-card { width: 100%; background: linear-gradient(135deg, #1a1a1a, #000); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
         .b-head { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
         .b-icons { display: flex; gap: 5px; flex-wrap: wrap; }
-        .m-icon { width: 45px; height: 45px; border-radius: 8px; background: var(--glass); border: 1px solid var(--border); }
+        .m-icon { width: 45px; height: 45px; border-radius: 8px; background: var(--glass); border: 1px solid var(--border); object-fit: cover;}
 
-        /* EVENTS Section */
+        /* EVENTS */
         .e-grid { display: flex; flex-direction: column; gap: 15px; }
-        .e-card { background: var(--glass); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; position: relative; }
+        .e-card { background: var(--glass); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; }
         .e-thumb { width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; }
-        .e-body { padding: 12px; text-align: center; /* Centering content */ }
+        .e-body { padding: 12px; text-align: center; }
         
-        /* NEW: Centered Bold Date Badge */
         .e-date {
             display: inline-block;
             background: var(--accent);
@@ -1377,13 +1410,11 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             padding: 3px 12px;
             border-radius: 20px;
             margin-bottom: 8px;
-            text-transform: uppercase;
         }
 
-        .e-name { font-weight: bold; font-size: 1rem; margin-bottom: 5px; color: #fff; }
+        .e-name { font-weight: bold; font-size: 1rem; margin-bottom: 5px; }
         .e-desc { font-size: 0.82rem; color: #ccc; line-height: 1.4; margin-bottom: 10px; text-align: left; }
 
-        /* REWARDS ROW */
         .r-row {
             display: flex;
             gap: 8px;
@@ -1391,89 +1422,123 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             padding: 8px;
             border-radius: 8px;
             overflow-x: auto;
-            justify-content: center; /* Center rewards */
+            justify-content: center;
         }
         .r-item { display: flex; flex-direction: column; align-items: center; min-width: 35px; }
         .r-img { width: 25px; height: 25px; object-fit: contain; }
         .r-amt { font-size: 0.6rem; color: var(--accent); }
 
-        .loader { text-align: center; padding: 30px; font-size: 0.8rem; color: #888; }
+        .loader { text-align: center; padding: 50px; font-size: 0.8rem; color: #888; }
     </style>
 
-    <div class="gc-title">Active Banners</div>
-    <div id="banner-list" class="banner-row"><div class="loader">Scanning Banners...</div></div>
+    <div class="gc-tabs">
+        <button class="gc-tab-btn active" data-game="genshin">Genshin</button>
+        <button class="gc-tab-btn" data-game="hsr">Star Rail</button>
+    </div>
 
-    <div class="gc-title">Teyvat Events</div>
-    <div id="event-list" class="e-grid"><div class="loader">Loading Events...</div></div>
+    <div id="calendar-content">
+        <div class="gc-title" id="banner-title">Active Banners</div>
+        <div id="banner-list" class="banner-row"></div>
+
+        <div class="gc-title" id="event-title">Current Events</div>
+        <div id="event-list" class="e-grid">
+            <div class="loader">Loading Calendar...</div>
+        </div>
+    </div>
 
     <script>
-        // Stop scroll propagation to prevent page-swipe conflict
         const scrollArea = document.getElementById('gc-scroll-area');
-        const preventSwipe = (e) => e.stopPropagation();
-        scrollArea.addEventListener('touchstart', preventSwipe, { passive: true });
-        scrollArea.addEventListener('touchmove', preventSwipe, { passive: true });
+        scrollArea.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+        scrollArea.addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
 
-        // Helper to convert Unix Timestamp to Date
+        const CONFIG = {
+            genshin: {
+                api: 'https://kodokkyun-project.vercel.app/api/gc',
+                accent: '#ffd369'
+            },
+            hsr: {
+                api: 'https://kodokkyun-project.vercel.app/api/sc',
+                accent: '#69d3ff'
+            }
+        };
+
         const formatTs = (ts) => {
             if (!ts) return "";
-            // Handle 10-digit (sec) or 13-digit (ms)
             const date = new Date(ts < 10000000000 ? ts * 1000 : ts);
             return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         };
 
-        async function fetchGC() {
-            try {
-                const res = await fetch('https://kodokkyun-project.vercel.app/api/gc');
-                const data = await res.json();
-                const fixImg = (url) => url ? url.split('/revision/')[0] : '';
+        const fixImg = (url) => url ? url.split('/revision/')[0] : '';
 
-                // Render Banners
-                document.getElementById('banner-list').innerHTML = data.banners.map(b => `
+        async function loadGame(gameKey) {
+            const content = document.getElementById('event-list');
+            const banners = document.getElementById('banner-list');
+            const root = document.documentElement;
+            
+            // Set Accent Color
+            root.style.setProperty('--accent', CONFIG[gameKey].accent);
+            
+            content.innerHTML = '<div class="loader">Syncing Data...</div>';
+            banners.innerHTML = '';
+
+            try {
+                const res = await fetch(CONFIG[gameKey].api);
+                const data = await res.json();
+
+                // Render Banners (Characters + Weapons/LightCones)
+                banners.innerHTML = data.banners.map(b => `
                     <div class="b-card">
                         <div class="b-head">
-                            <span style="color:var(--accent)">${b.name}</span>
+                            <span style="color:var(--accent)">${b.name || (gameKey === 'hsr' ? 'Warp Event' : 'Event Wish')}</span>
                             <span style="opacity:0.6">v${b.version}</span>
                         </div>
                         <div class="b-icons">
-                            ${[...(b.characters||[]), ...(b.weapons||[])].map(i => `
-                                <img src="${fixImg(i.icon)}" referrerpolicy="no-referrer" class="m-icon">
+                            ${[...(b.characters||[]), ...(b.weapons||[]), ...(b.light_cones||[])].map(i => `
+                                <img src="${fixImg(i.icon)}" referrerpolicy="no-referrer" class="m-icon" title="${i.name}">
                             `).join('')}
                         </div>
                     </div>
                 `).join('');
 
                 // Render Events
-                document.getElementById('event-list').innerHTML = data.events.filter(e => e.image_url || e.name).map(e => {
-                    
-                    const dateRange = `${formatTs(e.start_time)} — ${formatTs(e.end_time)}`;
+                content.innerHTML = data.events.filter(e => e.image_url || e.name).map(e => {
                     const hasRewards = e.rewards && e.rewards.length > 0;
-                    
-                    const rewardRowHtml = hasRewards ? `
-                        <div class="r-row">
-                            ${e.rewards.map(r => `
-                                <div class="r-item">
-                                    <img src="${fixImg(r.icon)}" referrerpolicy="no-referrer" class="r-img">
-                                    <span class="r-amt">${r.amount > 0 ? r.amount : ''}</span>
-                                </div>
-                            `).join('')}
-                        </div>` : '';
-
                     return `
                         <div class="e-card">
-                            ${e.image_url ? `<img src="${fixImg(e.image_url)}" referrerpolicy="no-referrer" class="e-thumb" onerror="this.style.display='none'">` : ''}
+                            ${e.image_url ? `<img src="${fixImg(e.image_url)}" referrerpolicy="no-referrer" class="e-thumb">` : ''}
                             <div class="e-body">
-                                <div class="e-date">${dateRange}</div>
+                                <div class="e-date">${formatTs(e.start_time)} — ${formatTs(e.end_time)}</div>
                                 <div class="e-name">${e.name}</div>
                                 <div class="e-desc">${(e.description||'').replace(/\\n/g, '<br>')}</div>
-                                ${rewardRowHtml}
+                                ${hasRewards ? `<div class="r-row">
+                                    ${e.rewards.map(r => `
+                                        <div class="r-item">
+                                            <img src="${fixImg(r.icon)}" referrerpolicy="no-referrer" class="r-img">
+                                            <span class="r-amt">${r.amount > 0 ? r.amount : ''}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>` : ''}
                             </div>
                         </div>
                     `;
                 }).join('');
 
-            } catch (err) { console.error(err); }
+            } catch (err) {
+                content.innerHTML = '<div class="loader">Error loading data.</div>';
+            }
         }
-        fetchGC();
+
+        // Tab Switch Logic
+        document.querySelectorAll('.gc-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.gc-tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                loadGame(btn.dataset.game);
+            });
+        });
+
+        // Initial Load
+        loadGame('genshin');
     </script>
 </div>
     
