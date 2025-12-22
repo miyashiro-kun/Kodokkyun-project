@@ -1320,6 +1320,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       :root {
         --sr-blue: #007bff;
         --sr-accent: #f29d38;
+        --hi3-accent: #ec4c4c; /* Honkai Impact Red */
         --sr-bg-card: rgba(255, 255, 255, 0.08);
         --sr-border: rgba(255, 255, 255, 0.15);
       }
@@ -1329,17 +1330,18 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         padding: 20px;
         width: 100%;
       }
-      
-      .extra-tilt {
+        .extra-tilt {
   display: inline-block; /* Required for transform to work */
   transform: skewX(-15deg); /* Negative degrees tilt to the right */
 }
 
+      /* Game Selector Tabs */
       .resource-tabs {
         display: flex;
-        gap: 10px;
+        gap: 8px;
         margin-top: 25px;
         justify-content: center;
+        flex-wrap: wrap;
       }
 
       /* Banner Container */
@@ -1351,11 +1353,10 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         position: relative;
         overflow: hidden;
         border-radius: 12px;
-        background: transparent;
+        background: #000;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       }
 
-      /* Slide Layers (Images and Videos) */
       .slide-layer {
         position: absolute;
         top: 0; left: 0;
@@ -1363,7 +1364,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         opacity: 0;
         transition: opacity 1s ease-in-out;
         z-index: 1;
-        object-fit: cover; /* Crucial for video scaling */
+        object-fit: cover;
         background-size: cover;
         background-position: center;
       }
@@ -1385,7 +1386,23 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       .resource-banner-content h1 { margin: 0; font-size: 20px; color: #fff; text-transform: uppercase; }
       .resource-banner-content h2 { margin: 5px 0 0; font-size: 13px; color: var(--sr-accent); font-weight: 400; border:none;}
 
-      /* Package Grid Layout */
+      /* Tilted UI Tags (Gaming Style) */
+      .type-tag { 
+        position: absolute; 
+        top: 0; right: 0; 
+        font-size: 9px; 
+        padding: 4px 12px; 
+        background: rgba(0,0,0,0.6); 
+        border-bottom-left-radius: 10px; 
+        color: #fff; 
+        text-transform: uppercase;
+        font-style: italic;
+        font-weight: bold;
+        transform: skewX(-15deg); /* Added tilt effect */
+        border-left: 2px solid var(--sr-accent);
+      }
+
+      /* Package Grid */
       .resource-section { margin-top: 30px; color: white; }
       .resource-section h2 { border-bottom: 1px solid var(--sr-border); padding-bottom: 10px; font-size: 1.1rem; }
       .package-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px;}
@@ -1394,28 +1411,28 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         background: var(--sr-bg-card);
         border: 1px solid var(--sr-border);
         border-radius: 10px;
-        padding: 15px;
+        padding: 18px 15px;
         display: flex;
         flex-direction: column;
         position: relative;
+        overflow: hidden;
       }
 
-      .type-tag { position: absolute; top: 0; right: 0; font-size: 9px; padding: 3px 8px; background: rgba(0,0,0,0.4); border-bottom-left-radius: 8px; color: #ccc; text-transform: uppercase;}
       .package-item .title { font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #fff; overflow-wrap: anywhere;}
-      .package-item .size { font-size: 11px; color: #aaa; margin-bottom: 15px; }
+      .package-item .size { font-size: 11px; color: #aaa; margin-bottom: 15px; font-style: italic; }
       
       .dl-link {
         background: var(--sr-blue);
         color: white;
         text-decoration: none;
         text-align: center;
-        padding: 8px;
+        padding: 10px;
         border-radius: 5px;
         font-weight: bold;
         font-size: 13px;
-        transition: background 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
       }
-      .dl-link:hover { background: #0056b3; }
     </style>
 
     
@@ -1428,9 +1445,10 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       </div>
     </div>
     
-    <div class="resource-tabs extra-tilt">
-      <button class="tab-btn active title-font" id="tab-sr" onclick="switchGameResource('sr')">STAR RAIL</button>
-      <button class="tab-btn title-font" id="tab-zzz" onclick="switchGameResource('zzz')">ZENLESS</button>
+    <div class="resource-tabs">
+      <button class="tab-btn active title-font extra-tilt" id="tab-sr" onclick="switchGameResource('sr')">STAR RAIL</button>
+      <button class="tab-btn title-font extra-tilt" id="tab-zzz" onclick="switchGameResource('zzz')">ZENLESS</button>
+      <button class="tab-btn title-font extra-tilt" id="tab-hi3" onclick="switchGameResource('hi3')">HONKAI IMPACT 3</button>
     </div>
 
     <div class="resource-section">
@@ -1450,6 +1468,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             api: "https://kodokkyun-project.vercel.app/api/starrail",
             title: "Star Rail Patch",
             subtitle: "Honkai: Star Rail Resource Center",
+            accent: "#f29d38",
             links: [
               'https://fastcdn.hoyoverse.com/content-v2/hkrpg/161288/62ca11c91b7f48c53a922989c8602b3c_5830406567434764573.png',
               'https://fastcdn.hoyoverse.com/content-v2/hkrpg/123957/8f37dbc91598d1eebdadca8e9d22a6f6_6237269238409818844.png',
@@ -1460,11 +1479,21 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             api: "https://kodokkyun-project.vercel.app/api/zzz",
             title: "Zenless Zone Zero Patch",
             subtitle: "ZZZ Version Resource Center",
+            accent: "#f29d38",
             links: [
-                'https://cdn.jumpshare.com/preview/BjQYVgSSMu28iRTWj7vldIQJYv-6y6cHehIHgPGK5JeeHRcbh0cUXSIZqCfEhl0BmVg5ELx8-d3CgM8QhTXrjTVBFUAf4UMMXVi5NfH5FbPOG1eBG09Teuy2uoBDpUZ08SOsxalb0uFyMK5KS-PkbW6yjbN-I2pg_cnoHs_AmgI.mp4',
               'https://i.ibb.co.com/WqWHxZx/Zenless-Zone-Zero-Ye-Shunguang-550x309-upscayl-2x-digital-art-4x.png',
-              'https://i.ibb.co.com/n8ZXy10x/aa1scoxa-upscayl-2x-digital-art-4x.png'
-              
+              'https://i.ibb.co.com/n8ZXy10x/aa1scoxa-upscayl-2x-digital-art-4x.png',
+              'https://cdn.jumpshare.com/preview/BjQYVgSSMu28iRTWj7vldIQJYv-6y6cHehIHgPGK5JeeHRcbh0cUXSIZqCfEhl0BmVg5ELx8-d3CgM8QhTXrjTVBFUAf4UMMXVi5NfH5FbPOG1eBG09Teuy2uoBDpUZ08SOsxalb0uFyMK5KS-PkbW6yjbN-I2pg_cnoHs_AmgI.mp4'
+            ]
+          },
+          hi3: {
+            api: "https://kodokkyun-project.vercel.app/api/honkai",
+            title: "Honkai Impact 3rd Patch",
+            subtitle: "HI3 Version Resource Center",
+            accent: "#ec4c4c",
+            links: [
+              'https://fastcdn.hoyoverse.com/content-v2/bh3/160540/89bbb7479502597b0a25d9d39a3a3109_3262445305204304580.jpg',
+              'https://i.ibb.co.com/MkdMDXqZ/599945099-1178220154525489-8004690127920167076-n.jpg'
             ]
           }
         };
@@ -1474,13 +1503,18 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         const slideContainer = document.getElementById('slide-container');
 
         window.switchGameResource = function(gameKey) {
-          // Tab UI Update
-          document.getElementById('tab-sr').classList.toggle('active', gameKey === 'sr');
-          document.getElementById('tab-zzz').classList.toggle('active', gameKey === 'zzz');
+          // Update Tab Active State
+          document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+          document.getElementById(`tab-${gameKey}`).classList.add('active');
           
           const cfg = CONFIG[gameKey];
           document.getElementById('res-title').textContent = cfg.title;
-          document.getElementById('res-subtitle').textContent = cfg.subtitle;
+          const sub = document.getElementById('res-subtitle');
+          sub.textContent = cfg.subtitle;
+          sub.style.color = cfg.accent;
+
+          // CSS Variable for accented tag borders
+          document.documentElement.style.setProperty('--sr-accent', cfg.accent);
 
           initSlideshow(cfg.links);
           renderResources(cfg.api);
@@ -1494,75 +1528,62 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
           urls.forEach((url, i) => {
             const isVideo = url.toLowerCase().split('?')[0].endsWith('.mp4');
             let el;
-
             if (isVideo) {
               el = document.createElement('video');
-              el.src = url;
-              el.muted = true;
-              el.loop = true;
-              el.playsInline = true;
-              el.autoplay = true;
+              el.src = url; el.muted = true; el.loop = true; el.playsInline = true; el.autoplay = true;
             } else {
               el = document.createElement('div');
               el.style.backgroundImage = `url('${url}')`;
             }
-
             el.className = 'slide-layer' + (i === 0 ? ' active' : '');
             slideContainer.appendChild(el);
           });
 
-          // Change slide every 5 seconds
-          slideTimer = setInterval(() => {
-            const slides = slideContainer.querySelectorAll('.slide-layer');
-            if (slides.length <= 1) return;
-
-            slides[currentIdx].classList.remove('active');
-            currentIdx = (currentIdx + 1) % slides.length;
-            slides[currentIdx].classList.add('active');
-            
-            if (slides[currentIdx].tagName === 'VIDEO') {
-                slides[currentIdx].play().catch(() => {});
-            }
-          }, 15000);
+          if (urls.length > 1) {
+            slideTimer = setInterval(() => {
+              const slides = slideContainer.querySelectorAll('.slide-layer');
+              slides[currentIdx].classList.remove('active');
+              currentIdx = (currentIdx + 1) % slides.length;
+              slides[currentIdx].classList.add('active');
+              if (slides[currentIdx].tagName === 'VIDEO') slides[currentIdx].play().catch(()=>{});
+            }, 5000);
+          }
         }
 
         async function renderResources(apiUrl) {
-            const mList = document.getElementById('main-list');
-            const pList = document.getElementById('patch-list');
-            mList.innerHTML = '<p>Accessing Database...</p>';
-            pList.innerHTML = '';
+          const mList = document.getElementById('main-list');
+          const pList = document.getElementById('patch-list');
+          mList.innerHTML = '<p>Retrieving manifests...</p>';
+          pList.innerHTML = '';
 
-            try {
-                const res = await fetch(apiUrl);
-                const json = await res.json();
-                const data = json.data.game_packages[0];
+          try {
+            const res = await fetch(apiUrl);
+            const json = await res.json();
+            const data = json.data.game_packages[0];
 
-                mList.innerHTML = '';
-                data.main.major.game_pkgs.forEach(p => createItem(mList, p, 'Game'));
-                data.main.major.audio_pkgs.forEach(p => createItem(mList, p, 'Audio'));
-                
-                data.main.patches.forEach(pSet => {
-                    pSet.game_pkgs.forEach(p => createItem(pList, p, 'Patch'));
-                    pSet.audio_pkgs.forEach(p => createItem(pList, p, 'Audio Patch'));
-                });
-            } catch (err) { 
-              mList.innerHTML = '<p>Error loading resources.</p>'; 
-            }
+            mList.innerHTML = '';
+            data.main.major.game_pkgs.forEach(p => createItem(mList, p, 'Game'));
+            data.main.major.audio_pkgs.forEach(p => createItem(mList, p, 'Audio'));
+            
+            data.main.patches.forEach(pSet => {
+              pSet.game_pkgs.forEach(p => createItem(pList, p, 'Patch'));
+              pSet.audio_pkgs.forEach(p => createItem(pList, p, 'Audio Patch'));
+            });
+          } catch (e) { mList.innerHTML = '<p>Error loading files.</p>'; }
         }
 
         function createItem(container, pkg, type) {
-            const div = document.createElement('div');
-            div.className = 'package-item';
-            div.innerHTML = `
-                <div class="type-tag">${type}</div>
-                <div class="title">${pkg.url.split('/').pop()}</div>
-                <div class="size">${(Number(pkg.size)/(1024**3)).toFixed(2)} GB</div>
-                <a href="${pkg.url}" class="dl-link" target="_blank">DOWNLOAD</a>
-            `;
-            container.appendChild(div);
+          const div = document.createElement('div');
+          div.className = 'package-item';
+          div.innerHTML = `
+            <div class="type-tag">${type}</div>
+            <div class="title">${pkg.url.split('/').pop()}</div>
+            <div class="size">${(Number(pkg.size)/(1024**3)).toFixed(2)} GB</div>
+            <a href="${pkg.url}" class="dl-link" target="_blank">DOWNLOAD</a>
+          `;
+          container.appendChild(div);
         }
 
-        // Start with Star Rail
         switchGameResource('sr');
       })();
     </script>
