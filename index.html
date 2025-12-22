@@ -881,10 +881,14 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     
 }
 
-.page5{
-background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_mian_pc-sea.3870807c..jpeg) center / cover no-repeat;
-            background-color: #000; 
-    
+.page5 {
+    /* Existing styles... */
+    background: url('https://upload-os-bbs.hoyolab.com/upload/2025/05/02/251990923/634be8c6e6e4c8236b96242440c5db62_7278220409140988355.jpg') center / cover no-repeat;
+    transition: background-image 0.5s ease-in-out;
+    background-size: cover;
+    background-position: center;
+      background-color: rgba(0, 0, 0, 0.7); /* The color to blend in */
+    background-blend-mode: darken;
 }
 </style>
 </head>
@@ -1442,6 +1446,35 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     </div>
 
     <script>
+        // Background mapping for Page 5 (similar to Page 2 logic)
+const page5Backgrounds = {
+    'genshin': 'https://upload-os-bbs.hoyolab.com/upload/2025/05/02/251990923/634be8c6e6e4c8236b96242440c5db62_7278220409140988355.jpg', // Replace with Genshin bg
+    'hsr': 'https://upload-os-bbs.hoyolab.com/upload/2024/12/18/196713205/b0d1874e768847bad895987e5908764c_7189509628374481979.webp',     // Your current HSR bg
+    'zzz': 'https://media.zenfs.com/en/gamesradar_237/1f2c5004c4f5c1d32153bd59c97ff9aa',                                                               // Replace with ZZZ bg
+    'hi3': 'https://fastcdn.hoyoverse.com/content-v2/bh3/157570/421fe0473cd75867a9947e1a3e5497f3_7164544037939794521.jpg'                                                                // Replace with HI3 bg
+};
+
+// Select all buttons on Page 5
+const gcTabBtns = document.querySelectorAll('.gc-tab-btn');
+const page5 = document.querySelector('.page5');
+
+gcTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const game = btn.getAttribute('data-game');
+        
+        // 1. Remove active class from all Page 5 buttons
+        gcTabBtns.forEach(b => b.classList.remove('active'));
+        
+        // 2. Add active class to clicked button
+        btn.classList.add('active');
+        
+        // 3. Change Page 5 background using the const mapping
+        if (page5Backgrounds[game]) {
+            page5.style.backgroundImage = `url('${page5Backgrounds[game]}')`;
+        }
+    });
+});
+        
         const CONFIG = {
             genshin: { api: 'https://kodokkyun-project.vercel.app/api/gc', accent: '#ffd369' },
             hsr: { api: 'https://kodokkyun-project.vercel.app/api/sc', accent: '#69d3ff' },
@@ -1531,7 +1564,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
                 loadGame(btn.dataset.game);
             });
         });
-
+        document.querySelector('.gc-tab-btn[data-game="genshin"]').click();
         loadGame('genshin');
     </script>
 </div>
@@ -2253,7 +2286,7 @@ fetchCodes();
         let stars = [];
         
         let currentSpeed = 0.001;
-        let targetSpeed = 0.01;
+        let targetSpeed = 0.001;
         const baseSpeed = 0.001;
         const boostSpeed = 0.12;
 
