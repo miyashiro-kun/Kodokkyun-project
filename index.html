@@ -1310,367 +1310,291 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   </div>
   
 <div class="page page4">
-  <div id="starrail-downloader">
+  <div id="game-downloader-container">
     <style>
-    :root {
-      --sr-blue: #007bff;
-      --sr-accent: #f29d38; /* Honkai Star Rail Orange */
-      --sr-bg-card: rgba(255, 255, 255, 0.08);
-      --sr-border: rgba(255, 255, 255, 0.15);
-    }
-      #starrail-downloader {
+      :root {
+        --sr-blue: #007bff;
+        --sr-accent: #f29d38;
+        --sr-bg-card: rgba(255, 255, 255, 0.08);
+        --sr-border: rgba(255, 255, 255, 0.15);
+      }
+
+      #game-downloader-container {
         font-family: Arial, sans-serif;
         max-width: 100%;
         margin: 20px auto;
         padding: 20px;
-        --joki-bg: #0c101d;
+        width: 100%;
       }
 
-      .section {
-        margin-bottom: 30px;
-        color: white;
-        gap: 40px;
+      /* Game Selector Tabs */
+      .resource-tabs {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+        justify-content: center;
       }
 
-      .section h2 {
-        border-bottom: 2px solid #ddd;
-        padding-bottom: 5px;
-        margin-bottom: 15px;
+      /* Banner Styling with Slideshow support */
+      .resource-banner {
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        max-width: 1000px;
+        aspect-ratio: 1920 / 830;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        background-color: transparent;
       }
 
-      /* 1. THE BANNER CONTAINER */
-      .con {
-    /* 1. Center the banner horizontally */
-    margin-left: auto;
-    margin-right: auto;
-    
-    /* 2. Control the size in landscape */
-    /* On desktop/landscape, 70% looks clean. On mobile portrait, it will be 95% */
-    width: 100%; 
-    max-width: 1000px; /* Prevents it from getting too wide on monitors */
-    
-    /* 3. Maintain the Star Rail banner shape */
-    aspect-ratio: 1920 / 830; 
-    height: auto; 
-
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    
-    /* 4. Pure image look (as requested earlier) */
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    border: none;
-    
-    /* 5. Keep this for your swipe navigation */
-    pointer-events: none; 
-}
-
-      /* 2. THE SLIDESHOW LAYERS */
       .slide-layer {
         position: absolute;
         top: 0; left: 0;
         width: 100%; height: 100%;
         background-size: cover;
         background-position: center;
-        background-repeat: no-repeat;
         transition: opacity 1.5s ease-in-out;
         z-index: 1;
-        pointer-events: none;
       }
 
-      /* 3. THE TEXT CONTENT */
-      .con-content {
+      .resource-banner-content {
         position: relative;
         z-index: 10;
         padding: 20px;
-        width: 100%;
-        /* Ensure the text box doesn't block the swipe logic */
-        pointer-events: none; 
+        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        pointer-events: none;
       }
 
-      .con h1 { 
-        margin: 0; 
-        font-size: clamp(16px, 4.5vw, 22px); 
-        text-transform: uppercase; 
-        color: #fff; 
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      .resource-banner-content h1 {
+        margin: 0;
+        font-size: clamp(16px, 4.5vw, 22px);
+        text-transform: uppercase;
+        color: #fff;
       }
 
-      .con h2 { 
-        margin: 5px 0 0; 
-        font-size: clamp(10px, 2.5vw, 14px); 
-        color: #f2c94c; 
-        font-weight: 400; 
-        text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+      .resource-banner-content h2 {
+        margin: 5px 0 0;
+        font-size: clamp(10px, 2.5vw, 14px);
+        color: var(--sr-accent);
+        font-weight: 400;
         border: none;
-        padding-bottom: 0;
       }
 
-      /* 4. PACKAGE LIST STYLING (KEEPING YOUR BLUR) */
+      /* Package Grid Styling */
+      .resource-section {
+        margin-top: 30px;
+        color: white;
+      }
+
+      .resource-section h2 {
+        border-bottom: 2px solid var(--sr-border);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+      }
+
       .package-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 15px;
-    }
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 15px;
+      }
 
-    .package {
-      background: var(--sr-bg-card);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--sr-border);
-      border-radius: 12px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-
-    }
-
-    .package:hover {
-      background: rgba(255, 255, 255, 0.12);
-      transform: translateY(-3px);
-      border-color: var(--sr-accent);
-    }
-
-    .package-info {
-      margin-bottom: 15px;
-    }
-
-    .package-info .title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #e0e0e0;
-      word-break: break-all;
-      margin-bottom: 8px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      line-height: 1.4;
-    }
-
-    .package-info .size {
-      font-size: 12px;
-      background: rgba(0,0,0,0.3);
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      color: #aaa;
-    }
-
-    /* Download Button Redesign */
-    .package a {
-      text-decoration: none;
-      background: var(--sr-blue);
-      color: white;
-      text-align: center;
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: bold;
-      transition: 0.2s;
-      display: block;
-      margin-top: auto;
-    }
-
-    .package a:hover {
-      background: #00b4ff;
-      box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
-    }
-
-    /* Tag for Audio vs Game */
-    .type-tag {
-      position: absolute;
-      top: 0; right: 0;
-      font-size: 10px;
-      padding: 3px 10px;
-      background: var(--sr-border);
-      border-bottom-left-radius: 8px;
-      text-transform: uppercase;
-      color: #ddd;
-    }
-      .section2 {
-    display: flex;
-    flex-direction: row; /* Horizontal layout */
-    align-items: center; /* Center items vertically */
-    justify-content: space-between;
-    width: 95%; /* Adjust width of the whole section */
-    margin: 20px auto; /* Centers the whole section on the page */
-    gap: 15px; /* Space between banner and buttons */
-}
-.vertical-button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    /* Change 'stretch' to 'flex-start' or 'center' 
-       so it doesn't force buttons to fill the whole space */
-    align-items: center; 
-}
-
-/* Button Styling */
-.patch-btn {
-    flex: 1;   
-    width: 100%;       /* Keeps buttons wide */
-    height: 260px;/* Buttons grow to fill vertical space */
-    background: rgba(0, 123, 255, 0.8);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 13px;
-    transition: 0.3s;
-}
-
-.patch-btn:hover {
-    background: #0056b3;
-}
-
-/* Mobile Fix: Stack them vertically when the screen is too narrow */
-@media (max-width: 600px) {
-    .package-grid { grid-template-columns: 1fr; }
-    .section2 {
+      .package-item {
+        background: var(--sr-bg-card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--sr-border);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
         flex-direction: column;
-    }
-    .con {
-        width: 95%;
-    }
-}
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .package-item:hover {
+        transform: translateY(-3px);
+        border-color: var(--sr-accent);
+      }
+
+      .package-item .type-tag {
+        position: absolute;
+        top: 0; right: 0;
+        font-size: 10px;
+        padding: 4px 10px;
+        background: rgba(0,0,0,0.3);
+        border-bottom-left-radius: 8px;
+        text-transform: uppercase;
+      }
+
+      .package-item .title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #e0e0e0;
+        margin-bottom: 8px;
+        word-break: break-all;
+      }
+
+      .package-item .size {
+        font-size: 12px;
+        color: #aaa;
+        background: rgba(0,0,0,0.2);
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        display: inline-block;
+      }
+
+      .dl-link {
+        text-decoration: none;
+        background: var(--sr-blue);
+        color: white;
+        text-align: center;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: auto;
+      }
+
+      @media (max-width: 600px) {
+        .package-grid { grid-template-columns: 1fr; }
+      }
     </style>
 
-    <div class="">
-      <div class="section2">  
-    <div class="con" id="slideshow-container">
-        <div class="con-content">
-            <h1>Manual Update Patch</h1>
-            <h2>Star Rail Version Resource Center</h2>
-        </div>
+    
+
+    <div class="resource-banner" id="res-banner">
+      <div class="resource-banner-content">
+        <h1 id="res-title">Manual Update Patch</h1>
+        <h2 id="res-subtitle">Star Rail Version Resource Center</h2>
+      </div>
+    </div>
+    
+    <div class="resource-tabs">
+      <button class="tab-btn active title-font" id="tab-sr" onclick="switchGameResource('sr')">STAR RAIL</button>
+      <button class="tab-btn title-font" id="tab-zzz" onclick="switchGameResource('zzz')">ZENLESS</button>
     </div>
 
-
-</div>
-      
-      
+    <div class="resource-section">
+      <h2>Main Full Packages</h2>
+      <div id="main-list" class="package-grid"></div>
     </div>
 
-    <div class="section">
-    <h2>Main Full Packages</h2>
-    <div id="main-packages" class="package-grid"></div>
-  </div>
-
-  <div class="section">
-    <h2>Update Patches</h2>
-    <div id="patch-packages" class="package-grid"></div>
-  </div>
+    <div class="resource-section">
+      <h2>Update Patches</h2>
+      <div id="patch-list" class="package-grid"></div>
+    </div>
 
     <script>
       (function() {
-        // 1. Image Data
-        const UP_IMAGES = {
-          G1: 'https://fastcdn.hoyoverse.com/content-v2/hkrpg/161288/62ca11c91b7f48c53a922989c8602b3c_5830406567434764573.png',
-          G2: 'https://fastcdn.hoyoverse.com/content-v2/hkrpg/123957/8f37dbc91598d1eebdadca8e9d22a6f6_6237269238409818844.png',
-          G3: 'https://fastcdn.hoyoverse.com/content-v2/hkrpg/125610/919a9d47f033fde37dd6aae36e77aa72_8633682211537180049.png'
+        const CONFIG = {
+          sr: {
+            api: "https://kodokkyun-project.vercel.app/api/starrail",
+            title: "Star Rail Patch",
+            subtitle: "Honkai: Star Rail Resource Center",
+            images: [
+              'https://fastcdn.hoyoverse.com/content-v2/hkrpg/161288/62ca11c91b7f48c53a922989c8602b3c_5830406567434764573.png',
+              'https://fastcdn.hoyoverse.com/content-v2/hkrpg/123957/8f37dbc91598d1eebdadca8e9d22a6f6_6237269238409818844.png',
+              'https://fastcdn.hoyoverse.com/content-v2/hkrpg/125610/919a9d47f033fde37dd6aae36e77aa72_8633682211537180049.png'
+            ]
+          },
+          zzz: {
+            api: "https://kodokkyun-project.vercel.app/api/zzz",
+            title: "Zenless Zone Zero Patch",
+            subtitle: "ZZZ Version Resource Center",
+            images: [
+              'https://fastcdn.hoyoverse.com/content-v2/nap/160762/173d01cbeacb3a3d5c9585fa6107918d_217473232024965946.png',
+              'https://fastcdn.hoyoverse.com/content-v2/nap/160758/8b90f4ec335bba4b9322cc56acb0dd53_6349089187938925913.png'
+            ]
+          }
         };
 
-        // 2. Slideshow Setup
-        function initSlideshow() {
-          const container = document.getElementById('slideshow-container');
-          if (!container) return;
+        let slideInterval = null;
+        const banner = document.getElementById('res-banner');
+        const resTitle = document.getElementById('res-title');
+        const resSub = document.getElementById('res-subtitle');
+        const mainList = document.getElementById('main-list');
+        const patchList = document.getElementById('patch-list');
 
-          const urls = Object.values(UP_IMAGES);
+        window.switchGameResource = function(gameKey) {
+          // Update Tabs UI
+          document.getElementById('tab-sr').classList.toggle('active', gameKey === 'sr');
+          document.getElementById('tab-zzz').classList.toggle('active', gameKey === 'zzz');
+
+          const cfg = CONFIG[gameKey];
+          resTitle.textContent = cfg.title;
+          resSub.textContent = cfg.subtitle;
+
+          startSlideshow(cfg.images);
+          renderResources(cfg.api);
+        };
+
+        function startSlideshow(images) {
+          clearInterval(slideInterval);
+          // Remove old layers
+          banner.querySelectorAll('.slide-layer').forEach(l => l.remove());
+
           let idx = 0;
-
           const l1 = document.createElement('div');
           const l2 = document.createElement('div');
           l1.className = 'slide-layer';
           l2.className = 'slide-layer';
           l2.style.opacity = '0';
-          l1.style.backgroundImage = `url('${urls[0]}')`;
+          l1.style.backgroundImage = `url('${images[0]}')`;
           
-          container.prepend(l2);
-          container.prepend(l1);
+          banner.prepend(l2);
+          banner.prepend(l1);
 
           let active = l1;
           let inactive = l2;
 
-          setInterval(() => {
-            idx = (idx + 1) % urls.length;
-            inactive.style.backgroundImage = `url('${urls[idx]}')`;
+          slideInterval = setInterval(() => {
+            idx = (idx + 1) % images.length;
+            inactive.style.backgroundImage = `url('${images[idx]}')`;
             inactive.style.opacity = '1';
             active.style.opacity = '0';
             [active, inactive] = [inactive, active];
           }, 5000);
         }
 
-        // 3. API Logic
-        const API_URL = "https://kodokkyun-project.vercel.app/api/starrail";
-        
-        function getFileName(url) {
-      return url.split("/").pop();
-    }
+        async function renderResources(apiUrl) {
+          mainList.innerHTML = '<p class="loading">Loading...</p>';
+          patchList.innerHTML = '';
 
-    function bytesToGB(bytes) {
-      return (Number(bytes) / 1024 / 1024 / 1024).toFixed(2);
-    }
+          try {
+            const res = await fetch(apiUrl);
+            const json = await res.json();
+            const data = json.data.game_packages[0];
 
-    function createPackage(container, pkg, type) {
-      const div = document.createElement("div");
-      div.className = "package";
+            mainList.innerHTML = '';
+            data.main.major.game_pkgs.forEach(p => createItem(mainList, p, 'Game'));
+            data.main.major.audio_pkgs.forEach(p => createItem(mainList, p, 'Audio'));
 
-      const tag = document.createElement("div");
-      tag.className = "type-tag";
-      tag.textContent = type;
-      
-      const info = document.createElement("div");
-      info.className = "package-info";
+            data.main.patches.forEach(patch => {
+              patch.game_pkgs.forEach(p => createItem(patchList, p, 'Patch'));
+              patch.audio_pkgs.forEach(p => createItem(patchList, p, 'Audio Patch'));
+            });
+          } catch (e) { mainList.innerHTML = '<p>Error.</p>'; }
+        }
 
-      const title = document.createElement("div");
-      title.className = "title";
-      title.textContent = getFileName(pkg.url);
+        function createItem(container, pkg, type) {
+          const div = document.createElement('div');
+          div.className = 'package-item';
+          div.innerHTML = `
+            <div class="type-tag">${type}</div>
+            <div class="title">${pkg.url.split('/').pop()}</div>
+            <div class="size">${(Number(pkg.size)/(1024**3)).toFixed(2)} GB</div>
+            <a href="${pkg.url}" class="dl-link" target="_blank">DOWNLOAD</a>
+          `;
+          container.appendChild(div);
+        }
 
-      const size = document.createElement("div");
-      size.className = "size";
-      size.textContent = bytesToGB(pkg.size) + " GB";
-
-      info.appendChild(title);
-      info.appendChild(size);
-
-      const button = document.createElement("a");
-      button.href = pkg.url;
-      button.textContent = "DOWNLOAD FILE";
-      button.target = "_blank";
-
-      div.appendChild(tag);
-      div.appendChild(info);
-      div.appendChild(button);
-      container.appendChild(div);
-    }
-
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(json => {
-        const data = json.data.game_packages[0];
-        const mainContainer = document.getElementById("main-packages");
-        const patchContainer = document.getElementById("patch-packages");
-
-        // MAIN PACKAGES
-        const main = data.main.major;
-        main.game_pkgs.forEach(pkg => createPackage(mainContainer, pkg, "Game"));
-        main.audio_pkgs.forEach(pkg => createPackage(mainContainer, pkg, "Audio"));
-
-        // PATCHES
-        data.main.patches.forEach(patch => {
-          patch.game_pkgs.forEach(pkg => createPackage(patchContainer, pkg, "Patch"));
-          patch.audio_pkgs.forEach(pkg => createPackage(patchContainer, pkg, "Audio Patch"));
-        });
-      })
-      .catch(err => console.error("Error loading resources:", err));
-
-        initSlideshow();
+        switchGameResource('sr');
       })();
     </script>
   </div>
