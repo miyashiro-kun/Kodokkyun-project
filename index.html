@@ -1328,11 +1328,11 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   
 <div class="page page5">
     
-    <div class="gc-container" id="gc-scroll-area">
+    <div class="gc-container">
     <style>
         :root {
-            --accent: #ffd369; /* Genshin Gold */
-            --hsr-accent: #69d3ff; /* Star Rail Blue */
+            --accent: #ffd369;
+            --hsr-accent: #69d3ff;
             --glass: rgba(255, 255, 255, 0.08);
             --border: rgba(255, 255, 255, 0.15);
         }
@@ -1341,8 +1341,8 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             padding: 10px;
             color: #fff;
             max-width: 100%;
-            touch-action: pan-y !important; 
-            -webkit-overflow-scrolling: touch;
+            /* Reverted: Allows both vertical scroll and horizontal swipe */
+            touch-action: pan-x pan-y !important; 
         }
 
         /* TAB BUTTONS */
@@ -1363,7 +1363,6 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             font-size: 0.85rem;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s;
         }
 
         .gc-tab-btn.active[data-game="genshin"] {
@@ -1388,14 +1387,12 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             padding-left: 10px;
         }
 
-        /* BANNERS */
         .banner-row { display: flex; flex-direction: column; gap: 12px; padding-bottom: 10px; }
         .b-card { width: 100%; background: linear-gradient(135deg, #1a1a1a, #000); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
         .b-head { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
         .b-icons { display: flex; gap: 5px; flex-wrap: wrap; }
         .m-icon { width: 45px; height: 45px; border-radius: 8px; background: var(--glass); border: 1px solid var(--border); object-fit: cover;}
 
-        /* EVENTS */
         .e-grid { display: flex; flex-direction: column; gap: 15px; }
         .e-card { background: var(--glass); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; }
         .e-thumb { width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; }
@@ -1437,29 +1434,18 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     </div>
 
     <div id="calendar-content">
-        <div class="gc-title" id="banner-title">Active Banners</div>
+        <div class="gc-title">Active Banners</div>
         <div id="banner-list" class="banner-row"></div>
-
-        <div class="gc-title" id="event-title">Current Events</div>
+        <div class="gc-title">Current Events</div>
         <div id="event-list" class="e-grid">
-            <div class="loader">Loading Calendar...</div>
+            <div class="loader">Loading...</div>
         </div>
     </div>
 
     <script>
-        const scrollArea = document.getElementById('gc-scroll-area');
-        scrollArea.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
-        scrollArea.addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
-
         const CONFIG = {
-            genshin: {
-                api: 'https://kodokkyun-project.vercel.app/api/gc',
-                accent: '#ffd369'
-            },
-            hsr: {
-                api: 'https://kodokkyun-project.vercel.app/api/sc',
-                accent: '#69d3ff'
-            }
+            genshin: { api: 'https://kodokkyun-project.vercel.app/api/gc', accent: '#ffd369' },
+            hsr: { api: 'https://kodokkyun-project.vercel.app/api/sc', accent: '#69d3ff' }
         };
 
         const formatTs = (ts) => {
@@ -1473,19 +1459,14 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         async function loadGame(gameKey) {
             const content = document.getElementById('event-list');
             const banners = document.getElementById('banner-list');
-            const root = document.documentElement;
+            document.documentElement.style.setProperty('--accent', CONFIG[gameKey].accent);
             
-            // Set Accent Color
-            root.style.setProperty('--accent', CONFIG[gameKey].accent);
-            
-            content.innerHTML = '<div class="loader">Syncing Data...</div>';
-            banners.innerHTML = '';
+            content.innerHTML = '<div class="loader">Syncing...</div>';
 
             try {
                 const res = await fetch(CONFIG[gameKey].api);
                 const data = await res.json();
 
-                // Render Banners (Characters + Weapons/LightCones)
                 banners.innerHTML = data.banners.map(b => `
                     <div class="b-card">
                         <div class="b-head">
@@ -1494,13 +1475,12 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
                         </div>
                         <div class="b-icons">
                             ${[...(b.characters||[]), ...(b.weapons||[]), ...(b.light_cones||[])].map(i => `
-                                <img src="${fixImg(i.icon)}" referrerpolicy="no-referrer" class="m-icon" title="${i.name}">
+                                <img src="${fixImg(i.icon)}" referrerpolicy="no-referrer" class="m-icon">
                             `).join('')}
                         </div>
                     </div>
                 `).join('');
 
-                // Render Events
                 content.innerHTML = data.events.filter(e => e.image_url || e.name).map(e => {
                     const hasRewards = e.rewards && e.rewards.length > 0;
                     return `
@@ -1510,25 +1490,17 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
                                 <div class="e-date">${formatTs(e.start_time)} — ${formatTs(e.end_time)}</div>
                                 <div class="e-name">${e.name}</div>
                                 <div class="e-desc">${(e.description||'').replace(/\\n/g, '<br>')}</div>
-                                ${hasRewards ? `<div class="r-row">
-                                    ${e.rewards.map(r => `
-                                        <div class="r-item">
-                                            <img src="${fixImg(r.icon)}" referrerpolicy="no-referrer" class="r-img">
-                                            <span class="r-amt">${r.amount > 0 ? r.amount : ''}</span>
-                                        </div>
-                                    `).join('')}
-                                </div>` : ''}
+                                ${hasRewards ? `<div class="r-row">${e.rewards.map(r => `
+                                    <div class="r-item">
+                                        <img src="${fixImg(r.icon)}" referrerpolicy="no-referrer" class="r-img">
+                                        <span class="r-amt">${r.amount > 0 ? r.amount : ''}</span>
+                                    </div>`).join('')}</div>` : ''}
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 }).join('');
-
-            } catch (err) {
-                content.innerHTML = '<div class="loader">Error loading data.</div>';
-            }
+            } catch (err) { content.innerHTML = '<div class="loader">Error.</div>'; }
         }
 
-        // Tab Switch Logic
         document.querySelectorAll('.gc-tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.gc-tab-btn').forEach(b => b.classList.remove('active'));
@@ -1537,7 +1509,6 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             });
         });
 
-        // Initial Load
         loadGame('genshin');
     </script>
 </div>
