@@ -1310,228 +1310,289 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   </div>
   
 <div class="page page4">
+  <div id="starrail-downloader">
+    <style>
+      #starrail-downloader {
+        font-family: Arial, sans-serif;
+        max-width: 100%;
+        margin: 20px auto;
+        padding: 20px;
+        --joki-bg: #0c101d;
+      }
 
-<div id="starrail-downloader">
-  <style>
-    :root {
-      --sr-blue: #007bff;
-      --sr-accent: #f29d38; /* Honkai Star Rail Orange */
-      --sr-bg-card: rgba(255, 255, 255, 0.08);
-      --sr-border: rgba(255, 255, 255, 0.15);
-    }
+      .section {
+        margin-bottom: 30px;
+        color: white;
+      }
 
-    #starrail-downloader {
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      max-width: 1000px;
-      margin: 20px auto;
-      padding: 15px;
-      color: white;
-    }
+      .section h2 {
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+      }
 
-    /* Banner Redesign */
-    .con {
-      background: linear-gradient(45deg, rgba(12, 16, 29, 0.9), rgba(12, 16, 29, 0.4)), 
-                  url('https://fastcdn.hoyoverse.com/content-v2/hkrpg/161539/f40835cbd720d841de83551695162970_9071788954763536383.png') center/cover;
-      height: 180px;
-      border-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 25px;
-      border: 1px solid var(--sr-border);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      margin-bottom: 30px;
-    }
-
-    .con h1 { margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
-    .con h2 { margin: 5px 0 0; font-size: 14px; color: var(--sr-accent); font-weight: 400; border: none; padding: 0; }
-
-    /* Section Layout */
-    .section { margin-bottom: 40px; }
-    .section h2 { 
-      font-size: 18px; 
-      margin-bottom: 20px; 
-      display: flex; 
-      align-items: center; 
-      gap: 10px;
-      border-bottom: 1px solid var(--sr-border);
-      padding-bottom: 10px;
-    }
-    .section h2::before { content: ''; width: 4px; height: 18px; background: var(--sr-accent); border-radius: 2px; }
-
-    /* Package Grid */
-    .package-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 15px;
-    }
-
-    .package {
-      background: var(--sr-bg-card);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--sr-border);
-      border-radius: 12px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .package:hover {
-      background: rgba(255, 255, 255, 0.12);
-      transform: translateY(-3px);
-      border-color: var(--sr-accent);
-    }
-
-    .package-info {
-      margin-bottom: 15px;
-    }
-
-    .package-info .title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #e0e0e0;
-      word-break: break-all;
-      margin-bottom: 8px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      line-height: 1.4;
-    }
-
-    .package-info .size {
-      font-size: 12px;
-      background: rgba(0,0,0,0.3);
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      color: #aaa;
-    }
-
-    /* Download Button Redesign */
-    .package a {
-      text-decoration: none;
-      background: var(--sr-blue);
-      color: white;
-      text-align: center;
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: bold;
-      transition: 0.2s;
-      display: block;
-      margin-top: auto;
-    }
-
-    .package a:hover {
-      background: #00b4ff;
-      box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
-    }
-
-    /* Tag for Audio vs Game */
-    .type-tag {
-      position: absolute;
-      top: 0; right: 0;
-      font-size: 10px;
-      padding: 3px 10px;
-      background: var(--sr-border);
-      border-bottom-left-radius: 8px;
-      text-transform: uppercase;
-      color: #ddd;
-    }
-
-    @media (max-width: 600px) {
-      .package-grid { grid-template-columns: 1fr; }
-      .con { height: 140px; padding: 15px; }
-      .con h1 { font-size: 18px; }
-    }
-  </style>
-
-  <div class="con">
-    <h1>Manual Update Patch</h1>
-    <h2>Honkai: Star Rail Resource Center</h2>
-  </div>
-
-  <div class="section">
-    <h2>Main Full Packages</h2>
-    <div id="main-packages" class="package-grid"></div>
-  </div>
-
-  <div class="section">
-    <h2>Update Patches</h2>
-    <div id="patch-packages" class="package-grid"></div>
-  </div>
-
-  <script>
-    const API_URL = "https://kodokkyun-project.vercel.app/api/starrail";
-
-    function getFileName(url) {
-      return url.split("/").pop();
-    }
-
-    function bytesToGB(bytes) {
-      return (Number(bytes) / 1024 / 1024 / 1024).toFixed(2);
-    }
-
-    function createPackage(container, pkg, type) {
-      const div = document.createElement("div");
-      div.className = "package";
-
-      const tag = document.createElement("div");
-      tag.className = "type-tag";
-      tag.textContent = type;
-      
-      const info = document.createElement("div");
-      info.className = "package-info";
-
-      const title = document.createElement("div");
-      title.className = "title";
-      title.textContent = getFileName(pkg.url);
-
-      const size = document.createElement("div");
-      size.className = "size";
-      size.textContent = bytesToGB(pkg.size) + " GB";
-
-      info.appendChild(title);
-      info.appendChild(size);
-
-      const button = document.createElement("a");
-      button.href = pkg.url;
-      button.textContent = "DOWNLOAD FILE";
-      button.target = "_blank";
-
-      div.appendChild(tag);
-      div.appendChild(info);
-      div.appendChild(button);
-      container.appendChild(div);
-    }
-
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(json => {
-        const data = json.data.game_packages[0];
-        const mainContainer = document.getElementById("main-packages");
-        const patchContainer = document.getElementById("patch-packages");
-
-        // MAIN PACKAGES
-        const main = data.main.major;
-        main.game_pkgs.forEach(pkg => createPackage(mainContainer, pkg, "Main Game"));
-        main.audio_pkgs.forEach(pkg => createPackage(mainContainer, pkg, "Main Audio"));
-
-        // PATCHES
-        data.main.patches.forEach(patch => {
-          patch.game_pkgs.forEach(pkg => createPackage(patchContainer, pkg, "Update Game Patch"));
-          patch.audio_pkgs.forEach(pkg => createPackage(patchContainer, pkg, "Audio Patch"));
-        });
-      })
-      .catch(err => console.error("Error loading resources:", err));
-  </script>
-</div>
-
+      /* 1. THE BANNER CONTAINER */
+      .con {
+    /* 1. Center the banner horizontally */
+    margin-left: auto;
+    margin-right: auto;
     
+    /* 2. Control the size in landscape */
+    /* On desktop/landscape, 70% looks clean. On mobile portrait, it will be 95% */
+    width: 100%; 
+    max-width: 1000px; /* Prevents it from getting too wide on monitors */
+    
+    /* 3. Maintain the Star Rail banner shape */
+    aspect-ratio: 1920 / 830; 
+    height: auto; 
+
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    
+    /* 4. Pure image look (as requested earlier) */
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: none;
+    
+    /* 5. Keep this for your swipe navigation */
+    pointer-events: none; 
+}
+
+      /* 2. THE SLIDESHOW LAYERS */
+      .slide-layer {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: opacity 1.5s ease-in-out;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* 3. THE TEXT CONTENT */
+      .con-content {
+        position: relative;
+        z-index: 10;
+        padding: 20px;
+        width: 100%;
+        /* Ensure the text box doesn't block the swipe logic */
+        pointer-events: none; 
+      }
+
+      .con h1 { 
+        margin: 0; 
+        font-size: clamp(16px, 4.5vw, 22px); 
+        text-transform: uppercase; 
+        color: #fff; 
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      }
+
+      .con h2 { 
+        margin: 5px 0 0; 
+        font-size: clamp(10px, 2.5vw, 14px); 
+        color: #f2c94c; 
+        font-weight: 400; 
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        border: none;
+        padding-bottom: 0;
+      }
+
+      /* 4. PACKAGE LIST STYLING (KEEPING YOUR BLUR) */
+      .package {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 12px;
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        /* IMPORTANT: Buttons inside need pointer-events auto to be clickable */
+        pointer-events: auto; 
+      }
+
+      .package-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        max-width: 65%;
+      }
+
+      .package-info .title {
+        font-size: 13px;
+        word-break: break-all;
+        font-weight: bold;
+        color: #fff;
+      }
+
+      .package-info .size {
+        font-size: 11px;
+        color: #ccc;
+      }
+
+      .package a {
+        text-decoration: none;
+        background: #007bff;
+        color: #fff !important;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+      .section2 {
+    display: flex;
+    flex-direction: row; /* Horizontal layout */
+    align-items: center; /* Center items vertically */
+    justify-content: space-between;
+    width: 95%; /* Adjust width of the whole section */
+    margin: 20px auto; /* Centers the whole section on the page */
+    gap: 15px; /* Space between banner and buttons */
+}
+.vertical-button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Change 'stretch' to 'flex-start' or 'center' 
+       so it doesn't force buttons to fill the whole space */
+    align-items: center; 
+}
+
+/* Button Styling */
+.patch-btn {
+    flex: 1;   
+    width: 100%;       /* Keeps buttons wide */
+    height: 260px;/* Buttons grow to fill vertical space */
+    background: rgba(0, 123, 255, 0.8);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.3s;
+}
+
+.patch-btn:hover {
+    background: #0056b3;
+}
+
+/* Mobile Fix: Stack them vertically when the screen is too narrow */
+@media (max-width: 600px) {
+    .section2 {
+        flex-direction: column;
+    }
+    .con {
+        width: 95%;
+    }
+}
+    </style>
+
+    <div class="section">
+      <div class="section2">  
+    <div class="con" id="slideshow-container">
+        <div class="con-content">
+            <h1>Manual Update Patch</h1>
+            <h2>Star Rail Version Resource Center</h2>
+        </div>
+    </div>
+
+
+</div>
+      
+      <h2>Main Full Packages</h2>
+      <div id="main-packages"></div>
+    </div>
+
+    <div class="section">
+      <h2>Hanya Patches</h2>
+      <div id="patch-packages"></div>
+    </div>
+
+    <script>
+      (function() {
+        // 1. Image Data
+        const UP_IMAGES = {
+          G1: 'https://fastcdn.hoyoverse.com/content-v2/hkrpg/161288/62ca11c91b7f48c53a922989c8602b3c_5830406567434764573.png',
+          G2: 'https://fastcdn.hoyoverse.com/content-v2/hkrpg/123957/8f37dbc91598d1eebdadca8e9d22a6f6_6237269238409818844.png',
+          G3: 'https://fastcdn.hoyoverse.com/content-v2/hkrpg/125610/919a9d47f033fde37dd6aae36e77aa72_8633682211537180049.png'
+        };
+
+        // 2. Slideshow Setup
+        function initSlideshow() {
+          const container = document.getElementById('slideshow-container');
+          if (!container) return;
+
+          const urls = Object.values(UP_IMAGES);
+          let idx = 0;
+
+          const l1 = document.createElement('div');
+          const l2 = document.createElement('div');
+          l1.className = 'slide-layer';
+          l2.className = 'slide-layer';
+          l2.style.opacity = '0';
+          l1.style.backgroundImage = `url('${urls[0]}')`;
+          
+          container.prepend(l2);
+          container.prepend(l1);
+
+          let active = l1;
+          let inactive = l2;
+
+          setInterval(() => {
+            idx = (idx + 1) % urls.length;
+            inactive.style.backgroundImage = `url('${urls[idx]}')`;
+            inactive.style.opacity = '1';
+            active.style.opacity = '0';
+            [active, inactive] = [inactive, active];
+          }, 5000);
+        }
+
+        // 3. API Logic
+        const API = "https://kodokkyun-project.vercel.app/api/starrail";
+
+        function createPkg(cont, pkg) {
+          const fname = pkg.url.split("/").pop();
+          const fsize = (Number(pkg.size) / 1024 / 1024 / 1024).toFixed(2);
+          const div = document.createElement("div");
+          div.className = "package";
+          div.innerHTML = `
+            <div class="package-info">
+              <div class="title">${fname}</div>
+              <div class="size">${fsize} GB</div>
+            </div>
+            <a href="${pkg.url}" target="_blank">Download</a>
+          `;
+          cont.appendChild(div);
+        }
+
+        fetch(API)
+          .then(r => r.json())
+          .then(j => {
+            const d = j.data.game_packages[0];
+            const mc = document.getElementById("main-packages");
+            const pc = document.getElementById("patch-packages");
+
+            d.main.major.game_pkgs.forEach(p => createPkg(mc, p));
+            d.main.major.audio_pkgs.forEach(p => createPkg(mc, p));
+            d.main.patches.forEach(pt => {
+              pt.game_pkgs.forEach(p => createPkg(pc, p));
+              pt.audio_pkgs.forEach(p => createPkg(pc, p));
+            });
+          })
+          .catch(e => console.error("API Fail:", e));
+
+        initSlideshow();
+      })();
+    </script>
+  </div>
 </div>
 </div>
 
@@ -1757,6 +1818,12 @@ const LG_IMAGES = {
   zzz: 'https://i.ibb.co.com/JFcGnZvK/f3.png',
   genshin: 'https://i.ibb.co.com/1fkT73L9/1rf.png',
   hsr: 'https://i.ibb.co.com/TDQgJmdk/unnamed.png'
+};
+
+const UP_IMAGES = {
+  G1: 'https://fastcdn.hoyoverse.com/content-v2/hkrpg/161288/62ca11c91b7f48c53a922989c8602b3c_5830406567434764573.png',
+  G2: 'https://fastcdn.hoyoverse.com/content-v2/hkrpg/123957/8f37dbc91598d1eebdadca8e9d22a6f6_6237269238409818844.png',
+  G3: 'https://fastcdn.hoyoverse.com/content-v2/hkrpg/125610/919a9d47f033fde37dd6aae36e77aa72_8633682211537180049.png'
 };
 
 // Fetch Logic
