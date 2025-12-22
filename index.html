@@ -27,7 +27,7 @@ html, body {
 /* Container & Pages */
 .container {
   display:flex;
-  width:400vw;
+  width:500vw;
   height:100vh;
   will-change: transform;
   transition: transform 0.45s cubic-bezier(.22,.61,.36,1);
@@ -877,7 +877,13 @@ body {
 }
 .page4{
 background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_mian_pc-sea.3870807c..jpeg) center / cover no-repeat;
-            background-color: #000; /* 
+            background-color: #000;  
+    
+}
+
+.page5{
+background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_mian_pc-sea.3870807c..jpeg) center / cover no-repeat;
+            background-color: #000; 
     
 }
 </style>
@@ -1320,6 +1326,164 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   
   </div>
   
+<div class="page page5">
+    
+    <div class="gc-container">
+    <style>
+        :root {
+            --accent: #ffd369;
+            --glass: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.15);
+        }
+
+        .gc-container {
+            padding: 10px;
+            color: #fff;
+            max-width: 100%;
+            overflow-x: hidden; /* Prevents side-scrolling on mobile */
+        }
+
+        .gc-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 20px 0 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-left: 3px solid var(--accent);
+            padding-left: 10px;
+        }
+
+        /* --- BANNERS: Responsive Scroll --- */
+        .banner-row {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .banner-row::-webkit-scrollbar { display: none; }
+
+        .b-card {
+            min-width: 85%; /* Shows a peek of the next card on mobile */
+            background: linear-gradient(135deg, #1a1a1a, #000);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 600px) {
+            .b-card { min-width: 300px; } /* Wider cards for tablets/PC */
+        }
+
+        .b-head { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
+        .b-icons { display: flex; gap: 5px; flex-wrap: wrap; }
+        .m-icon { width: 45px; height: 45px; border-radius: 8px; background: var(--glass); border: 1px solid var(--border); }
+
+        /* --- EVENTS: Responsive Grid --- */
+        .e-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Stacked on mobile */
+            gap: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .e-grid { grid-template-columns: 1fr 1fr; } /* Side-by-side on desktop */
+        }
+
+        .e-card {
+            background: var(--glass);
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .e-thumb { width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; }
+        .e-body { padding: 12px; flex-grow: 1; }
+        .e-name { font-weight: bold; font-size: 0.95rem; margin-bottom: 5px; }
+        .e-desc { font-size: 0.8rem; color: #ccc; line-height: 1.4; margin-bottom: 12px; }
+
+        /* Rewards Row */
+        .r-row {
+            display: flex;
+            gap: 8px;
+            background: rgba(0,0,0,0.4);
+            padding: 6px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .r-item { display: flex; flex-direction: column; align-items: center; min-width: 35px; }
+        .r-img { width: 25px; height: 25px; object-fit: contain; }
+        .r-amt { font-size: 0.6rem; color: var(--accent); }
+
+        .loader { text-align: center; padding: 30px; font-size: 0.8rem; color: #888; }
+    </style>
+
+    <div class="gc-title">Active Banners</div>
+    <div id="banner-list" class="banner-row">
+        <div class="loader">Scanning Banners...</div>
+    </div>
+
+    <div class="gc-title">Teyvat Events</div>
+    <div id="event-list" class="e-grid">
+        <div class="loader">Loading Events...</div>
+    </div>
+
+    <script>
+        async function fetchGC() {
+            try {
+                const res = await fetch('https://kodokkyun-project.vercel.app/api/gc');
+                const data = await res.json();
+
+                // Render Banners
+                document.getElementById('banner-list').innerHTML = data.banners.map(b => `
+                    <div class="b-card">
+                        <div class="b-head">
+                            <span style="color:var(--accent)">${b.name}</span>
+                            <span style="opacity:0.6">v${b.version}</span>
+                        </div>
+                        <div class="b-icons">
+                            ${[...(b.characters||[]), ...(b.weapons||[])].map(i => `
+                                <img src="${i.icon}" class="m-icon" title="${i.name}">
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+
+                // Render Events
+                document.getElementById('event-list').innerHTML = data.events.filter(e => e.image_url).map(e => `
+                    <div class="e-card">
+                        <img src="${e.image_url}" class="e-thumb" loading="lazy">
+                        <div class="e-body">
+                            <div class="e-name">${e.name}</div>
+                            <div class="e-desc">${e.description || 'View details in-game.'}</div>
+                            <div class="r-row">
+                                ${e.rewards.map(r => `
+                                    <div class="r-item">
+                                        <img src="${r.icon}" class="r-img">
+                                        <span class="r-amt">${r.amount > 0 ? r.amount : ''}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                console.error(err);
+                document.querySelectorAll('.loader').forEach(el => el.innerHTML = "Sync Error.");
+            }
+        }
+        fetchGC();
+    </script>
+</div>
+    
+ </div>
+  
 <div class="page page4">
   <div id="game-downloader-container">
     <style>
@@ -1628,6 +1792,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     <div class="dot" style="left:23px;"></div>
     <div class="dot" style="left:46px;"></div>
     <div class="dot" style="left:68px;"></div>
+    <div class="dot" style="left:91px;"></div>
     <div class="dot-indicator" id="dot-indicator"></div>
   </div>
 </div>
