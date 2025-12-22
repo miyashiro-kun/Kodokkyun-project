@@ -1334,6 +1334,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             --accent: #ffd369;
             --hsr-accent: #69d3ff;
             --zzz-accent: #9dff69; 
+            --hi3-accent: #ff85d0;
             --glass: rgba(255, 255, 255, 0.08);
             --border: rgba(255, 255, 255, 0.15);
         }
@@ -1342,34 +1343,38 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             padding: 10px;
             color: #fff;
             max-width: 100%;
-            /* Important: Allow both vertical scrolling and horizontal swiping */
             touch-action: pan-x pan-y !important; 
         }
 
         /* TAB BUTTONS */
         .gc-tabs {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
         }
 
         .gc-tab-btn {
             flex: 1;
+            min-width: 80px;
             padding: 10px 5px;
             border: 1px solid var(--border);
             background: var(--glass);
             color: #fff;
             border-radius: 10px;
             font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .gc-tab-btn.active[data-game="genshin"] { background: var(--accent); color: #000; border-color: var(--accent); }
         .gc-tab-btn.active[data-game="hsr"] { background: var(--hsr-accent); color: #000; border-color: var(--hsr-accent); }
         .gc-tab-btn.active[data-game="zzz"] { background: var(--zzz-accent); color: #000; border-color: var(--zzz-accent); }
+        .gc-tab-btn.active[data-game="hi3"] { background: var(--hi3-accent); color: #000; border-color: var(--hi3-accent); }
 
         .gc-title {
             font-size: 1.1rem;
@@ -1414,7 +1419,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         .r-item { display: flex; flex-direction: column; align-items: center; min-width: 35px; }
         .r-img { width: 25px; height: 25px; object-fit: contain; }
         .r-amt { font-size: 0.6rem; color: var(--accent); }
-
+        .calendar-content{padding-bottom:50px;}
         .loader { text-align: center; padding: 50px; font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px;}
     </style>
 
@@ -1422,6 +1427,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         <button class="gc-tab-btn active" data-game="genshin">Genshin</button>
         <button class="gc-tab-btn" data-game="hsr">Star Rail</button>
         <button class="gc-tab-btn" data-game="zzz">ZZZ</button>
+        <button class="gc-tab-btn" data-game="hi3">Honkai 3rd</button>
     </div>
 
     <div id="calendar-content">
@@ -1439,7 +1445,8 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         const CONFIG = {
             genshin: { api: 'https://kodokkyun-project.vercel.app/api/gc', accent: '#ffd369' },
             hsr: { api: 'https://kodokkyun-project.vercel.app/api/sc', accent: '#69d3ff' },
-            zzz: { api: 'https://kodokkyun-project.vercel.app/api/zc', accent: '#9dff69' }
+            zzz: { api: 'https://kodokkyun-project.vercel.app/api/zc', accent: '#9dff69' },
+            hi3: { api: 'https://kodokkyun-project.vercel.app/api/hc', accent: '#ff85d0' }
         };
 
         const formatTs = (ts) => {
@@ -1462,10 +1469,10 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
                 const res = await fetch(CONFIG[gameKey].api);
                 const data = await res.json();
 
-                // ZZZ Mode (Array of News)
+                // News Feed Mode (ZZZ and HI3 return Arrays)
                 if (Array.isArray(data)) {
                     bannerSection.style.display = 'none';
-                    // slice().reverse() puts the last JSON entry (newest) at the top
+                    // Reversing ensure the last item (newest) is at the top
                     content.innerHTML = data.slice().reverse().map(e => `
                         <a href="${e.url}" target="_blank" class="e-card">
                             <img src="${e.banner[0]}" referrerpolicy="no-referrer" class="e-thumb">
@@ -1477,7 +1484,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
                         </a>
                     `).join('');
                 } 
-                // Genshin / HSR Mode (Object with banners/events)
+                // Calendar Mode (Genshin and HSR return Objects)
                 else {
                     bannerSection.style.display = 'block';
                     banners.innerHTML = (data.banners || []).map(b => `
