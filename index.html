@@ -1855,45 +1855,62 @@ const UP_IMAGES = {
 };
 
 // Fetch Logic
-async function fetchCodes(game) {
-  const container = document.getElementById('codesContainer');
-  container.innerHTML = '<div class="loading">Loading codes...</div>';
+// Replace your existing fetchCodes and renderCodes functions with these:
 
+async function fetchCodes() {
   try {
-    let url;
-    // Check if it's the new HI3 button
-    if (game === 'hi3') {
-        url = 'https://kodokkyun-project.vercel.app/api/HICODE';
-    } else {
-        url = `https://db.hashblen.com/codes?game=${game}`;
-    }
+    // 1. Fetch data for first 3 buttons
+    const res = await fetch('https://db.hashblen.com/codes');
+    codesData = await res.json();
+    
+    // 2. Fetch data for the 4th button (Different API)
+    const hi3Res = await fetch('https://kodokkyun-project.vercel.app/api/hicode');
+    const hi3Data = await hi3Res.json();
+    
+    // 3. Store the "active" list specifically for HI3
+    codesData.hi3 = hi3Data.active; 
 
-    const response = await fetch(url);
-    const data = await response.json();
-
-    // The new API returns { active: [...], inactive: [...] }
-    // The old API returns just an array. We handle both here:
-    const codes = game === 'hi3' ? data.active : data;
-
-    container.innerHTML = '';
-
-    if (!codes || codes.length === 0) {
-      container.innerHTML = '<div class="no-codes">No active codes found.</div>';
-      return;
-    }
-
-    codes.forEach(item => {
-      // New API uses "rewards" (array), old uses "reward" (string)
-      const rewardText = Array.isArray(item.rewards) ? item.rewards.join(', ') : item.reward;
-      
-      const card = createCodeCard(item.code, rewardText, game);
-      container.appendChild(card);
-    });
-
-  } catch (error) {
-    console.error('Error fetching codes:', error);
-    container.innerHTML = '<div class="no-codes">Error loading codes. Please try again.</div>';
+    renderCodes('zzz'); // Default to first tab
+  } catch (err) {
+    console.error("Fetch error:", err);
+    codesContainer.innerHTML = `<div class="loading">Error loading codes.</div>`;
   }
+}
+
+function renderCodes(game) {
+  const codes = codesData[game];
+  codesContainer.innerHTML = '';
+
+  if (!codes || codes.length === 0) {
+    codesContainer.innerHTML = `<div class="loading">No active codes found.</div>`;
+    return;
+  }
+
+  codesContainer.innerHTML = codes.map((item, i) => {
+    const delay = i * 100;
+    
+    // LOGIC FOR REWARDS:
+    // If it's an array (HI3 API), join with commas. 
+    // Otherwise, use the description (Old API).
+    let rewardDisplay = "";
+    if (item.rewards && Array.isArray(item.rewards)) {
+        rewardDisplay = item.rewards.join(', ');
+    } else {
+        rewardDisplay = item.description || "No description available";
+    }
+
+    return `
+    <div class="code-card" style="animation-delay: ${delay}ms">
+      <div class="code-row">
+        <div class="code-text title-font">${item.code}</div>
+        <div class="buttons-group">
+          <button class="copy-btn title-font" onclick="copyCode('${item.code}')">COPY</button>
+          <button class="redeem-btn title-font" onclick="redeemCode('${game}', '${item.code}')">REDEEM</button>
+        </div>
+      </div>
+      <div class="code-desc">${rewardDisplay}</div>
+    </div>`;
+  }).join('');
 }
 
 // Tabs
