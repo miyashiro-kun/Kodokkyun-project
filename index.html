@@ -1312,6 +1312,12 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 <div class="page page4">
   <div id="starrail-downloader">
     <style>
+    :root {
+      --sr-blue: #007bff;
+      --sr-accent: #f29d38; /* Honkai Star Rail Orange */
+      --sr-bg-card: rgba(255, 255, 255, 0.08);
+      --sr-border: rgba(255, 255, 255, 0.15);
+    }
       #starrail-downloader {
         font-family: Arial, sans-serif;
         max-width: 100%;
@@ -1323,6 +1329,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       .section {
         margin-bottom: 30px;
         color: white;
+        gap: 40px;
       }
 
       .section h2 {
@@ -1403,50 +1410,89 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       }
 
       /* 4. PACKAGE LIST STYLING (KEEPING YOUR BLUR) */
-      .package {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        padding: 15px;
-        margin: 10px 0;
-        border-radius: 12px;
-        position: relative;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        /* IMPORTANT: Buttons inside need pointer-events auto to be clickable */
-        pointer-events: auto; 
-      }
+      .package-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 15px;
+    }
 
-      .package-info {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        max-width: 65%;
-      }
+    .package {
+      background: var(--sr-bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--sr-border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
 
-      .package-info .title {
-        font-size: 13px;
-        word-break: break-all;
-        font-weight: bold;
-        color: #fff;
-      }
+    }
 
-      .package-info .size {
-        font-size: 11px;
-        color: #ccc;
-      }
+    .package:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-3px);
+      border-color: var(--sr-accent);
+    }
 
-      .package a {
-        text-decoration: none;
-        background: #007bff;
-        color: #fff !important;
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: bold;
-        white-space: nowrap;
-      }
+    .package-info {
+      margin-bottom: 15px;
+    }
+
+    .package-info .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e0e0e0;
+      word-break: break-all;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.4;
+    }
+
+    .package-info .size {
+      font-size: 12px;
+      background: rgba(0,0,0,0.3);
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: #aaa;
+    }
+
+    /* Download Button Redesign */
+    .package a {
+      text-decoration: none;
+      background: var(--sr-blue);
+      color: white;
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      transition: 0.2s;
+      display: block;
+      margin-top: auto;
+    }
+
+    .package a:hover {
+      background: #00b4ff;
+      box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
+    }
+
+    /* Tag for Audio vs Game */
+    .type-tag {
+      position: absolute;
+      top: 0; right: 0;
+      font-size: 10px;
+      padding: 3px 10px;
+      background: var(--sr-border);
+      border-bottom-left-radius: 8px;
+      text-transform: uppercase;
+      color: #ddd;
+    }
       .section2 {
     display: flex;
     flex-direction: row; /* Horizontal layout */
@@ -1486,6 +1532,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 
 /* Mobile Fix: Stack them vertically when the screen is too narrow */
 @media (max-width: 600px) {
+    .package-grid { grid-template-columns: 1fr; }
     .section2 {
         flex-direction: column;
     }
@@ -1495,7 +1542,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 }
     </style>
 
-    <div class="section">
+    <div class="">
       <div class="section2">  
     <div class="con" id="slideshow-container">
         <div class="con-content">
@@ -1507,14 +1554,18 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 
 </div>
       
-      <h2>Main Full Packages</h2>
-      <div id="main-packages"></div>
+      
     </div>
 
     <div class="section">
-      <h2>Hanya Patches</h2>
-      <div id="patch-packages"></div>
-    </div>
+    <h2>Main Full Packages</h2>
+    <div id="main-packages" class="package-grid"></div>
+  </div>
+
+  <div class="section">
+    <h2>Update Patches</h2>
+    <div id="patch-packages" class="package-grid"></div>
+  </div>
 
     <script>
       (function() {
@@ -1556,38 +1607,68 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         }
 
         // 3. API Logic
-        const API = "https://kodokkyun-project.vercel.app/api/starrail";
+        const API_URL = "https://kodokkyun-project.vercel.app/api/starrail";
+        
+        function getFileName(url) {
+      return url.split("/").pop();
+    }
 
-        function createPkg(cont, pkg) {
-          const fname = pkg.url.split("/").pop();
-          const fsize = (Number(pkg.size) / 1024 / 1024 / 1024).toFixed(2);
-          const div = document.createElement("div");
-          div.className = "package";
-          div.innerHTML = `
-            <div class="package-info">
-              <div class="title">${fname}</div>
-              <div class="size">${fsize} GB</div>
-            </div>
-            <a href="${pkg.url}" target="_blank">Download</a>
-          `;
-          cont.appendChild(div);
-        }
+    function bytesToGB(bytes) {
+      return (Number(bytes) / 1024 / 1024 / 1024).toFixed(2);
+    }
 
-        fetch(API)
-          .then(r => r.json())
-          .then(j => {
-            const d = j.data.game_packages[0];
-            const mc = document.getElementById("main-packages");
-            const pc = document.getElementById("patch-packages");
+    function createPackage(container, pkg, type) {
+      const div = document.createElement("div");
+      div.className = "package";
 
-            d.main.major.game_pkgs.forEach(p => createPkg(mc, p));
-            d.main.major.audio_pkgs.forEach(p => createPkg(mc, p));
-            d.main.patches.forEach(pt => {
-              pt.game_pkgs.forEach(p => createPkg(pc, p));
-              pt.audio_pkgs.forEach(p => createPkg(pc, p));
-            });
-          })
-          .catch(e => console.error("API Fail:", e));
+      const tag = document.createElement("div");
+      tag.className = "type-tag";
+      tag.textContent = type;
+      
+      const info = document.createElement("div");
+      info.className = "package-info";
+
+      const title = document.createElement("div");
+      title.className = "title";
+      title.textContent = getFileName(pkg.url);
+
+      const size = document.createElement("div");
+      size.className = "size";
+      size.textContent = bytesToGB(pkg.size) + " GB";
+
+      info.appendChild(title);
+      info.appendChild(size);
+
+      const button = document.createElement("a");
+      button.href = pkg.url;
+      button.textContent = "DOWNLOAD FILE";
+      button.target = "_blank";
+
+      div.appendChild(tag);
+      div.appendChild(info);
+      div.appendChild(button);
+      container.appendChild(div);
+    }
+
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(json => {
+        const data = json.data.game_packages[0];
+        const mainContainer = document.getElementById("main-packages");
+        const patchContainer = document.getElementById("patch-packages");
+
+        // MAIN PACKAGES
+        const main = data.main.major;
+        main.game_pkgs.forEach(pkg => createPackage(mainContainer, pkg, "Game"));
+        main.audio_pkgs.forEach(pkg => createPackage(mainContainer, pkg, "Audio"));
+
+        // PATCHES
+        data.main.patches.forEach(patch => {
+          patch.game_pkgs.forEach(pkg => createPackage(patchContainer, pkg, "Patch"));
+          patch.audio_pkgs.forEach(pkg => createPackage(patchContainer, pkg, "Audio Patch"));
+        });
+      })
+      .catch(err => console.error("Error loading resources:", err));
 
         initSlideshow();
       })();
