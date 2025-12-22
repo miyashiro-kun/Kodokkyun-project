@@ -1328,7 +1328,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   
 <div class="page page5">
     
-    <div class="gc-container">
+    <div class="gc-container" id="gc-scroll-area">
     <style>
         :root {
             --accent: #ffd369;
@@ -1340,7 +1340,8 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             padding: 10px;
             color: #fff;
             max-width: 100%;
-            overflow-x: hidden; /* Prevents side-scrolling on mobile */
+            touch-action: pan-y !important; 
+            -webkit-overflow-scrolling: touch;
         }
 
         .gc-title {
@@ -1349,72 +1350,48 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             color: var(--accent);
             margin: 20px 0 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
             border-left: 3px solid var(--accent);
             padding-left: 10px;
         }
 
-        /* --- BANNERS: Responsive Scroll --- */
-        .banner-row {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .banner-row::-webkit-scrollbar { display: none; }
-
-        .b-card {
-            min-width: 85%; /* Shows a peek of the next card on mobile */
-            background: linear-gradient(135deg, #1a1a1a, #000);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
-            flex-shrink: 0;
-        }
-
-        @media (min-width: 600px) {
-            .b-card { min-width: 300px; } /* Wider cards for tablets/PC */
-        }
-
+        /* BANNERS Section */
+        .banner-row { display: flex; flex-direction: column; gap: 12px; padding-bottom: 10px; }
+        .b-card { width: 100%; background: linear-gradient(135deg, #1a1a1a, #000); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
         .b-head { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
         .b-icons { display: flex; gap: 5px; flex-wrap: wrap; }
         .m-icon { width: 45px; height: 45px; border-radius: 8px; background: var(--glass); border: 1px solid var(--border); }
 
-        /* --- EVENTS: Responsive Grid --- */
-        .e-grid {
-            display: grid;
-            grid-template-columns: 1fr; /* Stacked on mobile */
-            gap: 15px;
-        }
-
-        @media (min-width: 768px) {
-            .e-grid { grid-template-columns: 1fr 1fr; } /* Side-by-side on desktop */
-        }
-
-        .e-card {
-            background: var(--glass);
-            border-radius: 15px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
+        /* EVENTS Section */
+        .e-grid { display: flex; flex-direction: column; gap: 15px; }
+        .e-card { background: var(--glass); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; position: relative; }
         .e-thumb { width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; }
-        .e-body { padding: 12px; flex-grow: 1; }
-        .e-name { font-weight: bold; font-size: 0.95rem; margin-bottom: 5px; }
-        .e-desc { font-size: 0.8rem; color: #ccc; line-height: 1.4; margin-bottom: 12px; }
+        .e-body { padding: 12px; text-align: center; /* Centering content */ }
+        
+        /* NEW: Centered Bold Date Badge */
+        .e-date {
+            display: inline-block;
+            background: var(--accent);
+            color: #000;
+            font-weight: 800;
+            font-size: 0.75rem;
+            padding: 3px 12px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
 
-        /* Rewards Row */
+        .e-name { font-weight: bold; font-size: 1rem; margin-bottom: 5px; color: #fff; }
+        .e-desc { font-size: 0.82rem; color: #ccc; line-height: 1.4; margin-bottom: 10px; text-align: left; }
+
+        /* REWARDS ROW */
         .r-row {
             display: flex;
             gap: 8px;
             background: rgba(0,0,0,0.4);
-            padding: 6px;
+            padding: 8px;
             border-radius: 8px;
             overflow-x: auto;
+            justify-content: center; /* Center rewards */
         }
         .r-item { display: flex; flex-direction: column; align-items: center; min-width: 35px; }
         .r-img { width: 25px; height: 25px; object-fit: contain; }
@@ -1424,79 +1401,80 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     </style>
 
     <div class="gc-title">Active Banners</div>
-    <div id="banner-list" class="banner-row">
-        <div class="loader">Scanning Banners...</div>
-    </div>
+    <div id="banner-list" class="banner-row"><div class="loader">Scanning Banners...</div></div>
 
     <div class="gc-title">Teyvat Events</div>
-    <div id="event-list" class="e-grid">
-        <div class="loader">Loading Events...</div>
-    </div>
+    <div id="event-list" class="e-grid"><div class="loader">Loading Events...</div></div>
 
     <script>
-    async function fetchGC() {
-        try {
-            const res = await fetch('https://kodokkyun-project.vercel.app/api/gc');
-            const data = await res.json();
+        // Stop scroll propagation to prevent page-swipe conflict
+        const scrollArea = document.getElementById('gc-scroll-area');
+        const preventSwipe = (e) => e.stopPropagation();
+        scrollArea.addEventListener('touchstart', preventSwipe, { passive: true });
+        scrollArea.addEventListener('touchmove', preventSwipe, { passive: true });
 
-            // Function to fix Wiki Image URLs (stripping everything after .png or .jpg)
-            const fixImageUrl = (url) => {
-                if (!url) return '';
-                // Removes the "revision/latest..." part which often causes 403 errors
-                return url.split('/revision/')[0];
-            };
+        // Helper to convert Unix Timestamp to Date
+        const formatTs = (ts) => {
+            if (!ts) return "";
+            // Handle 10-digit (sec) or 13-digit (ms)
+            const date = new Date(ts < 10000000000 ? ts * 1000 : ts);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        };
 
-            // Render Banners
-            document.getElementById('banner-list').innerHTML = data.banners.map(b => `
-                <div class="b-card">
-                    <div class="b-head">
-                        <span style="color:var(--accent)">${b.name}</span>
-                        <span style="opacity:0.6">v${b.version}</span>
-                    </div>
-                    <div class="b-icons">
-                        ${[...(b.characters||[]), ...(b.weapons||[])].map(i => `
-                            <img src="${i.icon}" 
-                                 referrerpolicy="no-referrer" 
-                                 class="m-icon" 
-                                 title="${i.name}"
-                                 onerror="this.style.display='none'">
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('');
+        async function fetchGC() {
+            try {
+                const res = await fetch('https://kodokkyun-project.vercel.app/api/gc');
+                const data = await res.json();
+                const fixImg = (url) => url ? url.split('/revision/')[0] : '';
 
-            // Render Events
-            document.getElementById('event-list').innerHTML = data.events.filter(e => e.image_url || e.name).map(e => `
-                <div class="e-card">
-                    ${e.image_url ? `
-                        <img src="${fixImageUrl(e.image_url)}" 
-                             referrerpolicy="no-referrer" 
-                             class="e-thumb" 
-                             alt="event"
-                             onerror="this.src='https://placehold.co/600x337/222/ffd369?text=Event+Image'">
-                    ` : ''}
-                    <div class="e-body">
-                        <div class="e-name">${e.name}</div>
-                        <div class="e-desc">${e.description ? e.description.replace(/\\n/g, '<br>') : 'View details in-game.'}</div>
-                        <div class="r-row">
-                            ${e.rewards.map(r => `
-                                <div class="r-item">
-                                    <img src="${r.icon}" referrerpolicy="no-referrer" class="r-img">
-                                    <span class="r-amt">${r.amount > 0 ? r.amount : ''}</span>
-                                </div>
+                // Render Banners
+                document.getElementById('banner-list').innerHTML = data.banners.map(b => `
+                    <div class="b-card">
+                        <div class="b-head">
+                            <span style="color:var(--accent)">${b.name}</span>
+                            <span style="opacity:0.6">v${b.version}</span>
+                        </div>
+                        <div class="b-icons">
+                            ${[...(b.characters||[]), ...(b.weapons||[])].map(i => `
+                                <img src="${fixImg(i.icon)}" referrerpolicy="no-referrer" class="m-icon">
                             `).join('')}
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
 
-        } catch (err) {
-            console.error(err);
-            document.querySelectorAll('.loader').forEach(el => el.innerHTML = "Sync Error.");
+                // Render Events
+                document.getElementById('event-list').innerHTML = data.events.filter(e => e.image_url || e.name).map(e => {
+                    
+                    const dateRange = `${formatTs(e.start_time)} — ${formatTs(e.end_time)}`;
+                    const hasRewards = e.rewards && e.rewards.length > 0;
+                    
+                    const rewardRowHtml = hasRewards ? `
+                        <div class="r-row">
+                            ${e.rewards.map(r => `
+                                <div class="r-item">
+                                    <img src="${fixImg(r.icon)}" referrerpolicy="no-referrer" class="r-img">
+                                    <span class="r-amt">${r.amount > 0 ? r.amount : ''}</span>
+                                </div>
+                            `).join('')}
+                        </div>` : '';
+
+                    return `
+                        <div class="e-card">
+                            ${e.image_url ? `<img src="${fixImg(e.image_url)}" referrerpolicy="no-referrer" class="e-thumb" onerror="this.style.display='none'">` : ''}
+                            <div class="e-body">
+                                <div class="e-date">${dateRange}</div>
+                                <div class="e-name">${e.name}</div>
+                                <div class="e-desc">${(e.description||'').replace(/\\n/g, '<br>')}</div>
+                                ${rewardRowHtml}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) { console.error(err); }
         }
-    }
-    fetchGC();
-</script>
+        fetchGC();
+    </script>
 </div>
     
  </div>
