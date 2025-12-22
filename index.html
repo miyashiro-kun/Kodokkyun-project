@@ -957,10 +957,11 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab-btn active title-font extra-tilt2" data-game="zzz">ZENLESS</button>
-    <button class="tab-btn title-font extra-tilt2" data-game="genshin">GENSHIN</button>
-    <button class="tab-btn title-font extra-tilt2" data-game="hsr">STAR RAIL</button>
-  </div>
+  <button class="tab-btn active title-font extra-tilt2" data-game="zzz">ZENLESS</button>
+  <button class="tab-btn title-font extra-tilt2" data-game="genshin">GENSHIN</button>
+  <button class="tab-btn title-font extra-tilt2" data-game="hsr">STAR RAIL</button>
+  <button class="tab-btn title-font extra-tilt2" data-game="hi3">HONKAI 3RD</button>
+</div>
 
   <!-- Codes container -->
   <div id="codes-container" style="padding-bottom:50px">
@@ -1825,7 +1826,8 @@ document.querySelectorAll(".link-btn").forEach(btn => {
 const REDEEM_URLS = {
   zzz: code => `https://zenless.hoyoverse.com/redemption?code=${code}`,
   genshin: code => `https://genshin.hoyoverse.com/en/gift?code=${code}`,
-  hsr: code => `https://hsr.hoyoverse.com/gift?code=${code}`
+  hsr: code => `https://hsr.hoyoverse.com/gift?code=${code}`,
+  hi3: code => `https://honkaiimpact3.hoyoverse.com/global/en/home?code=${code}` 
 };
 
 const codesContainer = document.getElementById('codes-container');
@@ -1835,13 +1837,15 @@ let codesData = {};
 const BG_IMAGES = {
   zzz: 'url("https://images7.alphacoders.com/130/thumb-1920-1307267.jpg")',
   genshin: 'url("https://fastcdn.hoyoverse.com/content-v2/hk4e/159337/54b493f799071cf2050b919305288d5d_7897117480191368973.jpg")',
-  hsr: 'url("https://i.ibb.co.com/VYZ3w3wB/Fyreflies-are-such-magical-creatures-aren-t-they-They-may-throw-themselves-at-a-flame-or-sudden-ups.png")'
+  hsr: 'url("https://i.ibb.co.com/VYZ3w3wB/Fyreflies-are-such-magical-creatures-aren-t-they-They-may-throw-themselves-at-a-flame-or-sudden-ups.png")',
+  hi3: 'url("https://fastcdn.hoyoverse.com/content-v2/plat/101533/6fbf8271438e536e58169ac01efb0a84_723492315779207397.jpg")' // Example HI3 background
 };
 
 const LG_IMAGES = {
   zzz: 'https://i.ibb.co.com/JFcGnZvK/f3.png',
-  genshin: 'https://i.ibb.co.com/1fkT73L9/1rf.png',
-  hsr: 'https://i.ibb.co.com/TDQgJmdk/unnamed.png'
+  genshin: 'https://i.ibb.co.com/Nn3J5SnW/1rf.png',
+  hsr: 'https://i.ibb.co.com/TDQgJmdk/unnamed.png',
+  hi3: 'https://i.ibb.co.com/tTGpYmcr/ewq.png' // Example HI3 logo
 };
 
 const UP_IMAGES = {
@@ -1851,15 +1855,44 @@ const UP_IMAGES = {
 };
 
 // Fetch Logic
-async function fetchCodes() {
+async function fetchCodes(game) {
+  const container = document.getElementById('codesContainer');
+  container.innerHTML = '<div class="loading">Loading codes...</div>';
+
   try {
-    const res = await fetch('https://db.hashblen.com/codes');
-    if (!res.ok) throw new Error("API Error");
-    codesData = await res.json();
-    renderCodes('zzz'); // Init default
-  } catch (err) {
-    codesContainer.innerHTML = `<div class="loading">Unable to load codes at this time.<br><small>Check connection</small></div>`;
-    console.error(err);
+    let url;
+    // Check if it's the new HI3 button
+    if (game === 'hi3') {
+        url = 'https://kodokkyun-project.vercel.app/api/HICODE';
+    } else {
+        url = `https://db.hashblen.com/codes?game=${game}`;
+    }
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    // The new API returns { active: [...], inactive: [...] }
+    // The old API returns just an array. We handle both here:
+    const codes = game === 'hi3' ? data.active : data;
+
+    container.innerHTML = '';
+
+    if (!codes || codes.length === 0) {
+      container.innerHTML = '<div class="no-codes">No active codes found.</div>';
+      return;
+    }
+
+    codes.forEach(item => {
+      // New API uses "rewards" (array), old uses "reward" (string)
+      const rewardText = Array.isArray(item.rewards) ? item.rewards.join(', ') : item.reward;
+      
+      const card = createCodeCard(item.code, rewardText, game);
+      container.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error('Error fetching codes:', error);
+    container.innerHTML = '<div class="no-codes">Error loading codes. Please try again.</div>';
   }
 }
 
