@@ -1324,13 +1324,10 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         }
     </script>
 </div>
-  
-  
-  
-  
+
   </div>
   
-<div class="page page5">
+  <div class="page page5">
     
     <div class="gc-container">
     <style>
@@ -1486,6 +1483,78 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         .r-amt { font-size: 0.6rem; color: var(--accent); }
         .calendar-content{padding-bottom:50px;}
         .loader { text-align: center; padding: 50px; font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px;}
+    
+   /* =========================================================
+   MASONRY EVENT GRID – RESPONSIVE (PORTRAIT + LANDSCAPE)
+   ========================================================= */
+
+/* Base (Portrait / Mobile) */
+.page5 .e-grid {
+    display: block;
+    column-count: 1;
+    column-gap: 14px;
+}
+
+/* Landscape phones */
+@media (orientation: landscape) and (min-width: 480px) {
+    .page5 .e-grid {
+        column-count: 2;
+    }
+}
+
+/* Tablets / large landscape / desktop */
+@media (orientation: landscape) and (min-width: 900px) {
+    .page5 .e-grid {
+        column-count: 3;
+    }
+}
+
+/* Masonry card rules */
+.page5 .e-card {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 14px;
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+/* Optional: reduce vertical bulk in landscape */
+@media (orientation: landscape) {
+    .page5 .e-body {
+        padding: 10px;
+    }
+
+    .page5 .e-desc {
+        font-size: 0.78rem;
+        line-height: 1.35;
+    }
+}
+
+/* Optional: smooth appearance */
+.page5 .e-card {
+    animation: masonryFade 0.35s ease both;
+}
+
+@keyframes masonryFade {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Wider landscape (tablets / foldables / desktop landscape) */
+@media (min-width: 900px) and (orientation: landscape) {
+    .page5 .e-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
     </style>
 
     <div class="gc-tabs">
@@ -1635,6 +1704,7 @@ gcTabBtns.forEach(btn => {
 </div>
     
  </div>
+
   
 <div class="page page4">
   <div id="game-downloader-container">
