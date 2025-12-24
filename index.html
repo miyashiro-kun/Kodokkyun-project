@@ -865,8 +865,8 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       position: relative;
       display: flex;
       flex-direction: column;
-      background-color: rgba(0, 0, 0, 0.3); /* The color to blend in */
-         background-blend-mode: darken;
+      background-color: rgba(0, 0, 0, 0.3);
+      background-blend-mode: darken;
     }
 
     #page2::before {
@@ -883,12 +883,17 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       width: 100%;
       min-height: 100vh;
     }
+    
+    .e-tilt {
+  display: inline-block; /* Required for transform to work */
+  transform: skewX(-15deg); /* Negative degrees tilt to the right */
+}
 
     /* --- LOGO HEADER & ANIMASI BOUNCE --- */
     .header-logo-container {
       text-align: center;
       margin-bottom: 25px;
-      height: 80px; /* Menjaga layout tetap stabil saat logo ganti */
+      height: 80px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -904,27 +909,17 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     }
 
     @keyframes logoBounceRotate {
-      0% {
-        opacity: 0;
-        transform: scale(0.3) rotate(-45deg);
-      }
-      50% {
-        opacity: 1;
-        transform: scale(1.1) rotate(10deg);
-      }
-      70% {
-        transform: scale(0.9) rotate(-5deg);
-      }
-      100% {
-        transform: scale(1) rotate(0deg);
-      }
+      0% { opacity: 0; transform: scale(0.3) rotate(-45deg); }
+      50% { opacity: 1; transform: scale(1.1) rotate(10deg); }
+      70% { transform: scale(0.9) rotate(-5deg); }
+      100% { transform: scale(1) rotate(0deg); }
     }
 
     .animate-logo {
       animation: logoBounceRotate 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-    /* --- ANIMASI CARD: SLIDE & POP --- */
+    /* --- ANIMASI CARD --- */
     @keyframes slidePop {
       0% { opacity: 0; transform: translateX(30px) scale(0.9); }
       70% { transform: translateX(-5px) scale(1.02); }
@@ -936,7 +931,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       opacity: 0;
     }
 
-    /* --- TABS & UI --- */
+    /* --- TABS --- */
     .tabs-v2 {
       display: flex;
       justify-content: center;
@@ -987,7 +982,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     .code-v2 {
       font-family: 'Monaco', 'Consolas', monospace;
       font-weight: 800;
-      font-size: 1.25rem;
+      font-size: 0.8rem;
       color: #fff;
       letter-spacing: 1px;
     }
@@ -1014,7 +1009,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       <img id="game-logo-header" src="" alt="Logo" class="animate-logo">
     </div>
 
-    <div class="tabs-v2">
+    <div class="tabs-v2 e-tilt">
       <button class="tab-btn-v2 active" data-game="zenless">ZZZ</button>
       <button class="tab-btn-v2" data-game="genshinimpact">GENSHIN</button>
       <button class="tab-btn-v2" data-game="starrail">HSR</button>
@@ -1051,17 +1046,23 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         hi3rd: 'https://i.ibb.co.com/tTGpYmcr/ewq.png'
       };
 
+      // Konfigurasi Link Redeem Otomatis
+      const REDEEM_CONFIG = {
+        zenless: code => `https://zenless.hoyoverse.com/redemption?code=${code}`,
+        genshinimpact: code => `https://genshin.hoyoverse.com/en/gift?code=${code}`,
+        starrail: code => `https://hsr.hoyoverse.com/gift?code=${code}`,
+        hi3rd: code => `https://honkaiimpact3.hoyoverse.com/global/en/home?code=${code}` 
+      };
+
       async function loadCodes(game) {
         const container = document.getElementById('codes-container-v2');
-        const pg6 = document.getElementById('page2');
+        const pg2 = document.getElementById('page2');
         const logoImg = document.getElementById('game-logo-header');
         
-        // Reset Animasi Logo
         logoImg.classList.remove('animate-logo');
         logoImg.src = CODELOGO[game];
-        pg6.style.backgroundImage = `url('${BGS[game]}')`;
+        pg2.style.backgroundImage = `url('${BGS[game]}')`;
         
-        // Paksa browser membaca ulang (reflow) untuk memicu ulang animasi
         void logoImg.offsetWidth; 
         logoImg.classList.add('animate-logo');
         
@@ -1079,12 +1080,15 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
               card.className = 'redeem-card-v2 reveal-card';
               card.style.animationDelay = `${index * 0.1}s`;
               
+              // Membuat link redeem khusus untuk kode ini
+              const finalRedeemUrl = REDEEM_CONFIG[game](item.code);
+              
               card.innerHTML = `
                 <div class="redeem-header-v2">
                   <span class="code-v2">${item.code}</span>
                   <div class="btn-group-v2">
                     <button class="btn-v2 btn-copy-v2" onclick="copyAction('${item.code}', this)">COPY</button>
-                    <button class="btn-v2 btn-redeem-v2" onclick="window.open('https://hoyolab.com/redeem')">REDEEM</button>
+                    <button class="btn-v2 btn-redeem-v2" onclick="window.open('${finalRedeemUrl}', '_blank')">REDEEM</button>
                   </div>
                 </div>
                 <div class="reward-v2" style="font-size:0.85rem; color:#aaa; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">
