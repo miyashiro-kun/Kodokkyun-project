@@ -526,115 +526,6 @@ html, body {
 }
 
 /* --- Page 2 and 3 --- */
-.page2 {
-  position: relative;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  transition: background-image 0.5s ease-in-out;
-  /* Ensure the page is black underneath so it fades to black */
-  background-color: rgba(0, 0, 0, 0.3); /* The color to blend in */
-    background-blend-mode: darken;
-    padding: 5vh 3vw;
-  margin-right:1px;
-}
-
-/* The Overlay: This creates the 100% to 0% transparency fade */
-.page2::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  /* Adjust rgba(0,0,0,0.5) to change the "half transparent" darkness */
-
-  z-index: 1;
-}
-
-/* Keep the content (Title, Tabs, Cards) above the fade */
-.page2 > * {
-  position: relative;
-  z-index: 2;
-}
-
-.codes-section h3 {
-  color: #020617;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Update the .code-card class */
-.code-card {
-  background: rgba(255,255,255,0.3);
-  backdrop-filter: blur(5px);/* or your specific color */
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-
-  width: 90vw;       /* Uses viewport width */
-  max-width: 400px;  /* Prevents it from getting too wide on desktop */
-  box-sizing: border-box; /* Ensures padding doesn't add to width */
-  /* --- NEW ANIMATION PROPERTIES --- */
-  opacity: 0; /* Start invisible */
-  animation: fadeInUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  /* 'forwards' keeps the element visible after animation ends */
-}
-
-.copy-btn.redeem-btn {
-  background: #22c55e;
-  color: #022c22;
-}
-
-
-.page-title {
-  width: 300px;
-  max-width: 80%;
-  height: auto;
-  margin-bottom: 20px;
-  text-align: center;
-  object-fit: contain;
-  /* Perspective helps the 3D rotation look better */
-  transform-style: preserve-3d;
-  
-}
-
-@keyframes logoBounceRotate {
-  0% {
-    opacity: 0;
-    transform: scale(0.3) rotate(-45deg);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1) rotate(10deg); /* Slight overshoot */
-  }
-  70% {
-    transform: scale(0.9) rotate(-5deg); /* Bounce back */
-  }
-  100% {
-    transform: scale(1) rotate(0deg); /* Settle */
-  }
-}
-
-.animate-logo {
-  animation: logoBounceRotate 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-
-.loading {
-  opacity: 0.7;
-  text-align: center;
-}
 
 .section-header {
   position: relative;
@@ -961,23 +852,278 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   </div>
 </div>
 
-  <!-- Page 2 -->
-  <div class="page page2">
-  <img src="https://i.ibb.co.com/TDQgJmdk/unnamed.png" class="page-title"/>
+<div class="page" id="page2">
+  <style>
+    #page2 {
+      min-height: 100vh;
+      width: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      transition: background-image 0.5s ease-in-out;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background-color: rgba(0, 0, 0, 0.3); /* The color to blend in */
+         background-blend-mode: darken;
+    }
 
-  <!-- Tabs -->
-  <div class="tabs">
-  <button class="tab-btn active title-font extra-tilt2" data-game="zzz">ZENLESS</button>
-  <button class="tab-btn title-font extra-tilt2" data-game="genshin">GENSHIN</button>
-  <button class="tab-btn title-font extra-tilt2" data-game="hsr">STAR RAIL</button>
-  <button class="tab-btn title-font extra-tilt2" data-game="hi3">HI3rd</button>
-</div>
+    #page2::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 0;
+    }
 
-  <!-- Codes container -->
-  <div id="codes-container" style="padding-bottom:50px">
-    <p class="loading">Loading codes...</p>
+    #page2 .content {
+      position: relative;
+      z-index: 1;
+      padding: 20px 10px;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* --- LOGO HEADER & ANIMASI BOUNCE --- */
+    .header-logo-container {
+      text-align: center;
+      margin-bottom: 25px;
+      height: 80px; /* Menjaga layout tetap stabil saat logo ganti */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #game-logo-header {
+      height: 100px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6));
+      will-change: transform, opacity;
+    }
+
+    @keyframes logoBounceRotate {
+      0% {
+        opacity: 0;
+        transform: scale(0.3) rotate(-45deg);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.1) rotate(10deg);
+      }
+      70% {
+        transform: scale(0.9) rotate(-5deg);
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    .animate-logo {
+      animation: logoBounceRotate 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    /* --- ANIMASI CARD: SLIDE & POP --- */
+    @keyframes slidePop {
+      0% { opacity: 0; transform: translateX(30px) scale(0.9); }
+      70% { transform: translateX(-5px) scale(1.02); }
+      100% { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
+    .reveal-card {
+      animation: slidePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      opacity: 0;
+    }
+
+    /* --- TABS & UI --- */
+    .tabs-v2 {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 25px;
+    }
+
+    .tab-btn-v2 {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: rgba(255,255,255,0.7);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    .tab-btn-v2.active {
+      background: #fff;
+      color: #000;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(255,255,255,0.2);
+    }
+
+    /* --- CARD STYLING --- */
+    .redeem-card-v2 {
+      background: rgba(20, 20, 25, 0.2);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 18px;
+      margin: 0 auto 15px auto;
+      width: 92%;
+      max-width: 420px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .redeem-header-v2 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .code-v2 {
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    .btn-group-v2 { display: flex; gap: 8px; }
+    .btn-v2 { padding: 8px 14px; border-radius: 10px; border: none; font-size: 0.7rem; font-weight: 900; cursor: pointer; transition: 0.2s; }
+    .btn-copy-v2 { background: #6366f1; color: white; }
+    .btn-redeem-v2 { background: #10b981; color: white; }
+    .btn-v2:active { transform: scale(0.9); }
+
+    .loading-v2 {
+      text-align: center;
+      color: white;
+      margin-top: 50px;
+      letter-spacing: 2px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+  </style>
+
+  <div class="content">
+    <div class="header-logo-container">
+      <img id="game-logo-header" src="" alt="Logo" class="animate-logo">
+    </div>
+
+    <div class="tabs-v2">
+      <button class="tab-btn-v2 active" data-game="zenless">ZZZ</button>
+      <button class="tab-btn-v2" data-game="genshinimpact">GENSHIN</button>
+      <button class="tab-btn-v2" data-game="starrail">HSR</button>
+      <button class="tab-btn-v2" data-game="hi3rd">HI3rd</button>
+    </div>
+
+    <div id="codes-container-v2">
+      <div class="loading-v2">INITIALIZING...</div>
+    </div>
+
+    <div style="height: 100px;"></div> 
   </div>
-  
+
+  <script>
+    (function() {
+      const APIS = {
+        zenless: 'https://kodokkyun-project.vercel.app/api/zzcode',
+        genshinimpact: 'https://kodokkyun-project.vercel.app/api/gscd',
+        starrail: 'https://kodokkyun-project.vercel.app/api/stcode',
+        hi3rd: 'https://kodokkyun-project.vercel.app/api/hicode'
+      };
+
+      const BGS = {
+        zenless: 'https://images7.alphacoders.com/130/thumb-1920-1307267.jpg',
+        genshinimpact: 'https://fastcdn.hoyoverse.com/content-v2/hk4e/159337/54b493f799071cf2050b919305288d5d_7897117480191368973.jpg',
+        starrail: 'https://i.ibb.co.com/VYZ3w3wB/Fyreflies-are-such-magical-creatures-aren-t-they-They-may-throw-themselves-at-a-flame-or-sudden-ups.png',
+        hi3rd: 'https://fastcdn.hoyoverse.com/content-v2/plat/101533/6fbf8271438e536e58169ac01efb0a84_723492315779207397.jpg'
+      };
+
+      const CODELOGO = {
+        zenless: 'https://i.ibb.co.com/JFcGnZvK/f3.png',
+        genshinimpact: 'https://i.ibb.co.com/Nn3J5SnW/1rf.png',
+        starrail: 'https://i.ibb.co.com/TDQgJmdk/unnamed.png',
+        hi3rd: 'https://i.ibb.co.com/tTGpYmcr/ewq.png'
+      };
+
+      async function loadCodes(game) {
+        const container = document.getElementById('codes-container-v2');
+        const pg6 = document.getElementById('page2');
+        const logoImg = document.getElementById('game-logo-header');
+        
+        // Reset Animasi Logo
+        logoImg.classList.remove('animate-logo');
+        logoImg.src = CODELOGO[game];
+        pg6.style.backgroundImage = `url('${BGS[game]}')`;
+        
+        // Paksa browser membaca ulang (reflow) untuk memicu ulang animasi
+        void logoImg.offsetWidth; 
+        logoImg.classList.add('animate-logo');
+        
+        container.innerHTML = '<div class="loading-v2">LOADING CODES...</div>';
+
+        try {
+          const res = await fetch(APIS[game]);
+          const data = await res.json();
+          container.innerHTML = '';
+
+          if (data.active && data.active.length > 0) {
+            data.active.forEach((item, index) => {
+              const rewardList = item.rewards.join(', ');
+              const card = document.createElement('div');
+              card.className = 'redeem-card-v2 reveal-card';
+              card.style.animationDelay = `${index * 0.1}s`;
+              
+              card.innerHTML = `
+                <div class="redeem-header-v2">
+                  <span class="code-v2">${item.code}</span>
+                  <div class="btn-group-v2">
+                    <button class="btn-v2 btn-copy-v2" onclick="copyAction('${item.code}', this)">COPY</button>
+                    <button class="btn-v2 btn-redeem-v2" onclick="window.open('https://hoyolab.com/redeem')">REDEEM</button>
+                  </div>
+                </div>
+                <div class="reward-v2" style="font-size:0.85rem; color:#aaa; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">
+                  <strong>Rewards:</strong> ${rewardList}
+                </div>
+              `;
+              container.appendChild(card);
+            });
+          } else {
+            container.innerHTML = '<div class="loading-v2">NO ACTIVE CODES FOUND</div>';
+          }
+        } catch (e) {
+          container.innerHTML = '<div class="loading-v2" style="color:#f87171">CONNECTION ERROR</div>';
+        }
+      }
+
+      document.querySelectorAll('.tab-btn-v2').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if(this.classList.contains('active')) return;
+          document.querySelectorAll('.tab-btn-v2').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          loadCodes(this.dataset.game);
+        });
+      });
+
+      window.copyAction = function(text, btn) {
+        navigator.clipboard.writeText(text);
+        const originalText = btn.innerText;
+        btn.innerText = 'COPIED!';
+        btn.style.background = '#059669';
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.style.background = '#6366f1';
+        }, 1000);
+      };
+
+      loadCodes('zenless');
+    })();
+  </script>
 </div>
 
 
@@ -1754,7 +1900,7 @@ gcTabBtns.forEach(btn => {
         position: relative;
         overflow: hidden;
         border-radius: 12px;
-        background: #000;
+        background: transparent;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       }
 
