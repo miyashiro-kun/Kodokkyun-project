@@ -1368,6 +1368,18 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
           padding-left: 25px;
         }
         }
+        .joki-tag-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Memberi jarak antar baris */
+}
+
+.joki-row {
+    display: flex;
+    justify-content: space-between; /* Menarik teks ke kiri dan harga ke kanan */
+    align-items: center;
+    width: 100%;
+}
     </style>
 
     <div class="joki-header">
@@ -1446,17 +1458,29 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 
         <div class="joki-grid">
             <div class="joki-card">
-                <h3 class="joki-card-h3">MOC / PF / AS</h3>
-                <div class="joki-tag-container">
-                    <span class="joki-tag">Floor 1-4: 4rb</span>
-                    <span class="joki-tag">Floor 5-7: 7rb</span>
-                    <span class="joki-tag">Floor 8-10: 10rb</span>
-                    <span class="joki-tag">Floor 11-12: 13rb</span>
-                </div>
-                <p class="joki-card-p">Team harus siap battle.</p>
-                <div class="joki-card-price">Cek Floor</div>
-                <button class="joki-btn" onclick="jokiPushOrder('Endgame Content', 'Tanya Floor')">Deploy</button>
-            </div>
+    <h3 class="joki-card-h3">MOC / PF / AS</h3>
+    <div class="joki-tag-container">
+        <div class="joki-row">
+            <span  class="joki-tag">Floor 1-4:</span>
+            <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.4000</span>
+        </div>
+        <div class="joki-row">
+            <span class="joki-tag">Floor 5-7:</span>
+            <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.7000</span>
+        </div>
+        <div class="joki-row">
+            <span class="joki-tag">Floor 8-10:</span>
+            <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.10000</span>
+        </div>
+        <div class="joki-row">
+            <span class="joki-tag">Floor 11-12:</span>
+            <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.13000</span>
+        </div>
+    </div>
+    <p class="joki-card-p">Team harus siap battle.</p>
+    <div class="joki-card-price">Cek Floor</div>
+    <button class="joki-btn" onclick="jokiPushOrder('Endgame Content', 'Tanya Floor')">Deploy</button>
+</div>
             <div class="joki-card-new">
                 <h3 class="joki-card-h3">Main Story</h3>
                 <p class="joki-card-p">Selesaikan Story Mission yang panjang (tidak bisa skip).</p>
