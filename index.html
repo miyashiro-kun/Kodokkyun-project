@@ -1254,6 +1254,87 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     margin-top: 12px ;
 }
 
+.joki-card-cw {
+    background: linear-gradient(to bottom, rgba(12, 16, 29, 0.5), var(--joki-bg)), 
+                        url('https://fastcdn.hoyoverse.com/mi18n/hkrpg_global/m20250925hy2dumqghs/upload/ad5bd5eca79cda2769a57d8f8145aa65_8984740248685669097.png') center/cover;
+            
+    border: 1px solid var(--joki-border);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: 0.3s;
+    
+    /* Ukuran lengkungan gigitan */
+    --bite-size: 25px;
+
+    /* Teknik Masking untuk membuat potongan melengkung ke dalam */
+    mask: 
+        radial-gradient(var(--bite-size) at 100% 0, #0000 98%, #000) 100% 0 / 100% 100% no-repeat,
+        radial-gradient(var(--bite-size) at 0 100%, #0000 98%, #000) 0 100% / 100% 100% no-repeat;
+    mask-composite: intersect;
+    
+    /* Prefix untuk browser Chrome/Safari/Edge */
+    -webkit-mask: 
+        radial-gradient(var(--bite-size) at 100% 0, #0000 98%, #000),
+        radial-gradient(var(--bite-size) at 0 100%, #0000 98%, #000);
+    -webkit-mask-composite: destination-in;
+
+    /* Mencegah card menciut di mobile portrait */
+    min-height: 200px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 12px ;
+}
+
+        .joki-card-cw:hover {
+            border-color: var(--joki-gold);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            transition: all 1.25s ease;
+        }
+        
+        
+.joki-card-ev {
+    background: linear-gradient(to bottom, rgba(12, 16, 29, 0.5), var(--joki-bg)), 
+                        url('https://static.wikia.nocookie.net/houkai-star-rail/images/e/e3/Event_Chrysos_Awoo_Championship.png') center/cover;
+            
+    border: 1px solid var(--joki-border);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: 0.3s;
+    
+    /* Ukuran lengkungan gigitan */
+    --bite-size: 25px;
+
+    /* Teknik Masking untuk membuat potongan melengkung ke dalam */
+    mask: 
+        radial-gradient(var(--bite-size) at 100% 0, #0000 98%, #000) 100% 0 / 100% 100% no-repeat,
+        radial-gradient(var(--bite-size) at 0 100%, #0000 98%, #000) 0 100% / 100% 100% no-repeat;
+    mask-composite: intersect;
+    
+    /* Prefix untuk browser Chrome/Safari/Edge */
+    -webkit-mask: 
+        radial-gradient(var(--bite-size) at 100% 0, #0000 98%, #000),
+        radial-gradient(var(--bite-size) at 0 100%, #0000 98%, #000);
+    -webkit-mask-composite: destination-in;
+
+    /* Mencegah card menciut di mobile portrait */
+    min-height: 200px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 12px ;
+}
+
+        .joki-card-ev:hover {
+            border-color: var(--joki-gold);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            transition: all 1.25s ease;
+        }
+
 .joki-card-new {
     background: linear-gradient(to bottom, rgba(12, 16, 29, 0.5), var(--joki-bg)), 
                         url('https://fastcdn.hoyoverse.com/content-v2/hkrpg/161539/f40835cbd720d841de83551695162970_9071788954763536383.png') center/cover;
@@ -1331,6 +1412,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             text-transform: uppercase;
             width: 100%;
             transition: 0.2s;
+            
         }
 
         .joki-btn:hover {
@@ -1379,6 +1461,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     justify-content: space-between; /* Menarik teks ke kiri dan harga ke kanan */
     align-items: center;
     width: 100%;
+    margin: 5px;
 }
     </style>
 
@@ -1390,6 +1473,45 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     </div>
 
     <div class="joki-content-wrapper">
+        
+        <div class="joki-section-title">
+            <div class="joki-section-line"></div>
+            <span>Event </span>
+        </div>
+        
+        <div class="joki-card-cw">
+                <h3 class="joki-card-h3">Currency Wars</h3>
+                <p class="joki-card-p">Event Anjay Currency wars sudah bisa di joki</p>
+                
+                <div class="joki-row">
+                 <span  class="joki-tag">18000 Point</span>
+                  <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.24000</span>
+                 </div> 
+                 
+                  <div class="joki-row">
+                 <span  class="joki-tag">Level Up accession </span>
+                  <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.28000</span>
+                 </div> 
+                 
+                 <div class="joki-row">
+                 <span  class="joki-tag">Sampai Welt Creator Mentok </span>
+                  <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.150000</span>
+                 </div> 
+                 
+                <br>
+                
+                <button class="joki-btn" onclick="jokiPushOrder('Currency Wars', 'Tanya Harga')">Deploy</button>
+            </div>
+            
+            <div class="joki-card-ev" >
+                <h3 class="joki-card-h3">Chrysos Awoo Championship</h3>
+                <p class="joki-card-p">Ngelarin Event Bulanan Sabung Kocheng</p>
+                
+                <div class="joki-card-price">Rp 25.000</div>
+                
+                <button class="joki-btn" onclick="jokiPushOrder('Chrysos Awoo Championship', 'Rp 25.000')">Deploy</button>
+            </div>
+        
         <div class="joki-section-title">
             <div class="joki-section-line"></div>
             <span>Rawat Akun</span>
@@ -1483,10 +1605,13 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 </div>
             <div class="joki-card-new">
                 <h3 class="joki-card-h3">Main Story</h3>
-                <p class="joki-card-p">Selesaikan Story Mission yang panjang (tidak bisa skip).</p>
+                <p class="joki-card-p">Selesaikan Story Mission yang panjang .</p>
+                <p class="joki-card-p">ayo kita live sambil story .</p>
                 <div class="joki-card-price">Rp 50k - 200k</div>
                 <button class="joki-btn" onclick="jokiPushOrder('Story Mission', 'Nego')">Deploy</button>
             </div>
+            
+            
         </div>
     </div>
 
