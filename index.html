@@ -796,11 +796,11 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     <div class="menu-container" id="menuContainer">
     <div class="circular-ring">
       <svg viewBox="0 0 100 100" class="svg-layer">
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 0; --bg: #b05b67;" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 1; --bg: #e3d985;" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 2; --bg: #8db06d;" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 3; --bg: #69a885;" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 4; --bg: #5b8db0;" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 0; --bg: #485aabcc;" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 1; --bg: #433499cc" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 2; --bg: #603499cc" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 3; --bg: #346099cc" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 4; --bg: #508394cc" />
       </svg>
 
       <div class="content-node" style="--angle: 18deg;">
@@ -808,7 +808,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         <span class="label">Profile</span>
       </div>
       <div class="content-node" style="--angle: 90deg;">
-        <span class="icon">?</span>
+        <span class="icon">✒️</span>
         <span class="label">Code Redem</span>
       </div>
       <div class="content-node" style="--angle: 162deg;">
@@ -908,6 +908,8 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     stroke-dasharray: 47.75 238.76;
     transform-origin: center;
     transform: rotate(calc(var(--i) * 72deg));
+    backdrop-filter: blur(55px);
+      -webkit-backdrop-filter: blur(55px);
     transition: stroke-width 0.3s ease, filter 0.3s ease;
     cursor: pointer;
   }
@@ -939,7 +941,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 
   .icon { font-size: 28px; margin-bottom: 2px; }
   .label {
-    font-size: 11px;
+    font-size: 7px;
     color: white;
     font-weight: 800;
     text-transform: uppercase;
@@ -948,17 +950,25 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 </style>
 
 <script>
+  /* =============================
+     ELEMENT REFERENCES
+  ============================== */
   const menu = document.getElementById('menuContainer');
   const dim = document.getElementById('menuDim');
   const slices = document.querySelectorAll('.ring-slice');
 
+  /* =============================
+     CONFIG
+  ============================== */
   const HOLD_DELAY = 700;
   const CENTER_ZONE = { width: 0.35, height: 0.35 };
 
+  /* =============================
+     STATE
+  ============================== */
   let holdTimer = null;
   let holding = false;
-  let activeSliceIndex = null;
-  let pointerId = null;
+  let menuOpen = false;
 
   /* =============================
      HELPERS
@@ -966,6 +976,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   function inCenterZone(x, y) {
     const w = window.innerWidth;
     const h = window.innerHeight;
+
     return (
       x >= w * (0.5 - CENTER_ZONE.width / 2) &&
       x <= w * (0.5 + CENTER_ZONE.width / 2) &&
@@ -977,91 +988,68 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   function showMenu() {
     menu.classList.add('active');
     dim.classList.add('active');
+    menuOpen = true;
   }
 
   function hideMenu() {
     menu.classList.remove('active');
     dim.classList.remove('active');
+    menuOpen = false;
   }
 
   /* =============================
-     HOLD START
+     HOLD TO OPEN
   ============================== */
-  function onPointerDown(e) {
+  function startHold(e) {
+    if (menuOpen) return;
     if (!inCenterZone(e.clientX, e.clientY)) return;
-    if (holding) return;
 
     holding = true;
-    pointerId = e.pointerId;
-    activeSliceIndex = null;
-
-    // 🔥 CAPTURE HANYA UNTUK TOUCH
-    if (e.pointerType === 'touch') {
-      document.body.setPointerCapture(pointerId);
-    }
-
     holdTimer = setTimeout(() => {
       if (holding) showMenu();
     }, HOLD_DELAY);
   }
 
-  /* =============================
-     HOLD END (RELEASE)
-  ============================== */
-  function onPointerUp(e) {
-    if (!holding) return;
-    if (pointerId !== e.pointerId) return;
-
-    clearTimeout(holdTimer);
+  function cancelHold() {
     holding = false;
-
-    if (activeSliceIndex !== null) {
-      goToPage(activeSliceIndex); // profile = 0
-    }
-
-    hideMenu();
-
-    if (e.pointerType === 'touch') {
-      document.body.releasePointerCapture(pointerId);
-    }
-
-    pointerId = null;
-    activeSliceIndex = null;
-  }
-
-  function onPointerCancel(e) {
-    if (pointerId !== e.pointerId) return;
-
     clearTimeout(holdTimer);
-    holding = false;
-    hideMenu();
-    pointerId = null;
-    activeSliceIndex = null;
   }
 
   /* =============================
-     EVENTS (GLOBAL)
+     EVENTS
   ============================== */
-  document.addEventListener('pointerdown', onPointerDown);
-  document.addEventListener('pointerup', onPointerUp);
-  document.addEventListener('pointercancel', onPointerCancel);
+  window.addEventListener('pointerdown', startHold, { passive: true });
+  window.addEventListener('pointerup', cancelHold);
+  window.addEventListener('pointercancel', cancelHold);
 
   /* =============================
-     SLICE TRACKING
+     CLOSE ON DIM CLICK
+  ============================== */
+  dim.addEventListener('click', hideMenu);
+
+  /* =============================
+     SLICE CLICK -> NAVIGATE
   ============================== */
   slices.forEach((slice, index) => {
-    slice.addEventListener('pointerenter', () => {
-      if (holding) activeSliceIndex = index;
+    slice.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToPage(index); // profile = 0
+      hideMenu();
     });
   });
 
   /* =============================
-     NAVIGATION
+     NAVIGATION (ADJUST TO YOUR APP)
   ============================== */
   function goToPage(index) {
     console.log('GO TO PAGE:', index);
+
+    // contoh:
+    // swiper.slideTo(index);
+    // scrollContainer.scrollTo({ left: index * innerWidth });
   }
 </script>
+
 
 
 
