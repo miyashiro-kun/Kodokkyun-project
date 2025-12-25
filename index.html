@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
 <title>Swipe Link Tree with Collapse</title>
+<script src="https://kit.fontawesome.com/424261530c.js" crossorigin="anonymous"></script>
 <style>
 * { box-sizing: border-box; 
   -webkit-tap-highlight-color: transparent;
@@ -795,33 +796,58 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       <div class="menu-dim" id="menuDim"></div>
     <div class="menu-container" id="menuContainer">
     <div class="circular-ring">
+        
+      <div style="display: flex;justify-content: center; /* Centers horizontally */
+  align-items: center;">
+        <div class="pathlogo" style="width:47%;height:47%;border:solid 4px #fff;border-radius:100%;position:absolute;display: flex;justify-content: center; /* Centers horizontally */
+  align-items: center;"></div>  
+  
+  <div class="pathlogo2" style="width:105%;height:105%;border:solid 4px #fff;border-radius:100%;position:absolute;display: flex;justify-content: center; /* Centers horizontally */
+  align-items: center;">
+      
+  <svg id="svg" width="210" height="210" viewBox="0 0 200 200">
+  <circle
+    id="arc"
+    cx="100"
+    cy="100"
+    r="80"
+    fill="none"
+    stroke="#fff"
+    stroke-width="10"
+    stroke-dasharray="100 400"
+    transform="rotate(-90 100 100)"
+  />
+</svg>
+  </div>  
       <svg viewBox="0 0 100 100" class="svg-layer">
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 0; --bg: #485aabcc;" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 1; --bg: #433499cc" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 2; --bg: #603499cc" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 3; --bg: #346099cc" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 4; --bg: #508394cc" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 0; --bg: #00000099" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 1; --bg: #00000088" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 2; --bg: #00000077" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 3; --bg: #00000066" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 4; --bg: #00000055" />
       </svg>
+      
+      </div>
 
       <div class="content-node" style="--angle: 18deg;">
-        <span class="icon">🏠</span>
+        <span class="icon"><i class="fa-solid fa-user" style="color: #ffffff;"></i></span>
         <span class="label">Profile</span>
       </div>
       <div class="content-node" style="--angle: 90deg;">
-        <span class="icon">✒️</span>
+        <span class="icon"><i class="fa-solid fa-keyboard" style="color: #ffffff;"></i></span>
         <span class="label">Code Redem</span>
       </div>
       <div class="content-node" style="--angle: 162deg;">
-        <span class="icon">🔔</span>
+        <span class="icon"><i class="fa-solid fa-gamepad" style="color: #ffffff;"></i></span>
         <span class="label">Joki</span>
       </div>
       <div class="content-node" style="--angle: 234deg;">
-        <span class="icon">📷</span>
+        <span class="icon"><i class="fa-solid fa-tv" style="color: #ffffff;"></i></span>
         <span class="label">News</span>
       </div>
       <div class="content-node" style="--angle: 306deg;">
-        <span class="icon">🗑️</span>
-        <span class="label">Patches</span>
+        <span class="icon" style="margin-left:-15px;"><i class="fa-solid fa-newspaper" style="color: #ffffff;"></i>️</span>
+        <span class="label" style="margin-left:-15px;">Patches</span>
       </div>
     </div>
   </div>
@@ -857,6 +883,13 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   z-index: 5000;
   pointer-events: auto;
   touch-action: manipulation;
+}
+.pathlogo{
+    background:
+    linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+    url("https://gamebrott.com/wp-content/uploads/2023/08/image-47.png");
+     background-size: cover;
+    background-position: center;
 }
 .hold-button {
   width: 0%;
@@ -894,6 +927,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     position: relative;
     width: var(--menu-size);
     height: var(--menu-size);
+    
   }
 
   .svg-layer {
@@ -914,11 +948,13 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       -webkit-backdrop-filter: blur(55px);
     transition: stroke-width 0.3s ease, filter 0.3s ease;
     cursor: pointer;
+    
   }
 
   .ring-slice:hover {
     stroke-width: 28;
     filter: brightness(1.15);
+    
   }
 
   .content-node {
@@ -940,8 +976,14 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       calc(var(--content-radius) * sin(var(--angle) - 90deg))
     );
   }
-
+  .content-node:hover {
+    transform: scale(0.9)!important;
+  }
+  
   .icon { font-size: 28px; margin-bottom: 2px; }
+  .icon:hover {
+    transform: scale(2) !important;
+  }
   .label {
     font-size: 7px;
     color: white;
@@ -950,7 +992,31 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
   }
 </style>
+<script>
+const arc = document.getElementById("arc");
+const svg = document.getElementById("svg");
 
+document.addEventListener("mousemove", (e) => {
+  const rect = svg.getBoundingClientRect();
+
+  // center of the SVG
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+
+  // mouse position
+  const dx = e.clientX - cx;
+  const dy = e.clientY - cy;
+
+  // angle in degrees
+  const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+  // rotate arc to face mouse
+  arc.setAttribute(
+    "transform",
+    `rotate(${angle - 40} 100 100)`
+  );
+});
+</script>
 <script>
   /* =============================
      ELEMENT REFERENCES
@@ -958,7 +1024,17 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   const menu = document.getElementById('menuContainer');
   const dim = document.getElementById('menuDim');
   const slices = document.querySelectorAll('.ring-slice');
-
+    
+    
+  const LOGO_BGS = [
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-44.png",
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-45.png",
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-46.png",
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-47.png",
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-48.png",
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-49.png",
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-43.png"
+];    
   /* =============================
      CONFIG
   ============================== */
@@ -988,6 +1064,16 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   }
 
   function showMenu() {
+      
+      const randomBg = LOGO_BGS[Math.floor(Math.random() * LOGO_BGS.length)];
+  
+  // 2. Select the pathlogo element
+  const logoElement = document.querySelector('.pathlogo');
+  
+  // 3. Apply the new background (keeping your linear-gradient overlay if needed)
+  if (logoElement) {
+    logoElement.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("${randomBg}")`;
+  }
     menu.classList.add('active');
     dim.classList.add('active');
     menuOpen = true;
