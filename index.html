@@ -996,26 +996,44 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 const arc = document.getElementById("arc");
 const svg = document.getElementById("svg");
 
-document.addEventListener("mousemove", (e) => {
+// Shared function to handle the rotation logic
+function updateRotation(clientX, clientY) {
   const rect = svg.getBoundingClientRect();
 
   // center of the SVG
   const cx = rect.left + rect.width / 2;
   const cy = rect.top + rect.height / 2;
 
-  // mouse position
-  const dx = e.clientX - cx;
-  const dy = e.clientY - cy;
+  // position relative to center
+  const dx = clientX - cx;
+  const dy = clientY - cy;
 
   // angle in degrees
   const angle = Math.atan2(dy, dx) * (180 / Math.PI);
 
-  // rotate arc to face mouse
+  // rotate arc to face the pointer
   arc.setAttribute(
     "transform",
     `rotate(${angle - 40} 100 100)`
   );
+}
+
+// 1. Desktop Mouse Movement
+document.addEventListener("mousemove", (e) => {
+  updateRotation(e.clientX, e.clientY);
 });
+
+// 2. Mobile Touch Movement (Follows finger)
+document.addEventListener("touchmove", (e) => {
+  const touch = e.touches[0];
+  updateRotation(touch.clientX, touch.clientY);
+}, { passive: true });
+
+// 3. Mobile Touch Start (Snaps to finger immediately on touch)
+document.addEventListener("touchstart", (e) => {
+  const touch = e.touches[0];
+  updateRotation(touch.clientX, touch.clientY);
+}, { passive: true });
 </script>
 <script>
   /* =============================
