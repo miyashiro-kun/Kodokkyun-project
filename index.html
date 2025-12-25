@@ -26,12 +26,7 @@ html, body {
 
 /* Container & Pages */
 .container {
-  display:flex;
-  width:500vw;
-  height:100vh;
-  will-change: transform;
-  transition: transform 0.45s cubic-bezier(.22,.61,.36,1);
-  touch-action: pan-y;
+  
 }
 
 .page {
@@ -781,9 +776,265 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
       background-color: rgba(0, 0, 0, 0.7); /* The color to blend in */
     background-blend-mode: darken;
 }
+
+.radial-menu-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  pointer-events: none;
+  background: rgba(255,255,255,0.0);
+}
+
 </style>
 </head>
 <body>
+
+<div class="radial-menu-layer">
+  <div class="menu-wrapper" id="triggerZone">
+      <div class="hold-button"></div>
+      <div class="menu-dim" id="menuDim"></div>
+    <div class="menu-container" id="menuContainer">
+    <div class="circular-ring">
+      <svg viewBox="0 0 100 100" class="svg-layer">
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 0; --bg: #b05b67;" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 1; --bg: #e3d985;" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 2; --bg: #8db06d;" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 3; --bg: #69a885;" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 4; --bg: #5b8db0;" />
+      </svg>
+
+      <div class="content-node" style="--angle: 18deg;">
+        <span class="icon">🏠</span>
+        <span class="label">Profile</span>
+      </div>
+      <div class="content-node" style="--angle: 90deg;">
+        <span class="icon">?</span>
+        <span class="label">Code Redem</span>
+      </div>
+      <div class="content-node" style="--angle: 162deg;">
+        <span class="icon">🔔</span>
+        <span class="label">Joki</span>
+      </div>
+      <div class="content-node" style="--angle: 234deg;">
+        <span class="icon">📷</span>
+        <span class="label">News</span>
+      </div>
+      <div class="content-node" style="--angle: 306deg;">
+        <span class="icon">🗑️</span>
+        <span class="label">Patches</span>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<style>
+  :root {
+    --menu-size: 380px;
+    --content-radius: 135px; 
+  }
+.menu-dim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.52); /* 🔥 90% dim */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 4000;
+}
+
+.menu-dim.active {
+  opacity: 1;
+  pointer-events: auto; /* supaya klik luar bisa nutup */
+}
+.menu-wrapper {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 68px;
+  height: 68px;
+  z-index: 5000;
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+.hold-button {
+  width: 0%;
+  height: 0%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.0);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+  /* Initial hidden state */
+.menu-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 5000;
+}
+
+.menu-container.active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+
+.menu-container:not(.active) {
+  pointer-events: none;
+}
+  .circular-ring {
+    position: relative;
+    width: var(--menu-size);
+    height: var(--menu-size);
+  }
+
+  .svg-layer {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-108deg);
+    overflow: visible;
+  }
+
+  .ring-slice {
+    fill: none;
+    stroke: var(--bg);
+    stroke-width: 24;
+    stroke-dasharray: 47.75 238.76;
+    transform-origin: center;
+    transform: rotate(calc(var(--i) * 72deg));
+    transition: stroke-width 0.3s ease, filter 0.3s ease;
+    cursor: pointer;
+  }
+
+  .ring-slice:hover {
+    stroke-width: 28;
+    filter: brightness(1.15);
+  }
+
+  .content-node {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 60px;
+    margin-top: -30px;
+    margin-left: -40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 10;
+    transform: translate(
+      calc(var(--content-radius) * cos(var(--angle) - 90deg)),
+      calc(var(--content-radius) * sin(var(--angle) - 90deg))
+    );
+  }
+
+  .icon { font-size: 28px; margin-bottom: 2px; }
+  .label {
+    font-size: 11px;
+    color: white;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  }
+</style>
+
+<script>
+  const menu = document.getElementById('menuContainer');
+  const dim = document.getElementById('menuDim');
+  const slices = document.querySelectorAll('.ring-slice');
+
+  const HOLD_DELAY = 700;
+  let holdTimer = null;
+  let holding = false;
+  let activeSliceIndex = null; // 🔥 slice yang sedang di-hover
+
+  const CENTER_ZONE = { width: 0.35, height: 0.35 };
+
+  function inCenterZone(x, y) {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    return (
+      x >= w * (0.5 - CENTER_ZONE.width / 2) &&
+      x <= w * (0.5 + CENTER_ZONE.width / 2) &&
+      y >= h * (0.5 - CENTER_ZONE.height / 2) &&
+      y <= h * (0.5 + CENTER_ZONE.height / 2)
+    );
+  }
+
+  function showMenu() {
+    menu.classList.add('active');
+    dim.classList.add('active');
+  }
+
+  function hideMenu() {
+    menu.classList.remove('active');
+    dim.classList.remove('active');
+  }
+
+  function startHold(e) {
+    if (!inCenterZone(e.clientX, e.clientY)) return;
+
+    holding = true;
+    activeSliceIndex = null;
+
+    holdTimer = setTimeout(() => {
+      if (holding) showMenu();
+    }, HOLD_DELAY);
+  }
+
+  function endHold() {
+    holding = false;
+    clearTimeout(holdTimer);
+
+    // 🔥 RELEASE ACTION
+    if (activeSliceIndex !== null) {
+      goToPage(activeSliceIndex ); // page dimulai dari 1
+    }
+
+    hideMenu();
+    activeSliceIndex = null;
+  }
+
+  /* ============================
+     POINTER EVENTS
+  ============================ */
+  window.addEventListener('pointerdown', startHold, { passive: true });
+  window.addEventListener('pointerup', endHold);
+  window.addEventListener('pointercancel', endHold);
+  window.addEventListener('pointerleave', endHold);
+
+  /* ============================
+     SLICE HOVER TRACKING
+  ============================ */
+  slices.forEach((slice, index) => {
+
+    slice.addEventListener('pointerenter', () => {
+      activeSliceIndex = index;
+    });
+
+    slice.addEventListener('pointerleave', () => {
+      if (activeSliceIndex === index) {
+        activeSliceIndex = null;
+      }
+    });
+
+  });
+</script>
+
+
+
+
+
+
 
 <div class="container" id="container">
   <!-- Page 1 Link Tree -->
