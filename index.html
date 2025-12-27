@@ -111,6 +111,7 @@ html, body {
     overflow: hidden; /* Prevent stars from showing outside page boundaries */
     background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_mian_pc-sea.3870807c..jpeg) center / cover no-repeat;
             background-color: #000; /* Fallback */
+            background-attachment: fixed;
 }
 
 #warpCanvas {
@@ -120,6 +121,7 @@ html, body {
     width: 100%;
     height: 100%;
     z-index: 0; /* Put it behind everything */
+    mix-blend-mode: screen;
     pointer-events: none; /* Allow clicks to pass through to buttons */
 }
 
@@ -1095,15 +1097,20 @@ document.addEventListener("touchstart", (e) => {
     logoElement.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("${randomBg}")`;
   }
     menu.classList.add('active');
-    dim.classList.add('active');
-    menuOpen = true;
-  }
+  dim.classList.add('active');
+  // Prevent clicking items behind the menu while it's open
+  document.querySelector('.page1').style.pointerEvents = 'none';
+  menuOpen = true;
+}
+  
 
   function hideMenu() {
-    menu.classList.remove('active');
-    dim.classList.remove('active');
-    menuOpen = false;
-  }
+  menu.classList.remove('active');
+  dim.classList.remove('active');
+  // Re-enable clicks on the page content
+  document.querySelector('.page1').style.pointerEvents = 'auto';
+  menuOpen = false;
+}
 
   /* =============================
      HOLD TO OPEN
@@ -1139,23 +1146,31 @@ document.addEventListener("touchstart", (e) => {
      SLICE CLICK -> NAVIGATE
   ============================== */
   slices.forEach((slice, index) => {
-    slice.addEventListener('click', (e) => {
-      e.stopPropagation();
-      goToPage(index); // profile = 0
-      hideMenu();
-    });
+  slice.addEventListener('click', (e) => {
+    e.stopPropagation();
+    // Map the slices to your actual page order
+    // index 0=Profile(Page1), 1=Code(Page2), 2=Joki(Page3), etc.
+    goToPage(index); 
+    hideMenu();
   });
+});
 
   /* =============================
      NAVIGATION (ADJUST TO YOUR APP)
   ============================== */
   function goToPage(index) {
-    console.log('GO TO PAGE:', index);
-
-    // contoh:
-    // swiper.slideTo(index);
-    // scrollContainer.scrollTo({ left: index * innerWidth });
-  }
+    const container = document.getElementById('container');
+    const width = window.innerWidth;
+    
+    // Smooth scroll the container to the selected page
+    container.scrollTo({
+        left: index * width,
+        behavior: 'smooth'
+    });
+    
+    // Optional: Update your island dots if you have them
+    updateDots(index);
+}
 </script>
 
 
@@ -3094,98 +3109,112 @@ function togglePanel(btn) {
 fetchCodes();
 </script>
  <script>
-        const canvas = document.getElementById('warpCanvas');
-        const ctx = canvas.getContext('2d');
+       const canvas = document.getElementById('warpCanvas');
+const ctx = canvas.getContext('2d');
 
-        let width, height, centerX, centerY;
-        let starCount = 600; // Lowered slightly for better visibility over image
-        let stars = [];
-        
-        let currentSpeed = 0.001;
-        let targetSpeed = 0.001;
-        const baseSpeed = 0.001;
-        const boostSpeed = 0.12;
+let width, height, centerX, centerY;
+let stars = [];
+const starCount = 600; // Increased density
+const baseSpeed = 1.5;
+const boostSpeed = 25;
+let speed = baseSpeed;
+let targetSpeed = baseSpeed;
 
-        function init() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            centerX = width / 2;
-            centerY = height / 2;
-            canvas.width = width;
-            canvas.height = height;
+// --- CONFIG FOR EFFECT ---
+// Colors inspired by the warp sequence (Blue, Teal, White, Purple)
+const colors = [
+    'rgba(130, 200, 255,', // Light Blue
+    'rgba(100, 255, 230,', // Teal
+    'rgba(255, 255, 255,', // Pure White
+    'rgba(180, 150, 255,'  // Soft Purple
+];
 
-            stars = [];
-            for (let i = 0; i < starCount; i++) {
-                stars.push({
-                    x: (Math.random() - 0.5) * width * 2,
-                    y: (Math.random() - 0.5) * height * 2,
-                    z: Math.random() * width,
-                    px: 0,
-                    py: 0
-                });
-            }
+function init() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    centerX = width / 2;
+    centerY = height / 2;
+    stars = [];
+    for (let i = 0; i < starCount; i++) {
+        stars.push({
+            x: Math.random() * width - centerX,
+            y: Math.random() * height - centerY,
+            z: Math.random() * width,
+            px: 0,
+            py: 0,
+            // Randomly assign a color from our palette
+            color: colors[Math.floor(Math.random() * colors.length)]
+        });
+    }
+}
+
+function update() {
+    speed += (targetSpeed - speed) * 0.05;
+    for (let i = 0; i < stars.length; i++) {
+        let s = stars[i];
+        s.z -= speed;
+        if (s.z <= 0) {
+            s.z = width;
+            s.x = Math.random() * width - centerX;
+            s.y = Math.random() * height - centerY;
+            s.px = (s.x / s.z) * (width / 2) + centerX;
+            s.py = (s.y / s.z) * (width / 2) + centerY;
         }
+    }
+}
 
-        function update() {
-            currentSpeed += (targetSpeed - currentSpeed) * 0.05;
+function draw() {
+    // MOTION BLUR: Use semi-transparent fill instead of clearRect
+    // This creates the long "light trail" effect
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'; 
+    ctx.fillRect(0, 0, width, height);
 
-            for (let i = 0; i < stars.length; i++) {
-                let s = stars[i];
-                s.px = (s.x / s.z) * (width / 2) + centerX;
-                s.py = (s.y / s.z) * (height / 2) + centerY;
+    ctx.lineCap = 'round';
 
-                s.z -= currentSpeed * width;
+    for (let i = 0; i < stars.length; i++) {
+        let s = stars[i];
+        let x = (s.x / s.z) * (width / 2) + centerX;
+        let y = (s.y / s.z) * (height / 2) + centerY;
 
-                if (s.z <= 1) {
-                    s.z = width;
-                    s.x = (Math.random() - 0.5) * width * 2;
-                    s.y = (Math.random() - 0.5) * height * 2;
-                    s.px = (s.x / s.z) * (width / 2) + centerX;
-                    s.py = (s.y / s.z) * (height / 2) + centerY;
-                }
-            }
+        if (s.px !== 0) {
+            let opacity = 1 - (s.z / width);
+            let weight = (1 - s.z / width) * 4;
+
+            // --- BLOOM EFFECT ---
+            // We draw the "glow" layer first
+            ctx.shadowBlur = 12; // High blur for bloom
+            ctx.shadowColor = s.color + '0.8)'; // Same color as star
+            
+            ctx.strokeStyle = s.color + opacity + ')';
+            ctx.lineWidth = weight;
+
+            ctx.beginPath();
+            ctx.moveTo(s.px, s.py);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            
+            // Reset shadow so it doesn't bleed into every draw call
+            ctx.shadowBlur = 0;
         }
+        s.px = x;
+        s.py = y;
+    }
 
-        function draw() {
-            // IMPORTANT: Clear the canvas with clearRect instead of fillRect 
-            // so the background image remains visible.
-            ctx.clearRect(0, 0, width, height);
+    update();
+    requestAnimationFrame(draw);
+}
 
-            ctx.lineCap = 'round';
+// Event Listeners for Interaction
+window.addEventListener('resize', init);
+window.addEventListener('mousedown', () => targetSpeed = boostSpeed);
+window.addEventListener('mouseup', () => targetSpeed = baseSpeed);
+window.addEventListener('touchstart', (e) => { e.preventDefault(); targetSpeed = boostSpeed; });
+window.addEventListener('touchend', () => targetSpeed = baseSpeed);
 
-            for (let i = 0; i < stars.length; i++) {
-                let s = stars[i];
-                let x = (s.x / s.z) * (width / 2) + centerX;
-                let y = (s.y / s.z) * (height / 2) + centerY;
-
-                // Opacity increases as stars get closer
-                let opacity = 1 - (s.z / width);
-                let weight = (1 - s.z / width) * 4;
-
-                // Light blue/white tint to match Honkai: Star Rail aesthetic
-                ctx.strokeStyle = `rgba(200, 230, 255, ${opacity})`;
-                ctx.lineWidth = weight;
-
-                ctx.beginPath();
-                ctx.moveTo(s.px, s.py);
-                ctx.lineTo(x, y);
-                ctx.stroke();
-            }
-
-            update();
-            requestAnimationFrame(draw);
-        }
-
-        window.addEventListener('resize', init);
-        window.addEventListener('mousedown', () => targetSpeed = boostSpeed);
-        window.addEventListener('mouseup', () => targetSpeed = baseSpeed);
-        
-        // Touch support
-        window.addEventListener('touchstart', (e) => { e.preventDefault(); targetSpeed = boostSpeed; });
-        window.addEventListener('touchend', () => targetSpeed = baseSpeed);
-
-        init();
-        draw();
+init();
+draw();
     </script>
 </body>
 </html>
