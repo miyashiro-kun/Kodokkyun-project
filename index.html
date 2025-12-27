@@ -821,10 +821,10 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   </div>  
       <svg viewBox="0 0 100 100" class="svg-layer">
         <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 0; --bg: #00000099" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 1; --bg: #00000088" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 2; --bg: #00000077" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 3; --bg: #00000066" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 4; --bg: #00000055" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 1; --bg: #00000099" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 2; --bg: #00000099" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 3; --bg: #00000099" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 4; --bg: #00000099" />
       </svg>
       
       </div>
@@ -946,13 +946,16 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     transform: rotate(calc(var(--i) * 72deg));
     backdrop-filter: blur(55px);
       -webkit-backdrop-filter: blur(55px);
-    transition: stroke-width 0.3s ease, filter 0.3s ease;
+    transition: stroke-width 0.7s ease, filter 0.3s ease;
     cursor: pointer;
     
   }
 
   .ring-slice:hover {
     stroke-width: 28;
+    str
+    stroke: rgba(255, 255, 255, 0.5);
+    transition: all 1.5 ease;
     filter: brightness(1.15);
     
   }
