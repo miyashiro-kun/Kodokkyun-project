@@ -218,26 +218,44 @@ html, body {
   color: white;
 }
 
-.modern-link:active {
-  transform: scale(0.97);
-  background: rgba(255, 255, 255, 0.08);
-  color: black;
+* { 
+  -webkit-tap-highlight-color: transparent !important; 
 }
 
 .modern-link:hover {
-  transform: translateY(-3px);
   background: #ffffff;
   box-shadow: 0 12px 20px rgba(0,0,0,0.08);
   color: black;
+  -webkit-tap-highlight-color: transparent !important; 
 
+}
+* {
+  /* Disable the blue box highlight on mobile (Chrome/Safari) */
+  -webkit-tap-highlight-color: transparent !important;
+  
+  /* Disable the dotted border on click (Firefox) */
+  outline: none !important;
+}
+
+/* Specifically for buttons and links in Firefox */
+button::-moz-focus-inner,
+a::-moz-focus-inner {
+  border: 0;
+}
+
+/* Prevent text selection while clicking/dragging (good for UI) */
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.modern-link:hover .link-info {
+  color: black; !important; /* Forces the text to stay white even on hover */
 }
 
 .modern-link:active :hover {
-  transform: translateY(-3px);
-  background: #ffffff;
-  box-shadow: 0 12px 20px rgba(0,0,0,0.08);
-  color: black;
-
+    color: black;
+  -webkit-tap-highlight-color: transparent !important; 
 }
 
 
