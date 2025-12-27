@@ -3209,34 +3209,84 @@ const ctx = canvas.getContext('2d');
 
 let width, height, centerX, centerY;
 let stars = [];
-const starCount = 160; 
+let constellations = [];
+const starCount = 180; 
 const baseSpeed = 1.5;
 const boostSpeed = 25;
 let speed = baseSpeed;
 let targetSpeed = baseSpeed;
 
-// Portal (Event Horizon) State
 let portal = {
     z: 0,
     maxZ: 0,
     color: '0, 100, 255',
-    activeOpacity: 0 // Track portal visibility separately
+    activeOpacity: 0
 };
 
-const colors = [
-    'rgba(130, 200, 255,', 
-    'rgba(100, 255, 230,', 
-    'rgba(255, 255, 255,', 
-    'rgba(180, 150, 255,'  
-];
+const patterns = {
+    "Aries": [{x:-10,y:0}, {x:0,y:-5}, {x:10,y:5}, {x:15,y:15}],
+    "Taurus": [{x:-20,y:-20}, {x:-10,y:-10}, {x:0,y:0}, {x:10,y:-10}, {x:20,y:-20}, {x:0,y:15}, {x:-5,y:25}],
+    "Gemini": [{x:-10,y:-20}, {x:-10,y:20}, {x:10,y:20}, {x:10,y:-20}, {x:-10,y:-20}],
+    "Cancer": [{x:0,y:0}, {x:0,y:-15}, {x:-15,y:10}, {x:15,y:10}],
+    "Leo": [{x:20,y:10}, {x:10,y:20}, {x:-10,y:20}, {x:-20,y:10}, {x:-15,y:-5}, {x:-5,y:-15}, {x:5,y:-5}],
+    "Virgo": [{x:0,y:0}, {x:-10,y:15}, {x:10,y:15}, {x:20,y:0}, {x:10,y:-15}, {x:-15,y:-5}],
+    "Libra": [{x:0,y:-20}, {x:-15,y:0}, {x:0,y:20}, {x:15,y:0}, {x:0,y:-20}],
+    "Scorpio": [{x:20,y:-15}, {x:10,y:-10}, {x:0,y:0}, {x:-5,y:10}, {x:-15,y:15}, {x:-20,y:5}],
+    "Sagittarius": [{x:-10,y:10}, {x:10,y:10}, {x:10,y:-10}, {x:-10,y:-10}, {x:-20,y:0}, {x:0,y:20}],
+    "Capricorn": [{x:-20,y:-10}, {x:0,y:15}, {x:20,y:-10}, {x:5,y:-20}, {x:-20,y:-10}],
+    "Aquarius": [{x:-20,y:10}, {x:-10,y:0}, {x:0,y:10}, {x:10,y:0}, {x:20,y:10}],
+    "Pisces": [{x:-20,y:-20}, {x:0,y:0}, {x:20,y:0}, {x:10,y:20}]
+};
 
-const portalPalette = [
-    '0, 100, 255',   // Blue
-    '0, 255, 150',   // Green/Teal
-    '200, 50, 255',  // Purple
-    '255, 100, 50',  // Orange/Red
-    '255, 255, 255'  // White
-];
+const colors = ['rgba(130, 200, 255,', 'rgba(100, 255, 230,', 'rgba(255, 255, 255,', 'rgba(180, 150, 255,'];
+const portalPalette = ['0, 100, 255', '0, 255, 150', '200, 50, 255', '255, 100, 50'];
+
+class Constellation {
+    constructor() { this.reset(); }
+    reset() {
+        this.z = width + Math.random() * width;
+        this.x = (Math.random() - 0.5) * width * 0.6;
+        this.y = (Math.random() - 0.5) * height * 0.6;
+        const keys = Object.keys(patterns);
+        this.points = patterns[keys[Math.floor(Math.random() * keys.length)]];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+    }
+    update() {
+        this.z -= speed;
+        if (this.z <= 0) this.reset();
+    }
+    draw() {
+        let scale = (width / 2) / this.z;
+        let opacity = Math.min(1, (1 - this.z / width) * 2.5);
+        
+        if (this.z < width) {
+            ctx.save();
+            ctx.lineWidth = 1.2 * scale;
+            ctx.strokeStyle = this.color + (opacity * 0.4) + ')';
+            ctx.shadowBlur = 5 * scale;
+            ctx.shadowColor = this.color + '0.5)';
+            
+            ctx.beginPath();
+            this.points.forEach((p, i) => {
+                let px = (this.x + p.x) * scale + centerX;
+                let py = (this.y + p.y) * scale + centerY;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            });
+            ctx.stroke();
+
+            this.points.forEach((p) => {
+                let px = (this.x + p.x) * scale + centerX;
+                let py = (this.y + p.y) * scale + centerY;
+                ctx.fillStyle = this.color + opacity + ')';
+                ctx.beginPath();
+                ctx.arc(px, py, 2.5 * scale, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.restore();
+        }
+    }
+}
 
 function init() {
     width = window.innerWidth;
@@ -3245,10 +3295,8 @@ function init() {
     canvas.height = height;
     centerX = width / 2;
     centerY = height / 2;
-    
     portal.maxZ = width;
     portal.z = portal.maxZ; 
-
     stars = [];
     for (let i = 0; i < starCount; i++) {
         stars.push({
@@ -3259,33 +3307,20 @@ function init() {
             color: colors[Math.floor(Math.random() * colors.length)]
         });
     }
+    constellations = Array.from({length: 8}, () => new Constellation());
 }
 
 function update() {
     speed += (targetSpeed - speed) * 0.1;
+    if (targetSpeed === boostSpeed) portal.activeOpacity += (1 - portal.activeOpacity) * 0.05;
+    else portal.activeOpacity += (0 - portal.activeOpacity) * 0.1;
 
-    // --- PORTAL VISIBILITY LOGIC ---
-    // If targetSpeed is high (holding click), fade portal opacity in. 
-    // Otherwise, fade it out.
-    if (targetSpeed === boostSpeed) {
-        portal.activeOpacity += (1 - portal.activeOpacity) * 0.05;
-    } else {
-        portal.activeOpacity += (0 - portal.activeOpacity) * 0.1;
-    }
-
-    for (let i = 0; i < stars.length; i++) {
-        let s = stars[i];
+    stars.forEach(s => {
         s.z -= speed;
-        if (s.z <= 0) {
-            s.z = width;
-            s.x = Math.random() * width - centerX;
-            s.y = Math.random() * height - centerY;
-            s.px = 0; s.py = 0;
-        }
-    }
-
+        if (s.z <= 0) { s.z = width; s.x = Math.random() * width - centerX; s.y = Math.random() * height - centerY; s.px = 0; s.py = 0; }
+    });
+    constellations.forEach(c => c.update());
     portal.z -= speed * 0.5;
-
     if (portal.z <= 0) {
         portal.z = portal.maxZ; 
         portal.color = portalPalette[Math.floor(Math.random() * portalPalette.length)];
@@ -3293,56 +3328,39 @@ function update() {
 }
 
 function draw() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
     ctx.fillRect(0, 0, width, height);
 
-    // 1. Draw Moving Event Horizon
     let portalScale = (portal.maxZ / (portal.z + 1)); 
     let portalRadius = portalScale * 20; 
-    
-    // Combine the flight fade (z distance) with the hold-click fade (activeOpacity)
-    let flightFadeIn = Math.min(1, (portal.maxZ - portal.z) / (portal.maxZ * 0.2));
-    let flightFadeOut = Math.min(1, portal.z / 200); 
-    
-    let finalOpacity = flightFadeIn * flightFadeOut * portal.activeOpacity;
+    let finalOpacity = Math.min(1, (portal.maxZ - portal.z) / (portal.maxZ * 0.2)) * Math.min(1, portal.z / 200) * portal.activeOpacity;
 
-    if (portalRadius < width * 2 && finalOpacity > 0.01) {
+    if (finalOpacity > 0.01) {
         const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, portalRadius);
         grad.addColorStop(0, 'rgba(0, 0, 0, 1)'); 
         grad.addColorStop(0.5, `rgba(${portal.color}, ${0.4 * finalOpacity})`); 
         grad.addColorStop(1, 'rgba(0, 0, 0, 0)'); 
-        
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(centerX, centerY, portalRadius, 0, Math.PI * 2);
         ctx.fill();
     }
 
-    // 2. Draw Stars
-    ctx.lineCap = 'round';
-    for (let i = 0; i < stars.length; i++) {
-        let s = stars[i];
+    stars.forEach(s => {
         let x = (s.x / s.z) * (width / 2) + centerX;
         let y = (s.y / s.z) * (height / 2) + centerY;
-
         if (s.px !== 0) {
-            let opacity = 1 - (s.z / width);
-            let weight = (1 - s.z / width) * 5;
-
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = s.color + '0.8)';
-            ctx.strokeStyle = s.color + opacity + ')';
-            ctx.lineWidth = weight;
-
-            ctx.beginPath();
-            ctx.moveTo(s.px, s.py);
-            ctx.lineTo(x, y);
-            ctx.stroke();
+            let op = 1 - (s.z / width);
+            ctx.shadowBlur = 8;
+            ctx.strokeStyle = s.color + op + ')';
+            ctx.lineWidth = op * 3;
+            ctx.beginPath(); ctx.moveTo(s.px, s.py); ctx.lineTo(x, y); ctx.stroke();
             ctx.shadowBlur = 0;
         }
-        s.px = x;
-        s.py = y;
-    }
+        s.px = x; s.py = y;
+    });
+
+    constellations.forEach(c => c.draw());
 
     update();
     requestAnimationFrame(draw);
