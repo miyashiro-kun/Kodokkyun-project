@@ -178,8 +178,8 @@ html, body {
 }
 
 .main-avatar {
-  width: 80%;
-  height: 80%;
+  width: 90%;
+  height: 90%;
   object-fit: cover;
   border-radius: 128px; /* Slightly smaller than wrapper */
   border: 4px solid #0f172a;
@@ -861,7 +861,14 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 </style>
 </head>
 <body>
-
+<svg style="visibility: hidden; position: absolute;" width="0" height="0">
+  <filter id="liquid">
+    <feTurbulence type="fractalNoise" baseFrequency="0.01 0.01" numOctaves="3" seed="1">
+      <animate attributeName="baseFrequency" dur="10s" values="0.01 0.01;0.05 0.05;0.01 0.01" repeatCount="indefinite" />
+    </feTurbulence>
+    <feDisplacementMap in="SourceGraphic" scale="50" />
+  </filter>
+</svg>
 <div class="radial-menu-layer">
   <div class="menu-wrapper" id="triggerZone">
       <div class="hold-button"></div>
@@ -1174,10 +1181,13 @@ document.addEventListener("touchstart", (e) => {
 }
   
 
-  function hideMenu() {
+ function hideMenu() {
+  // --- REMOVE LIQUID FROM CANVAS ---
+  const canvas = document.getElementById('warpCanvas');
+  if (canvas) canvas.style.filter = 'none';
+
   menu.classList.remove('active');
   dim.classList.remove('active');
-  // Re-enable clicks on the page content
   document.querySelector('.page1').style.pointerEvents = 'auto';
   menuOpen = false;
 }
@@ -1186,19 +1196,29 @@ document.addEventListener("touchstart", (e) => {
      HOLD TO OPEN
   ============================== */
   function startHold(e) {
-    if (menuOpen) return;
-    if (!inCenterZone(e.clientX, e.clientY)) return;
+  if (menuOpen) return;
+  if (!inCenterZone(e.clientX, e.clientY)) return;
 
-    holding = true;
-    holdTimer = setTimeout(() => {
-      if (holding) showMenu();
-    }, HOLD_DELAY);
-  }
+  // --- TRIGGER LIQUID ON CANVAS ONLY ---
+  const canvas = document.getElementById('warpCanvas');
+  if (canvas) canvas.style.filter = 'url(#liquid)';
+  
+  holding = true;
+  holdTimer = setTimeout(() => {
+    if (holding) showMenu();
+  }, HOLD_DELAY);
+}
 
-  function cancelHold() {
-    holding = false;
-    clearTimeout(holdTimer);
+function cancelHold() {
+  holding = false;
+  clearTimeout(holdTimer);
+  
+  // Remove effect if user lets go before menu opens
+  if (!menuOpen) {
+    const canvas = document.getElementById('warpCanvas');
+    if (canvas) canvas.style.filter = 'none';
   }
+}
 
   /* =============================
      EVENTS
@@ -1254,8 +1274,12 @@ document.addEventListener("touchstart", (e) => {
 
 <div class="container" id="container">
   <!-- Page 1 Link Tree -->
+  
+  
+  
   <div class="page page1">
   <canvas id="warpCanvas"></canvas>
+  
     <div class="profile-header">
       <div class="avatar-wrapper">
         <img src="https://awsimages.detik.net.id/community/media/visual/2022/02/17/bruce-leung-1_34.png" alt="Kodokkyun" class="main-avatar" />
