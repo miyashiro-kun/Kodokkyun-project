@@ -139,20 +139,67 @@ html, body {
 
 .avatar-wrapper {
   position: relative;
-  width: 130px;
-  height: 130px;
+  width: 150px;
+  height: 150px;
   margin: 0 auto 15px;
-  padding: 4px;
-  background: linear-gradient(135deg, #22c55e, #38bdf8);
-  border-radius: 140px; /* Squircle */
+  padding: 3px;
+  background: #0f172a; /* Matches your border color */
+  border-radius: 130px; /* Squircle base */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* The Animated Laser Beam */
+.avatar-wrapper::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    transparent, 
+    #22c55e, 
+    #38bdf8, 
+    transparent 30%
+  );
+  animation: laserRotate 2s linear infinite;
+}
+
+/* The "Glow" Filter Layer */
+.avatar-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 130px;
+  box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.5);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .main-avatar {
-  width: 100%;
-  height: 100%;
+  width: 80%;
+  height: 80%;
   object-fit: cover;
-  border-radius: 140px;
+  border-radius: 128px; /* Slightly smaller than wrapper */
   border: 4px solid #0f172a;
+  z-index: 1;
+  /* Filter to make the avatar feel part of the scene */
+  filter: contrast(1.1) brightness(0.9);
+  transition: filter 0.3s ease;
+}
+
+/* Hover Wow: The "Power Up" */
+.avatar-wrapper:hover .main-avatar {
+  filter: contrast(1.2) brightness(1.2);
+}
+
+.avatar-wrapper:hover::before {
+  animation-duration: 0.8s; /* Spins faster on hover */
+}
+
+@keyframes laserRotate {
+  100% { transform: rotate(360deg); }
 }
 
 .status-badge {
@@ -1212,8 +1259,9 @@ document.addEventListener("touchstart", (e) => {
     <div class="profile-header">
       <div class="avatar-wrapper">
         <img src="https://awsimages.detik.net.id/community/media/visual/2022/02/17/bruce-leung-1_34.png" alt="Kodokkyun" class="main-avatar" />
-        <div class="status-badge">● ONLINE</div>
+        
       </div>
+      <div class="status-badge">● ONLINE</div>
       <h2 class="name-premium">Kodokkyun</h2>
       <p class="tagline">Wong Jowo tapi Gamer • <i class="fa-regular fa-chess-king fa-shake" style="color: #ffffff;"></i></p>
     </div>
