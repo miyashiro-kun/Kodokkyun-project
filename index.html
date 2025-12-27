@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
-<title>Swipe Link Tree with Collapse</title>
+<title>KODOK PAGE</title>
 <script src="https://kit.fontawesome.com/424261530c.js" crossorigin="anonymous"></script>
 <style>
 * { box-sizing: border-box; 
@@ -223,9 +223,8 @@ html, body {
 }
 
 .modern-link:hover {
-  background: #ffffff;
+  background: rgba(0,0,0,0.5);
   box-shadow: 0 12px 20px rgba(0,0,0,0.08);
-  color: black;
   -webkit-tap-highlight-color: transparent !important; 
 
 }
@@ -249,13 +248,19 @@ a::-moz-focus-inner {
   -webkit-user-select: none;
   user-select: none;
 }
-.modern-link:hover .link-info {
-  color: black; !important; /* Forces the text to stay white even on hover */
+.modern-link:hover .link-text {
+  background: linear-gradient(135deg, #22c55e, #38bdf8); !important; /* Forces the text to stay white even on hover */
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent; Forces the text to stay white even on hover */
 }
 
-.modern-link:active :hover {
-    color: black;
-  -webkit-tap-highlight-color: transparent !important; 
+.modern-link:active .link-text:hover {
+   background: linear-gradient(135deg, #22c55e, #38bdf8); !important; /* Forces the text to stay white even on hover */
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
 }
 
 
@@ -277,9 +282,9 @@ a::-moz-focus-inner {
 }
 
 /* Icon Background Colors */
-.tiktok-bg { background: #fee2e2; }
-.saweria-bg { background: #fef3c7; }
-.joki-bg { background: #dcfce7; }
+.tiktok-bg { background: rgba(0,0,0,0.4); border-radius:15px; }
+.saweria-bg { background: rgba(85, 130, 86 , 0.4); border-radius:15px; }
+.joki-bg { background: rgba(37, 38, 92 , 0.4);border-radius:15px; }
 
 .link-text {
   display: flex;
@@ -1210,20 +1215,20 @@ document.addEventListener("touchstart", (e) => {
         <div class="status-badge">● ONLINE</div>
       </div>
       <h2 class="name-premium">Kodokkyun</h2>
-      <p class="tagline">Wong Jowo tapi Gamer • 🎮</p>
+      <p class="tagline">Wong Jowo tapi Gamer • <i class="fa-regular fa-chess-king fa-shake" style="color: #ffffff;"></i></p>
     </div>
 
   <div class="links-container">
     <div class="link-item">
       <button class="modern-link" onclick="togglePanel(this)">
         <div class="link-info">
-          <div class="icon-box tiktok-bg">📱</div>
+          <div class="icon-box tiktok-bg"><i class="fa-brands fa-tiktok fa-bounce" style="color: #ffffff;"></i></div>
           <div class="link-text">
             <span class="link-title">TikTok</span>
             <span class="link-subtitle">Konten Gaming & Hiburan</span>
           </div>
         </div>
-        <span class="arrow-icon">↓</span>
+        <span class="arrow-icon"><i class="fa-solid fa-sun fa-spin"></i></span>
       </button>
       <div class="modern-panel">
         <p>Mampir ke TikTok lur, konten seru tiap hari! 🙏</p>
@@ -1234,13 +1239,13 @@ document.addEventListener("touchstart", (e) => {
     <div class="link-item">
       <button class="modern-link" onclick="togglePanel(this)">
         <div class="link-info">
-          <div class="icon-box saweria-bg">💸</div>
+          <div class="icon-box saweria-bg"><i class="fa-solid fa-circle-dollar-to-slot fa-flip" style="color: #ffffff;"></i></div>
           <div class="link-text">
             <span class="link-title">Saweria</span>
             <span class="link-subtitle">Support Creator Lokal</span>
           </div>
         </div>
-        <span class="arrow-icon">↓</span>
+        <span class="arrow-icon"><i class="fa-solid fa-sun fa-spin"></i></span>
       </button>
       <div class="modern-panel">
         <p>Tip/Donasi untuk upgrade gear streaming. Suwun!</p>
@@ -1251,13 +1256,13 @@ document.addEventListener("touchstart", (e) => {
     <div class="link-item highlight">
       <button class="modern-link" onclick="togglePanel(this)">
         <div class="link-info">
-          <div class="icon-box joki-bg">⚔️</div>
+          <div class="icon-box joki-bg"><i class="fa-solid fa-khanda fa-beat" style="color: #ffffff;"></i></div>
           <div class="link-text">
             <span class="link-title">Jasa Joki Game</span>
             <span class="link-subtitle">Top-tier Rank Service</span>
           </div>
         </div>
-        <span class="arrow-icon">↓</span>
+        <span class="arrow-icon"><i class="fa-solid fa-sun fa-spin"></i></span>
       </button>
       <div class="modern-panel">
         <p>Gak ada waktu maen? Serahin ke ahlinya!</p>
@@ -3132,7 +3137,7 @@ const ctx = canvas.getContext('2d');
 
 let width, height, centerX, centerY;
 let stars = [];
-const starCount = 60; // Increased density
+const starCount = 160; // Increased density
 const baseSpeed = 1.5;
 const boostSpeed = 25;
 let speed = baseSpeed;
