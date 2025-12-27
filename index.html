@@ -3328,13 +3328,15 @@ function update() {
 }
 
 function draw() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    // Increase clear alpha slightly for smoother trails on high-refresh monitors
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
     ctx.fillRect(0, 0, width, height);
 
     let portalScale = (portal.maxZ / (portal.z + 1)); 
     let portalRadius = portalScale * 20; 
     let finalOpacity = Math.min(1, (portal.maxZ - portal.z) / (portal.maxZ * 0.2)) * Math.min(1, portal.z / 200) * portal.activeOpacity;
 
+    // 1. Draw Portal (Simplified Gradient)
     if (finalOpacity > 0.01) {
         const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, portalRadius);
         grad.addColorStop(0, 'rgba(0, 0, 0, 1)'); 
@@ -3346,21 +3348,59 @@ function draw() {
         ctx.fill();
     }
 
+    // 2. Draw Stars (Optimized: No shadowBlur)
     stars.forEach(s => {
         let x = (s.x / s.z) * (width / 2) + centerX;
         let y = (s.y / s.z) * (height / 2) + centerY;
         if (s.px !== 0) {
             let op = 1 - (s.z / width);
-            ctx.shadowBlur = 18;
-            ctx.strokeStyle = s.color + op + ')';
-            ctx.lineWidth = op * 5;
+            
+            // FAKE BLOOM: Draw a thick faint line behind the star
+            ctx.globalAlpha = op * 0.3;
+            ctx.strokeStyle = s.color + '1)';
+            ctx.lineWidth = op * 8; // The "glow" width
             ctx.beginPath(); ctx.moveTo(s.px, s.py); ctx.lineTo(x, y); ctx.stroke();
-            ctx.shadowBlur = 1;
+            
+            // THE CORE: Draw the bright center
+            ctx.globalAlpha = op;
+            ctx.lineWidth = op * 2;
+            ctx.stroke();
+            ctx.globalAlpha = 1;
         }
         s.px = x; s.py = y;
     });
 
-    constellations.forEach(c => c.draw());
+    // 3. Draw Constellations (Optimized)
+    constellations.forEach(c => {
+        let scale = (width / 2) / c.z;
+        let opacity = Math.min(1, (1 - c.z / width) * 2.5);
+        
+        if (c.z < width) {
+            ctx.save();
+            // Connecting Lines
+            ctx.lineWidth = 1 * scale;
+            ctx.strokeStyle = c.color + (opacity * 0.3) + ')';
+            ctx.beginPath();
+            c.points.forEach((p, i) => {
+                let px = (c.x + p.x) * scale + centerX;
+                let py = (c.y + p.y) * scale + centerY;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            });
+            ctx.stroke();
+
+            // Constellation Stars
+            c.points.forEach((p) => {
+                let px = (c.x + p.x) * scale + centerX;
+                let py = (c.y + p.y) * scale + centerY;
+                ctx.fillStyle = c.color + opacity + ')';
+                ctx.beginPath();
+                ctx.arc(px, py, 2 * scale, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.restore();
+        }
+    });
 
     update();
     requestAnimationFrame(draw);
