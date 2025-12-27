@@ -121,10 +121,10 @@ html, body {
     width: 100%;
     height: 100%;
     z-index: 0; /* Put it behind everything */
+    background: radial-gradient(circle at center, #000b1a 0%, #000 60%); 
     mix-blend-mode: screen;
-    pointer-events: none; /* Allow clicks to pass through to buttons */
+    pointer-events: none;
 }
-
 /* Ensure all content in Page 1 sits ABOVE the canvas */
 .page1 > *:not(canvas) {
     position: relative;
@@ -3204,24 +3204,38 @@ function togglePanel(btn) {
 fetchCodes();
 </script>
  <script>
-       const canvas = document.getElementById('warpCanvas');
+const canvas = document.getElementById('warpCanvas');
 const ctx = canvas.getContext('2d');
 
 let width, height, centerX, centerY;
 let stars = [];
-const starCount = 160; // Increased density
+const starCount = 160; 
 const baseSpeed = 1.5;
 const boostSpeed = 25;
 let speed = baseSpeed;
 let targetSpeed = baseSpeed;
 
-// --- CONFIG FOR EFFECT ---
-// Colors inspired by the warp sequence (Blue, Teal, White, Purple)
+// Portal (Event Horizon) State
+let portal = {
+    z: 0,
+    maxZ: 0,
+    color: '0, 100, 255',
+    activeOpacity: 0 // Track portal visibility separately
+};
+
 const colors = [
-    'rgba(130, 200, 255,', // Light Blue
-    'rgba(100, 255, 230,', // Teal
-    'rgba(255, 255, 255,', // Pure White
-    'rgba(180, 150, 255,'  // Soft Purple
+    'rgba(130, 200, 255,', 
+    'rgba(100, 255, 230,', 
+    'rgba(255, 255, 255,', 
+    'rgba(180, 150, 255,'  
+];
+
+const portalPalette = [
+    '0, 100, 255',   // Blue
+    '0, 255, 150',   // Green/Teal
+    '200, 50, 255',  // Purple
+    '255, 100, 50',  // Orange/Red
+    '255, 255, 255'  // White
 ];
 
 function init() {
@@ -3231,22 +3245,34 @@ function init() {
     canvas.height = height;
     centerX = width / 2;
     centerY = height / 2;
+    
+    portal.maxZ = width;
+    portal.z = portal.maxZ; 
+
     stars = [];
     for (let i = 0; i < starCount; i++) {
         stars.push({
             x: Math.random() * width - centerX,
             y: Math.random() * height - centerY,
             z: Math.random() * width,
-            px: 0,
-            py: 0,
-            // Randomly assign a color from our palette
+            px: 0, py: 0,
             color: colors[Math.floor(Math.random() * colors.length)]
         });
     }
 }
 
 function update() {
-    speed += (targetSpeed - speed) * 0.05;
+    speed += (targetSpeed - speed) * 0.1;
+
+    // --- PORTAL VISIBILITY LOGIC ---
+    // If targetSpeed is high (holding click), fade portal opacity in. 
+    // Otherwise, fade it out.
+    if (targetSpeed === boostSpeed) {
+        portal.activeOpacity += (1 - portal.activeOpacity) * 0.05;
+    } else {
+        portal.activeOpacity += (0 - portal.activeOpacity) * 0.1;
+    }
+
     for (let i = 0; i < stars.length; i++) {
         let s = stars[i];
         s.z -= speed;
@@ -3254,20 +3280,46 @@ function update() {
             s.z = width;
             s.x = Math.random() * width - centerX;
             s.y = Math.random() * height - centerY;
-            s.px = (s.x / s.z) * (width / 2) + centerX;
-            s.py = (s.y / s.z) * (width / 2) + centerY;
+            s.px = 0; s.py = 0;
         }
+    }
+
+    portal.z -= speed * 0.5;
+
+    if (portal.z <= 0) {
+        portal.z = portal.maxZ; 
+        portal.color = portalPalette[Math.floor(Math.random() * portalPalette.length)];
     }
 }
 
 function draw() {
-    // MOTION BLUR: Use semi-transparent fill instead of clearRect
-    // This creates the long "light trail" effect
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'; 
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
     ctx.fillRect(0, 0, width, height);
 
-    ctx.lineCap = 'round';
+    // 1. Draw Moving Event Horizon
+    let portalScale = (portal.maxZ / (portal.z + 1)); 
+    let portalRadius = portalScale * 20; 
+    
+    // Combine the flight fade (z distance) with the hold-click fade (activeOpacity)
+    let flightFadeIn = Math.min(1, (portal.maxZ - portal.z) / (portal.maxZ * 0.2));
+    let flightFadeOut = Math.min(1, portal.z / 200); 
+    
+    let finalOpacity = flightFadeIn * flightFadeOut * portal.activeOpacity;
 
+    if (portalRadius < width * 2 && finalOpacity > 0.01) {
+        const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, portalRadius);
+        grad.addColorStop(0, 'rgba(0, 0, 0, 1)'); 
+        grad.addColorStop(0.5, `rgba(${portal.color}, ${0.4 * finalOpacity})`); 
+        grad.addColorStop(1, 'rgba(0, 0, 0, 0)'); 
+        
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, portalRadius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // 2. Draw Stars
+    ctx.lineCap = 'round';
     for (let i = 0; i < stars.length; i++) {
         let s = stars[i];
         let x = (s.x / s.z) * (width / 2) + centerX;
@@ -3275,13 +3327,10 @@ function draw() {
 
         if (s.px !== 0) {
             let opacity = 1 - (s.z / width);
-            let weight = (1 - s.z / width) * 4;
+            let weight = (1 - s.z / width) * 5;
 
-            // --- BLOOM EFFECT ---
-            // We draw the "glow" layer first
-            ctx.shadowBlur = 12; // High blur for bloom
-            ctx.shadowColor = s.color + '0.8)'; // Same color as star
-            
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = s.color + '0.8)';
             ctx.strokeStyle = s.color + opacity + ')';
             ctx.lineWidth = weight;
 
@@ -3289,8 +3338,6 @@ function draw() {
             ctx.moveTo(s.px, s.py);
             ctx.lineTo(x, y);
             ctx.stroke();
-            
-            // Reset shadow so it doesn't bleed into every draw call
             ctx.shadowBlur = 0;
         }
         s.px = x;
@@ -3301,7 +3348,6 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
-// Event Listeners for Interaction
 window.addEventListener('resize', init);
 window.addEventListener('mousedown', () => targetSpeed = boostSpeed);
 window.addEventListener('mouseup', () => targetSpeed = baseSpeed);
@@ -3310,6 +3356,6 @@ window.addEventListener('touchend', () => targetSpeed = baseSpeed);
 
 init();
 draw();
-    </script>
+</script>
 </body>
 </html>
