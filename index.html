@@ -3440,7 +3440,9 @@ function initPlanet() {
 
     // --- ADD YOUR URLS HERE ---
     const modelUrls = [
-        'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/pom.glb',
+        'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/a..glb',
+'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/pom.glb',
+'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/paimon.glb'
         // Add more .gltf or .glb links here
     ];
 
@@ -3481,8 +3483,8 @@ function animate3D() {
     spaceObjects.forEach((obj) => {
         // Use global 'speed' from your star warp
         obj.position.z += (speed * 0.11); 
-        obj.rotation.y += 0.05;
-        obj.rotation.x += 0.05
+        obj.rotation.y += 0.01;
+        obj.rotation.x += 0.01;
 
         // Fading logic based on distance
         let alpha = 1;
