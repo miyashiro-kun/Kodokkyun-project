@@ -3448,23 +3448,21 @@ function initPlanet() {
     ];
 
     modelUrls.forEach((url, index) => {
-    loader.load(url, (gltf) => {
-        try {
+        loader.load(url, (gltf) => {
             let obj = gltf.scene;
 
             // Auto-Scale standardizer
             const box = new THREE.Box3().setFromObject(obj);
             const size = box.getSize(new THREE.Vector3()).length();
-            if (size === 0) return; // Skip if model is empty
-
             const scaleFactor = (3 + Math.random() * 2) / size; 
             obj.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
-            // Staggered Spawning
-            obj.position.z = -(index * 50 + Math.random() * 50); 
+            // Initial Random Scatter
+            obj.position.z = -((index + 1) * 40 + Math.random() * 50); // Space them out
             obj.position.x = (Math.random() - 0.5) * 40;
             obj.position.y = (Math.random() - 0.5) * 20;
 
+            // Enable Transparency for fading
             obj.traverse((node) => {
                 if (node.isMesh) {
                     node.material.transparent = true;
@@ -3474,15 +3472,8 @@ function initPlanet() {
 
             scene.add(obj);
             spaceObjects.push(obj);
-        } catch (e) {
-            console.error("Error processing model " + index, e);
-        }
-    }, 
-    undefined, // Progress callback
-    (err) => {
-        console.error("Failed to download model " + index + ": Check the URL or CORS", err);
+        });
     });
-});
 
     animate3D();
 }
