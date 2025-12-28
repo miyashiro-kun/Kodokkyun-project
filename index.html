@@ -4,6 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
 <title>KODOK PAGE</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="https://kit.fontawesome.com/424261530c.js" crossorigin="anonymous"></script>
 <style>
 * { box-sizing: border-box; 
@@ -1279,7 +1281,7 @@ function cancelHold() {
   
   <div class="page page1">
   <canvas id="warpCanvas"></canvas>
-  
+  <div id="threeContainer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;"></div>
     <div class="profile-header">
       <div class="avatar-wrapper">
         <img src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/915f70b8620adc7442ef2ba97c06435f~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=0143ed60&x-expires=1767002400&x-signature=GsWT9xKoJOaJGVnUAj9mmWTeZnM%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my" alt="Kodokkyun" class="main-avatar" />
@@ -3414,6 +3416,95 @@ window.addEventListener('touchend', () => targetSpeed = baseSpeed);
 
 init();
 draw();
+
+let spaceObjects = []; // Array to store all our 3D models
+
+function initPlanet() {
+    const container = document.getElementById('threeContainer');
+    if (!container) return; 
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1.5));
+    const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+    sun.position.set(5, 5, 5);
+    scene.add(sun);
+
+    const loader = new THREE.GLTFLoader();
+
+    // --- ADD YOUR URLS HERE ---
+    const modelUrls = [
+        'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/pom.glb',
+        // Add more .gltf or .glb links here
+    ];
+
+    modelUrls.forEach((url, index) => {
+        loader.load(url, (gltf) => {
+            let obj = gltf.scene;
+
+            // Auto-Scale standardizer
+            const box = new THREE.Box3().setFromObject(obj);
+            const size = box.getSize(new THREE.Vector3()).length();
+            const scaleFactor = (3 + Math.random() * 2) / size; 
+            obj.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+            // Initial Random Scatter
+            obj.position.z = -((index + 1) * 40 + Math.random() * 50); // Space them out
+            obj.position.x = (Math.random() - 0.5) * 40;
+            obj.position.y = (Math.random() - 0.5) * 20;
+
+            // Enable Transparency for fading
+            obj.traverse((node) => {
+                if (node.isMesh) {
+                    node.material.transparent = true;
+                    node.material.opacity = 0;
+                }
+            });
+
+            scene.add(obj);
+            spaceObjects.push(obj);
+        });
+    });
+
+    animate3D();
+}
+
+function animate3D() {
+    requestAnimationFrame(animate3D);
+    
+    spaceObjects.forEach((obj) => {
+        // Use global 'speed' from your star warp
+        obj.position.z += (speed * 0.11); 
+        obj.rotation.y += 0.05;
+        obj.rotation.x += 0.05
+
+        // Fading logic based on distance
+        let alpha = 1;
+        if (obj.position.z < -80) alpha = (obj.position.z + 120) / 40;
+        else if (obj.position.z > 0) alpha = 1 - (obj.position.z / 10);
+
+        obj.traverse((node) => {
+            if (node.isMesh) node.material.opacity = Math.max(0, Math.min(1, alpha));
+        });
+
+        // Loop: Reset when it passes camera
+        if (obj.position.z > 20) {
+            obj.position.z = -150;
+            obj.position.x = (Math.random() - 0.5) * 50;
+            obj.position.y = (Math.random() - 0.5) * 30;
+        }
+    });
+
+    renderer.render(scene, camera);
+}
+
+initPlanet();
 </script>
 </body>
 </html>
