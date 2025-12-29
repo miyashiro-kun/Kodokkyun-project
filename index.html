@@ -4,6 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
 <title>KODOK PAGE</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/jsm/loaders/GLTFLoader.js"></script>
 <script src="https://kit.fontawesome.com/424261530c.js" crossorigin="anonymous"></script>
@@ -859,84 +861,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   pointer-events: none;
   background: rgba(255,255,255,0.0);
 }
-
-</style>
-</head>
-<body>
-<svg style="visibility: hidden; position: absolute;" width="0" height="0">
-  <filter id="liquid">
-    <feTurbulence type="fractalNoise" baseFrequency="0.01 0.01" numOctaves="3" seed="1">
-      <animate attributeName="baseFrequency" dur="10s" values="0.01 0.01;0.05 0.05;0.01 0.01" repeatCount="indefinite" />
-    </feTurbulence>
-    <feDisplacementMap in="SourceGraphic" scale="50" />
-  </filter>
-</svg>
-<div class="radial-menu-layer">
-  <div class="menu-wrapper" id="triggerZone">
-      <div class="hold-button"></div>
-      <div class="menu-dim" id="menuDim"></div>
-    <div class="menu-container" id="menuContainer">
-    <div class="circular-ring">
-        
-      <div style="display: flex;justify-content: center; /* Centers horizontally */
-  align-items: center;">
-        <div class="pathlogo" style="width:47%;height:47%;border:solid 4px #fff;border-radius:100%;position:absolute;display: flex;justify-content: center; /* Centers horizontally */
-  align-items: center;"></div>  
-  
-  <div class="pathlogo2" style="width:105%;height:105%;border:solid 4px #fff;border-radius:100%;position:absolute;display: flex;justify-content: center; /* Centers horizontally */
-  align-items: center;">
-      
-  <svg id="svg" width="210" height="210" viewBox="0 0 200 200">
-  <circle
-    id="arc"
-    cx="100"
-    cy="100"
-    r="80"
-    fill="none"
-    stroke="#fff"
-    stroke-width="10"
-    stroke-dasharray="100 400"
-    transform="rotate(-90 100 100)"
-  />
-</svg>
-  </div>  
-      <svg viewBox="0 0 100 100" class="svg-layer">
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 0; --bg: #00000099" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 1; --bg: #00000099" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 2; --bg: #00000099" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 3; --bg: #00000099" />
-        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 4; --bg: #00000099" />
-      </svg>
-      
-      </div>
-
-      <div class="content-node" style="--angle: 18deg;">
-        <span class="icon"><i class="fa-solid fa-user" style="color: #ffffff;"></i></span>
-        <span class="label">Profile</span>
-      </div>
-      <div class="content-node" style="--angle: 90deg;">
-        <span class="icon"><i class="fa-solid fa-keyboard" style="color: #ffffff;"></i></span>
-        <span class="label">Code Redem</span>
-      </div>
-      <div class="content-node" style="--angle: 162deg;">
-        <span class="icon"><i class="fa-solid fa-gamepad" style="color: #ffffff;"></i></span>
-        <span class="label">Joki</span>
-      </div>
-      <div class="content-node" style="--angle: 234deg;">
-        <span class="icon"><i class="fa-solid fa-tv" style="color: #ffffff;"></i></span>
-        <span class="label">News</span>
-      </div>
-      <div class="content-node" style="--angle: 306deg;">
-        <span class="icon" style="margin-left:-15px;"><i class="fa-solid fa-newspaper" style="color: #ffffff;"></i>️</span>
-        <span class="label" style="margin-left:-15px;">Patches</span>
-      </div>
-    </div>
-  </div>
-  </div>
-</div>
-
-<style>
-  :root {
+:root {
     --menu-size: 380px;
     --content-radius: 135px; 
   }
@@ -1074,281 +999,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     text-transform: uppercase;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
   }
-</style>
-<script>
-const arc = document.getElementById("arc");
-const svg = document.getElementById("svg");
-
-// Shared function to handle the rotation logic
-function updateRotation(clientX, clientY) {
-  const rect = svg.getBoundingClientRect();
-
-  // center of the SVG
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
-
-  // position relative to center
-  const dx = clientX - cx;
-  const dy = clientY - cy;
-
-  // angle in degrees
-  const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-
-  // rotate arc to face the pointer
-  arc.setAttribute(
-    "transform",
-    `rotate(${angle - 40} 100 100)`
-  );
-}
-
-// 1. Desktop Mouse Movement
-document.addEventListener("mousemove", (e) => {
-  updateRotation(e.clientX, e.clientY);
-});
-
-// 2. Mobile Touch Movement (Follows finger)
-document.addEventListener("touchmove", (e) => {
-  const touch = e.touches[0];
-  updateRotation(touch.clientX, touch.clientY);
-}, { passive: true });
-
-// 3. Mobile Touch Start (Snaps to finger immediately on touch)
-document.addEventListener("touchstart", (e) => {
-  const touch = e.touches[0];
-  updateRotation(touch.clientX, touch.clientY);
-}, { passive: true });
-</script>
-<script>
-  /* =============================
-     ELEMENT REFERENCES
-  ============================== */
-  const menu = document.getElementById('menuContainer');
-  const dim = document.getElementById('menuDim');
-  const slices = document.querySelectorAll('.ring-slice');
-    
-    
-  const LOGO_BGS = [
-  "https://gamebrott.com/wp-content/uploads/2023/08/image-44.png",
-  "https://gamebrott.com/wp-content/uploads/2023/08/image-45.png",
-  "https://gamebrott.com/wp-content/uploads/2023/08/image-46.png",
-  "https://gamebrott.com/wp-content/uploads/2023/08/image-47.png",
-  "https://gamebrott.com/wp-content/uploads/2023/08/image-48.png",
-  "https://gamebrott.com/wp-content/uploads/2023/08/image-49.png",
-  "https://gamebrott.com/wp-content/uploads/2023/08/image-43.png"
-];    
-  /* =============================
-     CONFIG
-  ============================== */
-  const HOLD_DELAY = 700;
-  const CENTER_ZONE = { width: 0.35, height: 0.35 };
-
-  /* =============================
-     STATE
-  ============================== */
-  let holdTimer = null;
-  let holding = false;
-  let menuOpen = false;
-
-  /* =============================
-     HELPERS
-  ============================== */
-  function inCenterZone(x, y) {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-
-    return (
-      x >= w * (0.5 - CENTER_ZONE.width / 2) &&
-      x <= w * (0.5 + CENTER_ZONE.width / 2) &&
-      y >= h * (0.5 - CENTER_ZONE.height / 2) &&
-      y <= h * (0.5 + CENTER_ZONE.height / 2)
-    );
-  }
-
-  function showMenu() {
-      
-      const randomBg = LOGO_BGS[Math.floor(Math.random() * LOGO_BGS.length)];
-  
-  // 2. Select the pathlogo element
-  const logoElement = document.querySelector('.pathlogo');
-  
-  // 3. Apply the new background (keeping your linear-gradient overlay if needed)
-  if (logoElement) {
-    logoElement.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("${randomBg}")`;
-  }
-    menu.classList.add('active');
-  dim.classList.add('active');
-  // Prevent clicking items behind the menu while it's open
-  document.querySelector('.page1').style.pointerEvents = 'none';
-  menuOpen = true;
-}
-  
-
- function hideMenu() {
-  // --- REMOVE LIQUID FROM CANVAS ---
-  const canvas = document.getElementById('warpCanvas');
-  if (canvas) canvas.style.filter = 'none';
-
-  menu.classList.remove('active');
-  dim.classList.remove('active');
-  document.querySelector('.page1').style.pointerEvents = 'auto';
-  menuOpen = false;
-}
-
-  /* =============================
-     HOLD TO OPEN
-  ============================== */
-  function startHold(e) {
-  if (menuOpen) return;
-  if (!inCenterZone(e.clientX, e.clientY)) return;
-
-  // --- TRIGGER LIQUID ON CANVAS ONLY ---
-  const canvas = document.getElementById('warpCanvas');
-  if (canvas) canvas.style.filter = 'url(#liquid)';
-  
-  holding = true;
-  holdTimer = setTimeout(() => {
-    if (holding) showMenu();
-  }, HOLD_DELAY);
-}
-
-function cancelHold() {
-  holding = false;
-  clearTimeout(holdTimer);
-  
-  // Remove effect if user lets go before menu opens
-  if (!menuOpen) {
-    const canvas = document.getElementById('warpCanvas');
-    if (canvas) canvas.style.filter = 'none';
-  }
-}
-
-  /* =============================
-     EVENTS
-  ============================== */
-  window.addEventListener('pointerdown', startHold, { passive: true });
-  window.addEventListener('pointerup', cancelHold);
-  window.addEventListener('pointercancel', cancelHold);
-
-  /* =============================
-     CLOSE ON DIM CLICK
-  ============================== */
-  dim.addEventListener('click', hideMenu);
-
-  /* =============================
-     SLICE CLICK -> NAVIGATE
-  ============================== */
-  slices.forEach((slice, index) => {
-  slice.addEventListener('click', (e) => {
-    e.stopPropagation();
-    // Map the slices to your actual page order
-    // index 0=Profile(Page1), 1=Code(Page2), 2=Joki(Page3), etc.
-    goToPage(index); 
-    hideMenu();
-  });
-});
-
-  /* =============================
-     NAVIGATION (ADJUST TO YOUR APP)
-  ============================== */
-  function goToPage(index) {
-    const container = document.getElementById('container');
-    const width = window.innerWidth;
-    
-    // Smooth scroll the container to the selected page
-    container.scrollTo({
-        left: index * width,
-        behavior: 'smooth'
-    });
-    
-    // Optional: Update your island dots if you have them
-    updateDots(index);
-}
-</script>
-
-
-
-
-
-
-
-
-
-
-<div class="container" id="container">
-  <!-- Page 1 Link Tree -->
-  
-  
-  
-  <div class="page page1">
-  <canvas id="warpCanvas"></canvas>
-  <div id="threeContainer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;"></div>
-    <div class="profile-header">
-      <div class="avatar-wrapper">
-        <img src="https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/915f70b8620adc7442ef2ba97c06435f~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=0143ed60&x-expires=1767002400&x-signature=GsWT9xKoJOaJGVnUAj9mmWTeZnM%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my" alt="Kodokkyun" class="main-avatar" />
-        
-      </div>
-      <div class="status-badge">● ONLINE</div>
-      <h2 class="name-premium">Kodokkyun</h2>
-      <p class="tagline">Wong Jowo tapi Gamer • <i class="fa-regular fa-chess-king fa-shake" style="color: #ffffff;"></i></p>
-    </div>
-
-  <div class="links-container">
-    <div class="link-item">
-      <button class="modern-link" onclick="togglePanel(this)">
-        <div class="link-info">
-          <div class="icon-box tiktok-bg"><i class="fa-brands fa-tiktok fa-bounce" style="color: #ffffff;"></i></div>
-          <div class="link-text">
-            <span class="link-title">TikTok</span>
-            <span class="link-subtitle">Konten Gaming & Hiburan</span>
-          </div>
-        </div>
-        <span class="arrow-icon"><i class="fa-solid fa-sun fa-spin"></i></span>
-      </button>
-      <div class="modern-panel">
-        <p>Mampir ke TikTok lur, konten seru tiap hari! 🙏</p>
-        <button class="action-btn" onclick="window.open('https://www.tiktok.com/@kodok.kyun?_r=1&_t=ZS-92Pj7eRBXST', '_blank')">Follow Yuk</button>
-      </div>
-    </div>
-
-    <div class="link-item">
-      <button class="modern-link" onclick="togglePanel(this)">
-        <div class="link-info">
-          <div class="icon-box saweria-bg"><i class="fa-solid fa-circle-dollar-to-slot fa-flip" style="color: #ffffff;"></i></div>
-          <div class="link-text">
-            <span class="link-title">Saweria</span>
-            <span class="link-subtitle">Support Creator Lokal</span>
-          </div>
-        </div>
-        <span class="arrow-icon"><i class="fa-solid fa-sun fa-spin"></i></span>
-      </button>
-      <div class="modern-panel">
-        <p>Tip/Donasi untuk upgrade gear streaming. Suwun!</p>
-        <button class="action-btn" onclick="window.open('https://saweria.co/kodokkyunn99', '_blank')">Tip Saweria</button>
-      </div>
-    </div>
-
-    <div class="link-item highlight">
-      <button class="modern-link" onclick="togglePanel(this)">
-        <div class="link-info">
-          <div class="icon-box joki-bg"><i class="fa-solid fa-khanda fa-beat" style="color: #ffffff;"></i></div>
-          <div class="link-text">
-            <span class="link-title">Jasa Joki Game</span>
-            <span class="link-subtitle">Top-tier Rank Service</span>
-          </div>
-        </div>
-        <span class="arrow-icon"><i class="fa-solid fa-sun fa-spin"></i></span>
-      </button>
-      <div class="modern-panel">
-        <p>Gak ada waktu maen? Serahin ke ahlinya!</p>
-        <button class="action-btn joki-btn-color" id="JOKINext">Lihat Pricelist</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="page" id="page2">
-  <style>
-    #page2 {
+  #page2 {
       min-height: 100vh;
       width: 100%;
       background-size: cover;
@@ -1496,141 +1147,7 @@ function cancelHold() {
       font-size: 0.8rem;
       opacity: 0.7;
     }
-  </style>
-
-  <div class="content">
-    <div class="header-logo-container">
-      <img id="game-logo-header" src="" alt="Logo" class="animate-logo">
-    </div>
-
-    <div class="tabs-v2 e-tilt">
-      <button class="tab-btn-v2 active" data-game="zenless">ZZZ</button>
-      <button class="tab-btn-v2" data-game="genshinimpact">GENSHIN</button>
-      <button class="tab-btn-v2" data-game="starrail">HSR</button>
-      <button class="tab-btn-v2" data-game="hi3rd">HI3rd</button>
-    </div>
-
-    <div id="codes-container-v2">
-      <div class="loading-v2">INITIALIZING...</div>
-    </div>
-
-    <div style="height: 100px;"></div> 
-  </div>
-
-  <script>
-    (function() {
-      const APIS = {
-        zenless: 'https://kodokkyun-project.vercel.app/api/zzcode',
-        genshinimpact: 'https://kodokkyun-project.vercel.app/api/gscd',
-        starrail: 'https://kodokkyun-project.vercel.app/api/stcode',
-        hi3rd: 'https://kodokkyun-project.vercel.app/api/hicode'
-      };
-
-      const BGS = {
-        zenless: 'https://images7.alphacoders.com/130/thumb-1920-1307267.jpg',
-        genshinimpact: 'https://fastcdn.hoyoverse.com/content-v2/hk4e/159337/54b493f799071cf2050b919305288d5d_7897117480191368973.jpg',
-        starrail: 'https://i.ibb.co.com/VYZ3w3wB/Fyreflies-are-such-magical-creatures-aren-t-they-They-may-throw-themselves-at-a-flame-or-sudden-ups.png',
-        hi3rd: 'https://fastcdn.hoyoverse.com/content-v2/plat/101533/6fbf8271438e536e58169ac01efb0a84_723492315779207397.jpg'
-      };
-
-      const CODELOGO = {
-        zenless: 'https://i.ibb.co.com/JFcGnZvK/f3.png',
-        genshinimpact: 'https://i.ibb.co.com/Nn3J5SnW/1rf.png',
-        starrail: 'https://i.ibb.co.com/TDQgJmdk/unnamed.png',
-        hi3rd: 'https://i.ibb.co.com/tTGpYmcr/ewq.png'
-      };
-
-      // Konfigurasi Link Redeem Otomatis
-      const REDEEM_CONFIG = {
-        zenless: code => `https://zenless.hoyoverse.com/redemption?code=${code}`,
-        genshinimpact: code => `https://genshin.hoyoverse.com/en/gift?code=${code}`,
-        starrail: code => `https://hsr.hoyoverse.com/gift?code=${code}`,
-        hi3rd: code => `https://honkaiimpact3.hoyoverse.com/global/en/home?code=${code}` 
-      };
-
-      async function loadCodes(game) {
-        const container = document.getElementById('codes-container-v2');
-        const pg2 = document.getElementById('page2');
-        const logoImg = document.getElementById('game-logo-header');
-        
-        logoImg.classList.remove('animate-logo');
-        logoImg.src = CODELOGO[game];
-        pg2.style.backgroundImage = `url('${BGS[game]}')`;
-        
-        void logoImg.offsetWidth; 
-        logoImg.classList.add('animate-logo');
-        
-        container.innerHTML = '<div class="loading-v2">LOADING CODES...</div>';
-
-        try {
-          const res = await fetch(APIS[game]);
-          const data = await res.json();
-          container.innerHTML = '';
-
-          if (data.active && data.active.length > 0) {
-            data.active.forEach((item, index) => {
-              const rewardList = item.rewards.join(', ');
-              const card = document.createElement('div');
-              card.className = 'redeem-card-v2 reveal-card';
-              card.style.animationDelay = `${index * 0.1}s`;
-              
-              // Membuat link redeem khusus untuk kode ini
-              const finalRedeemUrl = REDEEM_CONFIG[game](item.code);
-              
-              card.innerHTML = `
-                <div class="redeem-header-v2">
-                  <span class="code-v2">${item.code}</span>
-                  <div class="btn-group-v2">
-                    <button class="btn-v2 btn-copy-v2" onclick="copyAction('${item.code}', this)">COPY</button>
-                    <button class="btn-v2 btn-redeem-v2" onclick="window.open('${finalRedeemUrl}', '_blank')">REDEEM</button>
-                  </div>
-                </div>
-                <div class="reward-v2" style="font-size:0.85rem; color:#aaa; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">
-                  <strong>Rewards:</strong> ${rewardList}
-                </div>
-              `;
-              container.appendChild(card);
-            });
-          } else {
-            container.innerHTML = '<div class="loading-v2">NO ACTIVE CODES FOUND</div>';
-          }
-        } catch (e) {
-          container.innerHTML = '<div class="loading-v2" style="color:#f87171">CONNECTION ERROR</div>';
-        }
-      }
-
-      document.querySelectorAll('.tab-btn-v2').forEach(btn => {
-        btn.addEventListener('click', function() {
-          if(this.classList.contains('active')) return;
-          document.querySelectorAll('.tab-btn-v2').forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          loadCodes(this.dataset.game);
-        });
-      });
-
-      window.copyAction = function(text, btn) {
-        navigator.clipboard.writeText(text);
-        const originalText = btn.innerText;
-        btn.innerText = 'COPIED!';
-        btn.style.background = '#059669';
-        setTimeout(() => {
-          btn.innerText = originalText;
-          btn.style.background = '#6366f1';
-        }, 1000);
-      };
-
-      loadCodes('zenless');
-    })();
-  </script>
-</div>
-
-
-  <!-- Page 3 -->
-  <div class="page page3">
-  
-  <div class="joki-master-container">
-    <style>
-        .joki-master-container {
+    .joki-master-container {
             /* Mencegah terpotong oleh header fixed website utama */
             padding-top: 0px; 
             position: relative;
@@ -1957,174 +1474,7 @@ function cancelHold() {
     width: 100%;
     margin: 5px;
 }
-    </style>
-
-    <div class="joki-header">
-        <h1 class="joki-header-title">ASTRAL STATION</h1>
-        <div style="background: rgba(0,0,0,0.4); padding: 4px 12px; border-radius: 4px; margin-top: 10px;">
-            <p style="color: var(--joki-gold); font-size: 0.8rem; font-weight: bold; margin: 0; letter-spacing: 1px;">HSR JOKI & MAINTENANCE</p>
-        </div>
-    </div>
-
-    <div class="joki-content-wrapper">
-        
-        <div class="joki-section-title">
-            <div class="joki-section-line"></div>
-            <span>Event </span>
-        </div>
-        
-        <div class="joki-card-cw">
-                <h3 class="joki-card-h3">Currency Wars</h3>
-                <p class="joki-card-p">Event Anjay Currency wars sudah bisa di joki</p>
-                
-                <div class="joki-row">
-                 <span  class="joki-tag">18000 Point</span>
-                  <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.24000</span>
-                 </div> 
-                 
-                  <div class="joki-row">
-                 <span  class="joki-tag">Level Up accession </span>
-                  <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.28000</span>
-                 </div> 
-                 
-                 <div class="joki-row">
-                 <span  class="joki-tag">Sampai Welt Creator Mentok </span>
-                  <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.150000</span>
-                 </div> 
-                 
-                <br>
-                
-                <button class="joki-btn" onclick="jokiPushOrder('Currency Wars', 'Tanya Harga')">Deploy</button>
-            </div>
-            
-            <div class="joki-card-ev" >
-                <h3 class="joki-card-h3">Chrysos Awoo Championship</h3>
-                <p class="joki-card-p">Ngelarin Event Bulanan Sabung Kocheng</p>
-                
-                <div class="joki-card-price">Rp 10.000</div>
-                
-                <button class="joki-btn" onclick="jokiPushOrder('Chrysos Awoo Championship', 'Rp 25.000')">Deploy</button>
-            </div>
-        
-        <div class="joki-section-title">
-            <div class="joki-section-line"></div>
-            <span>Rawat Akun</span>
-        </div>
-        <span class="joki-category-desc">Maintenance rutin untuk Trailblazer Power & Daily.</span>
-
-        <div class="joki-grid">
-            <div class="joki-card">
-                <h3 class="joki-card-h3">Harian</h3>
-                <p class="joki-card-p">Spend Trailblaze power, daily point, assignment.</p>
-                <div class="joki-card-price">Rp 5.000</div>
-                <button class="joki-btn" onclick="jokiPushOrder('Harian', 'Rp 5.000')">Deploy</button>
-            </div>
-            <div class="joki-card">
-                <h3 class="joki-card-h3">Mingguan</h3>
-                <p class="joki-card-p">Rawat akun + Echo of War, Simulated / Divergent Universe.</p>
-                <div class="joki-card-price">Rp 30.000</div>
-                <button class="joki-btn" onclick="jokiPushOrder('Mingguan', 'Rp 30.000')">Deploy</button>
-            </div>
-            <div class="joki-card">
-                <h3 class="joki-card-h3">Bulanan</h3>
-                <p class="joki-card-p">Rawat akun + EoW + Sim/Div Universe + Upgrade 1 Character.</p>
-                <div class="joki-card-price">Rp 90.000</div>
-                <button class="joki-btn" onclick="jokiPushOrder('Bulanan', 'Rp 90.000')">Deploy</button>
-            </div>
-            <div class="joki-card" style="border-color: var(--joki-gold);">
-                <h3 class="joki-card-h3">Paket Lengkap</h3>
-                <p class="joki-card-p">Rawat akun + EoW + Sim/Div Universe + Upgrade 1 Char + Explore Chest.</p>
-                <div class="joki-card-price">Rp 150.000</div>
-                <button class="joki-btn" onclick="jokiPushOrder('Paket Lengkap', 'Rp 150.000')">Deploy</button>
-            </div>
-        </div>
-
-        <div class="joki-section-title">
-            <div class="joki-section-line"></div>
-            <span>Farming & Power Up</span>
-        </div>
-        <span class="joki-category-desc">Optimasi relic dan material karakter.</span>
-
-        <div class="joki-grid">
-            <div class="joki-card">
-                <h3 class="joki-card-h3">Farming Relic</h3>
-                <p class="joki-card-p">Farming Relic sesuai kebutuhan (Cavern/Ornament).</p>
-                <div class="joki-card-price">Rp 5.000</div>
-                <button class="joki-btn" onclick="jokiPushOrder('Farming Relic', 'Rp 5.000')">Deploy</button>
-            </div>
-            <div class="joki-card">
-                <h3 class="joki-card-h3">Leveling 1-80</h3>
-                <p class="joki-card-p">Peningkatan level karakter hingga maksimal.</p>
-                <div class="joki-card-price">Rp 50.000</div>
-                <button class="joki-btn" onclick="jokiPushOrder('Leveling 1-80', 'Rp 50.000')">Deploy</button>
-            </div>
-            <div class="joki-card">
-                <h3 class="joki-card-h3">Paket Character</h3>
-                <p class="joki-card-p">Character Level + Full Trace + Lightcone Max.</p>
-                <div class="joki-card-price">Rp 110.000</div>
-                <button class="joki-btn" onclick="jokiPushOrder('Paket Character', 'Rp 110.000')">Deploy</button>
-            </div>
-        </div>
-
-        <div class="joki-section-title">
-            <div class="joki-section-line"></div>
-            <span>Endgame Content</span>
-        </div>
-        <span class="joki-category-desc">Clear Floor MOC, PF, dan Apocalyptic Shadow.</span>
-
-        <div class="joki-grid">
-            <div class="joki-card">
-    <h3 class="joki-card-h3">MOC / PF / AS</h3>
-    <div class="joki-tag-container">
-        <div class="joki-row">
-            <span  class="joki-tag">Floor 1-4:</span>
-            <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.4000</span>
-        </div>
-        <div class="joki-row">
-            <span class="joki-tag">Floor 5-7:</span>
-            <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.7000</span>
-        </div>
-        <div class="joki-row">
-            <span class="joki-tag">Floor 8-10:</span>
-            <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.10000</span>
-        </div>
-        <div class="joki-row">
-            <span class="joki-tag">Floor 11-12:</span>
-            <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.13000</span>
-        </div>
-    </div>
-    <p class="joki-card-p">Team harus siap battle.</p>
-    <div class="joki-card-price">Cek Floor</div>
-    <button class="joki-btn" onclick="jokiPushOrder('Endgame Content', 'Tanya Floor')">Deploy</button>
-</div>
-            <div class="joki-card-new">
-                <h3 class="joki-card-h3">Main Story</h3>
-                <p class="joki-card-p">Selesaikan Story Mission yang panjang .</p>
-                <p class="joki-card-p">ayo kita live sambil story .</p>
-                <div class="joki-card-price">Rp 50k - 200k</div>
-                <button class="joki-btn" onclick="jokiPushOrder('Story Mission', 'Nego')">Deploy</button>
-            </div>
-            
-            
-        </div>
-    </div>
-
-    <script>
-        function jokiPushOrder(layanan, harga) {
-            const noWhatsapp = "+62 895-4251-13456"; 
-            const teksPesan = `Halo Astral Station,%0A%0A*Layanan:* ${layanan}%0A*Harga:* ${harga}%0A%0A"May this journey lead us starward."`;
-            window.open(`https://wa.me/${noWhatsapp}?text=${teksPesan}`, '_blank');
-        }
-    </script>
-</div>
-
-  </div>
-  
-  <div class="page page5">
-    
-    <div class="gc-container">
-    <style>
-        :root {
+:root {
             --accent: #ffd369;
             --hsr-accent: #69d3ff;
             --zzz-accent: #9dff69; 
@@ -2347,8 +1697,766 @@ function cancelHold() {
         grid-template-columns: repeat(3, 1fr);
     }
 }
+:root {
+        --sr-blue: #007bff;
+        --sr-accent: #f29d38;
+        --sr-bg-card: rgba(255, 255, 255, 0.08);
+        --sr-border: rgba(255, 255, 255, 0.15);
+      }
 
-    </style>
+      #game-downloader-container {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        width: 100%;
+      }
+    
+    .extra-tilt2 {
+  display: inline-block; /* Required for transform to work */
+  transform: skewX(-15deg); /* Negative degrees tilt to the right */
+}
+      /* Game Selector Tabs */
+      .resource-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 25px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* TRANSITION LOGIC */
+      .content-fade {
+        transition: opacity 0.4s ease-in-out, transform 0.4s ease-out;
+        opacity: 1;
+      }
+      .content-fade.is-hidden {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      /* Banner Container */
+      .resource-banner {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 1000px;
+        aspect-ratio: 16 / 9;
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+        background: transparent;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      }
+
+      .slide-layer {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        z-index: 1;
+        object-fit: cover;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .slide-layer.active {
+        opacity: 1;
+        z-index: 2;
+      }
+
+      .resource-banner-content {
+        position: absolute;
+        bottom: 0; left: 0; width: 100%;
+        z-index: 10;
+        padding: 20px;
+        background: linear-gradient(transparent, rgba(0,0,0,0.85));
+        pointer-events: none;
+      }
+
+      .resource-banner-content h1 { margin: 0; font-size: 20px; color: #fff; text-transform: uppercase; }
+      .resource-banner-content h2 { margin: 5px 0 0; font-size: 13px; color: var(--sr-accent); font-weight: 400; border:none;}
+
+      /* Tilted UI Tags */
+      .type-tag { 
+        position: absolute; 
+        top: 0; right: 0; 
+        font-size: 9px; 
+        padding: 4px 12px; 
+        background: rgba(0,0,0,0.7); 
+        border-bottom-left-radius: 10px; 
+        color: #fff; 
+        text-transform: uppercase;
+        font-style: italic; /* Tilt Effect */
+        font-weight: bold;
+        transform: skewX(-15deg); /* Tilt Effect */
+        border-left: 3px solid var(--sr-accent);
+      }
+
+      /* Package Grid Layout */
+      .resource-section { margin-top: 30px; color: white; }
+      .resource-section h2 { border-bottom: 1px solid var(--sr-border); padding-bottom: 10px; font-size: 1.1rem; }
+      .package-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px;}
+      
+      .package-item {
+        background: var(--sr-bg-card);
+        border: 1px solid var(--sr-border);
+        border-radius: 10px;
+        padding: 20px 15px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .package-item .title { font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #fff; overflow-wrap: anywhere; line-height: 1.4; }
+      .package-item .size { font-size: 11px; color: #aaa; margin-bottom: 15px; font-style: italic; }
+      
+      .dl-link {
+        background: var(--sr-blue);
+        color: white;
+        text-decoration: none;
+        text-align: center;
+        padding: 10px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+</style>
+</head>
+<body>
+<svg style="visibility: hidden; position: absolute;" width="0" height="0">
+  <filter id="liquid">
+    <feTurbulence type="fractalNoise" baseFrequency="0.01 0.01" numOctaves="3" seed="1">
+      <animate attributeName="baseFrequency" dur="10s" values="0.01 0.01;0.05 0.05;0.01 0.01" repeatCount="indefinite" />
+    </feTurbulence>
+    <feDisplacementMap in="SourceGraphic" scale="50" />
+  </filter>
+</svg>
+<div class="radial-menu-layer">
+  <div class="menu-wrapper" id="triggerZone">
+      <div class="hold-button"></div>
+      <div class="menu-dim" id="menuDim"></div>
+    <div class="menu-container" id="menuContainer">
+    <div class="circular-ring">
+        
+      <div style="display: flex;justify-content: center; /* Centers horizontally */
+  align-items: center;">
+        <div class="pathlogo" style="width:47%;height:47%;border:solid 4px #fff;border-radius:100%;position:absolute;display: flex;justify-content: center; /* Centers horizontally */
+  align-items: center;"></div>  
+  
+  <div class="pathlogo2" style="width:105%;height:105%;border:solid 4px #fff;border-radius:100%;position:absolute;display: flex;justify-content: center; /* Centers horizontally */
+  align-items: center;">
+      
+  <svg id="svg" width="210" height="210" viewBox="0 0 200 200">
+  <circle
+    id="arc"
+    cx="100"
+    cy="100"
+    r="80"
+    fill="none"
+    stroke="#fff"
+    stroke-width="10"
+    stroke-dasharray="100 400"
+    transform="rotate(-90 100 100)"
+  />
+</svg>
+  </div>  
+      <svg viewBox="0 0 100 100" class="svg-layer">
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 0; --bg: #00000099" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 1; --bg: #00000099" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 2; --bg: #00000099" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 3; --bg: #00000099" />
+        <circle class="ring-slice" cx="50" cy="50" r="38" style="--i: 4; --bg: #00000099" />
+      </svg>
+      
+      </div>
+
+      <div class="content-node" style="--angle: 18deg;">
+        <span class="icon"><i class="fa-solid fa-user" style="color: #ffffff;"></i></span>
+        <span class="label">Profile</span>
+      </div>
+      <div class="content-node" style="--angle: 90deg;">
+        <span class="icon"><i class="fa-solid fa-keyboard" style="color: #ffffff;"></i></span>
+        <span class="label">Code Redem</span>
+      </div>
+      <div class="content-node" style="--angle: 162deg;">
+        <span class="icon"><i class="fa-solid fa-gamepad" style="color: #ffffff;"></i></span>
+        <span class="label">Joki</span>
+      </div>
+      <div class="content-node" style="--angle: 234deg;">
+        <span class="icon"><i class="fa-solid fa-tv" style="color: #ffffff;"></i></span>
+        <span class="label">News</span>
+      </div>
+      <div class="content-node" style="--angle: 306deg;">
+        <span class="icon" style="margin-left:-15px;"><i class="fa-solid fa-newspaper" style="color: #ffffff;"></i>️</span>
+        <span class="label" style="margin-left:-15px;">Patches</span>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<script>
+const arc = document.getElementById("arc");
+const svg = document.getElementById("svg");
+
+// Shared function to handle the rotation logic
+function updateRotation(clientX, clientY) {
+  const rect = svg.getBoundingClientRect();
+
+  // center of the SVG
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+
+  // position relative to center
+  const dx = clientX - cx;
+  const dy = clientY - cy;
+
+  // angle in degrees
+  const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+  // rotate arc to face the pointer
+  arc.setAttribute(
+    "transform",
+    `rotate(${angle - 40} 100 100)`
+  );
+}
+
+// 1. Desktop Mouse Movement
+document.addEventListener("mousemove", (e) => {
+  updateRotation(e.clientX, e.clientY);
+});
+
+// 2. Mobile Touch Movement (Follows finger)
+document.addEventListener("touchmove", (e) => {
+  const touch = e.touches[0];
+  updateRotation(touch.clientX, touch.clientY);
+}, { passive: true });
+
+// 3. Mobile Touch Start (Snaps to finger immediately on touch)
+document.addEventListener("touchstart", (e) => {
+  const touch = e.touches[0];
+  updateRotation(touch.clientX, touch.clientY);
+}, { passive: true });
+</script>
+<script>
+  /* =============================
+     ELEMENT REFERENCES
+  ============================== */
+  const menu = document.getElementById('menuContainer');
+  const dim = document.getElementById('menuDim');
+  const slices = document.querySelectorAll('.ring-slice');
+    
+    
+  const LOGO_BGS = [
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-44.png",
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-45.png",
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-46.png",
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-47.png",
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-48.png",
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-49.png",
+  "https://gamebrott.com/wp-content/uploads/2023/08/image-43.png"
+];    
+  /* =============================
+     CONFIG
+  ============================== */
+  const HOLD_DELAY = 700;
+  const CENTER_ZONE = { width: 0.35, height: 0.35 };
+
+  /* =============================
+     STATE
+  ============================== */
+  let holdTimer = null;
+  let holding = false;
+  let menuOpen = false;
+
+  /* =============================
+     HELPERS
+  ============================== */
+  function inCenterZone(x, y) {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    return (
+      x >= w * (0.5 - CENTER_ZONE.width / 2) &&
+      x <= w * (0.5 + CENTER_ZONE.width / 2) &&
+      y >= h * (0.5 - CENTER_ZONE.height / 2) &&
+      y <= h * (0.5 + CENTER_ZONE.height / 2)
+    );
+  }
+
+  function showMenu() {
+      
+      const randomBg = LOGO_BGS[Math.floor(Math.random() * LOGO_BGS.length)];
+  
+  // 2. Select the pathlogo element
+  const logoElement = document.querySelector('.pathlogo');
+  
+  // 3. Apply the new background (keeping your linear-gradient overlay if needed)
+  if (logoElement) {
+    logoElement.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("${randomBg}")`;
+  }
+    menu.classList.add('active');
+  dim.classList.add('active');
+  // Prevent clicking items behind the menu while it's open
+  document.querySelector('.page1').style.pointerEvents = 'none';
+  menuOpen = true;
+}
+  
+
+ function hideMenu() {
+  // --- REMOVE LIQUID FROM CANVAS ---
+  const canvas = document.getElementById('warpCanvas');
+  if (canvas) canvas.style.filter = 'none';
+
+  menu.classList.remove('active');
+  dim.classList.remove('active');
+  document.querySelector('.page1').style.pointerEvents = 'auto';
+  menuOpen = false;
+}
+
+  /* =============================
+     HOLD TO OPEN
+  ============================== */
+  function startHold(e) {
+  if (menuOpen) return;
+  if (!inCenterZone(e.clientX, e.clientY)) return;
+
+  // --- TRIGGER LIQUID ON CANVAS ONLY ---
+  const canvas = document.getElementById('warpCanvas');
+  if (canvas) canvas.style.filter = 'url(#liquid)';
+  
+  holding = true;
+  holdTimer = setTimeout(() => {
+    if (holding) showMenu();
+  }, HOLD_DELAY);
+}
+
+function cancelHold() {
+  holding = false;
+  clearTimeout(holdTimer);
+  
+  // Remove effect if user lets go before menu opens
+  if (!menuOpen) {
+    const canvas = document.getElementById('warpCanvas');
+    if (canvas) canvas.style.filter = 'none';
+  }
+}
+
+  /* =============================
+     EVENTS
+  ============================== */
+  window.addEventListener('pointerdown', startHold, { passive: true });
+  window.addEventListener('pointerup', cancelHold);
+  window.addEventListener('pointercancel', cancelHold);
+
+  /* =============================
+     CLOSE ON DIM CLICK
+  ============================== */
+  dim.addEventListener('click', hideMenu);
+
+  /* =============================
+     SLICE CLICK -> NAVIGATE
+  ============================== */
+  slices.forEach((slice, index) => {
+  slice.addEventListener('click', (e) => {
+    e.stopPropagation();
+    // Map the slices to your actual page order
+    // index 0=Profile(Page1), 1=Code(Page2), 2=Joki(Page3), etc.
+    goToPage(index); 
+    hideMenu();
+  });
+});
+
+  /* =============================
+     NAVIGATION (ADJUST TO YOUR APP)
+  ============================== */
+  function goToPage(index) {
+    const container = document.getElementById('container');
+    const width = window.innerWidth;
+    
+    // Smooth scroll the container to the selected page
+    container.scrollTo({
+        left: index * width,
+        behavior: 'smooth'
+    });
+    
+    // Optional: Update your island dots if you have them
+    updateDots(index);
+}
+</script>
+
+<div class="container" id="container">
+  <!-- Page 1 Link Tree -->
+  
+  
+  
+  <div class="page page1">
+  <canvas id="warpCanvas"></canvas>
+  <div id="threeContainer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;"></div>
+    <div class="profile-header">
+      <div class="avatar-wrapper">
+        <img src="https://i.ibb.co.com/zhRNLbFN/915f70b8620adc7442ef2ba97c06435f-tplv-tiktokx-cropcenter-1080-1080.jpg" alt="Kodokkyun" class="main-avatar" />
+        
+      </div>
+      <div class="status-badge">● ONLINE</div>
+      <h2 class="name-premium">Kodokkyun</h2>
+      <p class="tagline">Wong Jowo tapi Gamer • <i class="fa-regular fa-chess-king fa-shake" style="color: #ffffff;"></i></p>
+    </div>
+
+  <div class="links-container">
+    <div class="link-item">
+      <button class="modern-link" onclick="togglePanel(this)">
+        <div class="link-info">
+          <div class="icon-box tiktok-bg"><i class="fa-brands fa-tiktok fa-bounce" style="color: #ffffff;"></i></div>
+          <div class="link-text">
+            <span class="link-title">TikTok</span>
+            <span class="link-subtitle">Konten Gaming & Hiburan</span>
+          </div>
+        </div>
+        <span class="arrow-icon"><i class="fa-solid fa-sun fa-spin"></i></span>
+      </button>
+      <div class="modern-panel">
+        <p>Mampir ke TikTok lur, konten seru tiap hari! 🙏</p>
+        <button class="action-btn" onclick="window.open('https://www.tiktok.com/@kodok.kyun?_r=1&_t=ZS-92Pj7eRBXST', '_blank')">Follow Yuk</button>
+      </div>
+    </div>
+
+    <div class="link-item">
+      <button class="modern-link" onclick="togglePanel(this)">
+        <div class="link-info">
+          <div class="icon-box saweria-bg"><i class="fa-solid fa-circle-dollar-to-slot fa-flip" style="color: #ffffff;"></i></div>
+          <div class="link-text">
+            <span class="link-title">Saweria</span>
+            <span class="link-subtitle">Support Creator Lokal</span>
+          </div>
+        </div>
+        <span class="arrow-icon"><i class="fa-solid fa-sun fa-spin"></i></span>
+      </button>
+      <div class="modern-panel">
+        <p>Tip/Donasi untuk upgrade gear streaming. Suwun!</p>
+        <button class="action-btn" onclick="window.open('https://saweria.co/kodokkyunn99', '_blank')">Tip Saweria</button>
+      </div>
+    </div>
+
+    <div class="link-item highlight">
+      <button class="modern-link" onclick="togglePanel(this)">
+        <div class="link-info">
+          <div class="icon-box joki-bg"><i class="fa-solid fa-khanda fa-beat" style="color: #ffffff;"></i></div>
+          <div class="link-text">
+            <span class="link-title">Jasa Joki Game</span>
+            <span class="link-subtitle">Top-tier Rank Service</span>
+          </div>
+        </div>
+        <span class="arrow-icon"><i class="fa-solid fa-sun fa-spin"></i></span>
+      </button>
+      <div class="modern-panel">
+        <p>Gak ada waktu maen? Serahin ke ahlinya!</p>
+        <button class="action-btn joki-btn-color" id="JOKINext">Lihat Pricelist</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page2">
+
+  <div class="content">
+    <div class="header-logo-container">
+      <img id="game-logo-header" src="" alt="Logo" class="animate-logo">
+    </div>
+
+    <div class="tabs-v2 e-tilt">
+      <button class="tab-btn-v2 active" data-game="zenless">ZZZ</button>
+      <button class="tab-btn-v2" data-game="genshinimpact">GENSHIN</button>
+      <button class="tab-btn-v2" data-game="starrail">HSR</button>
+      <button class="tab-btn-v2" data-game="hi3rd">HI3rd</button>
+    </div>
+
+    <div id="codes-container-v2">
+      <div class="loading-v2">INITIALIZING...</div>
+    </div>
+
+    <div style="height: 100px;"></div> 
+  </div>
+
+  <script>
+    (function() {
+      const APIS = {
+        zenless: 'https://kodokkyun-project.vercel.app/api/zzcode',
+        genshinimpact: 'https://kodokkyun-project.vercel.app/api/gscd',
+        starrail: 'https://kodokkyun-project.vercel.app/api/stcode',
+        hi3rd: 'https://kodokkyun-project.vercel.app/api/hicode'
+      };
+
+      const BGS = {
+        zenless: 'https://images7.alphacoders.com/130/thumb-1920-1307267.jpg',
+        genshinimpact: 'https://fastcdn.hoyoverse.com/content-v2/hk4e/159337/54b493f799071cf2050b919305288d5d_7897117480191368973.jpg',
+        starrail: 'https://i.ibb.co.com/VYZ3w3wB/Fyreflies-are-such-magical-creatures-aren-t-they-They-may-throw-themselves-at-a-flame-or-sudden-ups.png',
+        hi3rd: 'https://fastcdn.hoyoverse.com/content-v2/plat/101533/6fbf8271438e536e58169ac01efb0a84_723492315779207397.jpg'
+      };
+
+      const CODELOGO = {
+        zenless: 'https://i.ibb.co.com/JFcGnZvK/f3.png',
+        genshinimpact: 'https://i.ibb.co.com/Nn3J5SnW/1rf.png',
+        starrail: 'https://i.ibb.co.com/TDQgJmdk/unnamed.png',
+        hi3rd: 'https://i.ibb.co.com/tTGpYmcr/ewq.png'
+      };
+
+      // Konfigurasi Link Redeem Otomatis
+      const REDEEM_CONFIG = {
+        zenless: code => `https://zenless.hoyoverse.com/redemption?code=${code}`,
+        genshinimpact: code => `https://genshin.hoyoverse.com/en/gift?code=${code}`,
+        starrail: code => `https://hsr.hoyoverse.com/gift?code=${code}`,
+        hi3rd: code => `https://honkaiimpact3.hoyoverse.com/global/en/home?code=${code}` 
+      };
+
+      async function loadCodes(game) {
+        const container = document.getElementById('codes-container-v2');
+        const pg2 = document.getElementById('page2');
+        const logoImg = document.getElementById('game-logo-header');
+        
+        logoImg.classList.remove('animate-logo');
+        logoImg.src = CODELOGO[game];
+        pg2.style.backgroundImage = `url('${BGS[game]}')`;
+        
+        void logoImg.offsetWidth; 
+        logoImg.classList.add('animate-logo');
+        
+        container.innerHTML = '<div class="loading-v2">LOADING CODES...</div>';
+
+        try {
+          const res = await fetch(APIS[game]);
+          const data = await res.json();
+          container.innerHTML = '';
+
+          if (data.active && data.active.length > 0) {
+            data.active.forEach((item, index) => {
+              const rewardList = item.rewards.join(', ');
+              const card = document.createElement('div');
+              card.className = 'redeem-card-v2 reveal-card';
+              card.style.animationDelay = `${index * 0.1}s`;
+              
+              // Membuat link redeem khusus untuk kode ini
+              const finalRedeemUrl = REDEEM_CONFIG[game](item.code);
+              
+              card.innerHTML = `
+                <div class="redeem-header-v2">
+                  <span class="code-v2">${item.code}</span>
+                  <div class="btn-group-v2">
+                    <button class="btn-v2 btn-copy-v2" onclick="copyAction('${item.code}', this)">COPY</button>
+                    <button class="btn-v2 btn-redeem-v2" onclick="window.open('${finalRedeemUrl}', '_blank')">REDEEM</button>
+                  </div>
+                </div>
+                <div class="reward-v2" style="font-size:0.85rem; color:#aaa; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">
+                  <strong>Rewards:</strong> ${rewardList}
+                </div>
+              `;
+              container.appendChild(card);
+            });
+          } else {
+            container.innerHTML = '<div class="loading-v2">NO ACTIVE CODES FOUND</div>';
+          }
+        } catch (e) {
+          container.innerHTML = '<div class="loading-v2" style="color:#f87171">CONNECTION ERROR</div>';
+        }
+      }
+
+      document.querySelectorAll('.tab-btn-v2').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if(this.classList.contains('active')) return;
+          document.querySelectorAll('.tab-btn-v2').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          loadCodes(this.dataset.game);
+        });
+      });
+
+      window.copyAction = function(text, btn) {
+        navigator.clipboard.writeText(text);
+        const originalText = btn.innerText;
+        btn.innerText = 'COPIED!';
+        btn.style.background = '#059669';
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.style.background = '#6366f1';
+        }, 1000);
+      };
+
+      loadCodes('zenless');
+    })();
+  </script>
+</div>
+
+
+  <!-- Page 3 -->
+  <div class="page page3">
+  
+  <div class="joki-master-container">
+
+    <div class="joki-header">
+        <h1 class="joki-header-title">ASTRAL STATION</h1>
+        <div style="background: rgba(0,0,0,0.4); padding: 4px 12px; border-radius: 4px; margin-top: 10px;">
+            <p style="color: var(--joki-gold); font-size: 0.8rem; font-weight: bold; margin: 0; letter-spacing: 1px;">HSR JOKI & MAINTENANCE</p>
+        </div>
+    </div>
+
+    <div class="joki-content-wrapper">
+        
+        <div class="joki-section-title">
+            <div class="joki-section-line"></div>
+            <span>Event </span>
+        </div>
+        
+        <div class="joki-card-cw">
+                <h3 class="joki-card-h3">Currency Wars</h3>
+                <p class="joki-card-p">Event Anjay Currency wars sudah bisa di joki</p>
+                
+                <div class="joki-row">
+                 <span  class="joki-tag">18000 Point</span>
+                  <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.24000</span>
+                 </div> 
+                 
+                  <div class="joki-row">
+                 <span  class="joki-tag">Level Up accession </span>
+                  <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.28000</span>
+                 </div> 
+                 
+                 <div class="joki-row">
+                 <span  class="joki-tag">Sampai Welt Creator Mentok </span>
+                  <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.150000</span>
+                 </div> 
+                 
+                <br>
+                
+                <button class="joki-btn" onclick="jokiPushOrder('Currency Wars', 'Tanya Harga')">Deploy</button>
+            </div>
+            
+            <div class="joki-card-ev" >
+                <h3 class="joki-card-h3">Chrysos Awoo Championship</h3>
+                <p class="joki-card-p">Ngelarin Event Bulanan Sabung Kocheng</p>
+                
+                <div class="joki-card-price">Rp 10.000</div>
+                
+                <button class="joki-btn" onclick="jokiPushOrder('Chrysos Awoo Championship', 'Rp 25.000')">Deploy</button>
+            </div>
+        
+        <div class="joki-section-title">
+            <div class="joki-section-line"></div>
+            <span>Rawat Akun</span>
+        </div>
+        <span class="joki-category-desc">Maintenance rutin untuk Trailblazer Power & Daily.</span>
+
+        <div class="joki-grid">
+            <div class="joki-card">
+                <h3 class="joki-card-h3">Harian</h3>
+                <p class="joki-card-p">Spend Trailblaze power, daily point, assignment.</p>
+                <div class="joki-card-price">Rp 5.000</div>
+                <button class="joki-btn" onclick="jokiPushOrder('Harian', 'Rp 5.000')">Deploy</button>
+            </div>
+            <div class="joki-card">
+                <h3 class="joki-card-h3">Mingguan</h3>
+                <p class="joki-card-p">Rawat akun + Echo of War, Simulated / Divergent Universe.</p>
+                <div class="joki-card-price">Rp 30.000</div>
+                <button class="joki-btn" onclick="jokiPushOrder('Mingguan', 'Rp 30.000')">Deploy</button>
+            </div>
+            <div class="joki-card">
+                <h3 class="joki-card-h3">Bulanan</h3>
+                <p class="joki-card-p">Rawat akun + EoW + Sim/Div Universe + Upgrade 1 Character.</p>
+                <div class="joki-card-price">Rp 90.000</div>
+                <button class="joki-btn" onclick="jokiPushOrder('Bulanan', 'Rp 90.000')">Deploy</button>
+            </div>
+            <div class="joki-card" style="border-color: var(--joki-gold);">
+                <h3 class="joki-card-h3">Paket Lengkap</h3>
+                <p class="joki-card-p">Rawat akun + EoW + Sim/Div Universe + Upgrade 1 Char + Explore Chest.</p>
+                <div class="joki-card-price">Rp 150.000</div>
+                <button class="joki-btn" onclick="jokiPushOrder('Paket Lengkap', 'Rp 150.000')">Deploy</button>
+            </div>
+        </div>
+
+        <div class="joki-section-title">
+            <div class="joki-section-line"></div>
+            <span>Farming & Power Up</span>
+        </div>
+        <span class="joki-category-desc">Optimasi relic dan material karakter.</span>
+
+        <div class="joki-grid">
+            <div class="joki-card">
+                <h3 class="joki-card-h3">Farming Relic</h3>
+                <p class="joki-card-p">Farming Relic sesuai kebutuhan (Cavern/Ornament).</p>
+                <div class="joki-card-price">Rp 5.000</div>
+                <button class="joki-btn" onclick="jokiPushOrder('Farming Relic', 'Rp 5.000')">Deploy</button>
+            </div>
+            <div class="joki-card">
+                <h3 class="joki-card-h3">Leveling 1-80</h3>
+                <p class="joki-card-p">Peningkatan level karakter hingga maksimal.</p>
+                <div class="joki-card-price">Rp 50.000</div>
+                <button class="joki-btn" onclick="jokiPushOrder('Leveling 1-80', 'Rp 50.000')">Deploy</button>
+            </div>
+            <div class="joki-card">
+                <h3 class="joki-card-h3">Paket Character</h3>
+                <p class="joki-card-p">Character Level + Full Trace + Lightcone Max.</p>
+                <div class="joki-card-price">Rp 110.000</div>
+                <button class="joki-btn" onclick="jokiPushOrder('Paket Character', 'Rp 110.000')">Deploy</button>
+            </div>
+        </div>
+
+        <div class="joki-section-title">
+            <div class="joki-section-line"></div>
+            <span>Endgame Content</span>
+        </div>
+        <span class="joki-category-desc">Clear Floor MOC, PF, dan Apocalyptic Shadow.</span>
+
+        <div class="joki-grid">
+            <div class="joki-card">
+    <h3 class="joki-card-h3">MOC / PF / AS</h3>
+    <div class="joki-tag-container">
+        <div class="joki-row">
+            <span  class="joki-tag">Floor 1-4:</span>
+            <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.4000</span>
+        </div>
+        <div class="joki-row">
+            <span class="joki-tag">Floor 5-7:</span>
+            <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.7000</span>
+        </div>
+        <div class="joki-row">
+            <span class="joki-tag">Floor 8-10:</span>
+            <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.10000</span>
+        </div>
+        <div class="joki-row">
+            <span class="joki-tag">Floor 11-12:</span>
+            <span style="background-color:var(--joki-gold);border-radius:15px;padding-left:5px;padding-right:5px;color:black;">Rp.13000</span>
+        </div>
+    </div>
+    <p class="joki-card-p">Team harus siap battle.</p>
+    <div class="joki-card-price">Cek Floor</div>
+    <button class="joki-btn" onclick="jokiPushOrder('Endgame Content', 'Tanya Floor')">Deploy</button>
+</div>
+            <div class="joki-card-new">
+                <h3 class="joki-card-h3">Main Story</h3>
+                <p class="joki-card-p">Selesaikan Story Mission yang panjang .</p>
+                <p class="joki-card-p">ayo kita live sambil story .</p>
+                <div class="joki-card-price">Rp 50k - 200k</div>
+                <button class="joki-btn" onclick="jokiPushOrder('Story Mission', 'Nego')">Deploy</button>
+            </div>
+            
+            
+        </div>
+    </div>
+
+    <script>
+        function jokiPushOrder(layanan, harga) {
+            const noWhatsapp = "+62 895-4251-13456"; 
+            const teksPesan = `Halo Astral Station,%0A%0A*Layanan:* ${layanan}%0A*Harga:* ${harga}%0A%0A"May this journey lead us starward."`;
+            window.open(`https://wa.me/${noWhatsapp}?text=${teksPesan}`, '_blank');
+        }
+    </script>
+</div>
+
+  </div>
+  
+  <div class="page page5">
+    
+    <div class="gc-container">
 
     <div class="gc-tabs">
         <button class="gc-tab-btn active" data-game="genshin">Genshin</button>
@@ -2501,133 +2609,6 @@ gcTabBtns.forEach(btn => {
   
 <div class="page page4">
   <div id="game-downloader-container">
-    <style>
-      :root {
-        --sr-blue: #007bff;
-        --sr-accent: #f29d38;
-        --sr-bg-card: rgba(255, 255, 255, 0.08);
-        --sr-border: rgba(255, 255, 255, 0.15);
-      }
-
-      #game-downloader-container {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        width: 100%;
-      }
-    
-    .extra-tilt2 {
-  display: inline-block; /* Required for transform to work */
-  transform: skewX(-15deg); /* Negative degrees tilt to the right */
-}
-      /* Game Selector Tabs */
-      .resource-tabs {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 25px;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-
-      /* TRANSITION LOGIC */
-      .content-fade {
-        transition: opacity 0.4s ease-in-out, transform 0.4s ease-out;
-        opacity: 1;
-      }
-      .content-fade.is-hidden {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      /* Banner Container */
-      .resource-banner {
-        margin: 0 auto;
-        width: 100%;
-        max-width: 1000px;
-        aspect-ratio: 16 / 9;
-        position: relative;
-        overflow: hidden;
-        border-radius: 12px;
-        background: transparent;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      }
-
-      .slide-layer {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        opacity: 0;
-        transition: opacity 1s ease-in-out;
-        z-index: 1;
-        object-fit: cover;
-        background-size: cover;
-        background-position: center;
-      }
-
-      .slide-layer.active {
-        opacity: 1;
-        z-index: 2;
-      }
-
-      .resource-banner-content {
-        position: absolute;
-        bottom: 0; left: 0; width: 100%;
-        z-index: 10;
-        padding: 20px;
-        background: linear-gradient(transparent, rgba(0,0,0,0.85));
-        pointer-events: none;
-      }
-
-      .resource-banner-content h1 { margin: 0; font-size: 20px; color: #fff; text-transform: uppercase; }
-      .resource-banner-content h2 { margin: 5px 0 0; font-size: 13px; color: var(--sr-accent); font-weight: 400; border:none;}
-
-      /* Tilted UI Tags */
-      .type-tag { 
-        position: absolute; 
-        top: 0; right: 0; 
-        font-size: 9px; 
-        padding: 4px 12px; 
-        background: rgba(0,0,0,0.7); 
-        border-bottom-left-radius: 10px; 
-        color: #fff; 
-        text-transform: uppercase;
-        font-style: italic; /* Tilt Effect */
-        font-weight: bold;
-        transform: skewX(-15deg); /* Tilt Effect */
-        border-left: 3px solid var(--sr-accent);
-      }
-
-      /* Package Grid Layout */
-      .resource-section { margin-top: 30px; color: white; }
-      .resource-section h2 { border-bottom: 1px solid var(--sr-border); padding-bottom: 10px; font-size: 1.1rem; }
-      .package-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px;}
-      
-      .package-item {
-        background: var(--sr-bg-card);
-        border: 1px solid var(--sr-border);
-        border-radius: 10px;
-        padding: 20px 15px;
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .package-item .title { font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #fff; overflow-wrap: anywhere; line-height: 1.4; }
-      .package-item .size { font-size: 11px; color: #aaa; margin-bottom: 15px; font-style: italic; }
-      
-      .dl-link {
-        background: var(--sr-blue);
-        color: white;
-        text-decoration: none;
-        text-align: center;
-        padding: 10px;
-        border-radius: 6px;
-        font-weight: bold;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-    </style>
 
     <div class="resource-tabs">
       <button class="tab-btn active title-font extra-tilt2" id="tab-sr" onclick="switchGameResource('sr')">STAR RAIL</button>
