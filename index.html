@@ -3205,7 +3205,7 @@ function togglePanel(btn) {
 // Start
 fetchCodes();
 </script>
- <script>
+<script>
 const canvas = document.getElementById('warpCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -3218,12 +3218,18 @@ const boostSpeed = 17;
 let speed = baseSpeed;
 let targetSpeed = baseSpeed;
 
-let portal = {
-    z: 0,
-    maxZ: 0,
-    color: '0, 100, 255',
-    activeOpacity: 0
-};
+// Three.js Globals
+let scene, camera, renderer;
+let spaceObjects = [];
+let mixers = []; 
+const clock = new THREE.Clock(); 
+
+// --- SETTINGS FOR STATIC MODELS ---
+const staticUrls = [
+    'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/gakaxy.glb',
+    'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/need_some_space.glb'
+];
+const staticScale = 112; 
 
 const patterns = {
     "Aries": [{x:-10,y:0}, {x:0,y:-5}, {x:10,y:5}, {x:15,y:15}],
@@ -3240,15 +3246,31 @@ const patterns = {
     "Pisces": [{x:-20,y:-20}, {x:0,y:0}, {x:20,y:0}, {x:10,y:20}]
 };
 
+
+
 const colors = ['rgba(130, 200, 255,', 'rgba(100, 255, 230,', 'rgba(255, 255, 255,', 'rgba(180, 150, 255,'];
-const portalPalette = ['0, 100, 255', '0, 255, 150', '200, 50, 255', '255, 100, 50'];
+// Add this helper function to draw the custom star shape
+function drawSparkle(ctx, cx, cy, outerRadius, innerRadius) {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - outerRadius);
+    // Top to Right
+    ctx.bezierCurveTo(cx + innerRadius, cy - innerRadius, cx + innerRadius, cy - innerRadius, cx + outerRadius, cy);
+    // Right to Bottom
+    ctx.bezierCurveTo(cx + innerRadius, cy + innerRadius, cx + innerRadius, cy + innerRadius, cx, cy + outerRadius);
+    // Bottom to Left
+    ctx.bezierCurveTo(cx - innerRadius, cy + innerRadius, cx - innerRadius, cy + innerRadius, cx - outerRadius, cy);
+    // Left to Top
+    ctx.bezierCurveTo(cx - innerRadius, cy - innerRadius, cx - innerRadius, cy - innerRadius, cx, cy - outerRadius);
+    ctx.closePath();
+    ctx.fill();
+}
 
 class Constellation {
     constructor() { this.reset(); }
     reset() {
         this.z = width + Math.random() * width;
-        this.x = (Math.random() - 0.5) * width * 0.6;
-        this.y = (Math.random() - 0.5) * height * 0.6;
+        this.x = (Math.random() - 0.5) * width * 0.8;
+        this.y = (Math.random() - 0.5) * height * 0.8;
         const keys = Object.keys(patterns);
         this.points = patterns[keys[Math.floor(Math.random() * keys.length)]];
         this.color = colors[Math.floor(Math.random() * colors.length)];
@@ -3259,15 +3281,13 @@ class Constellation {
     }
     draw() {
         let scale = (width / 2) / this.z;
-        let opacity = Math.min(1, (1 - this.z / width) * 2.5);
+        let opacity = Math.min(1, (1 - this.z / width) * 2);
         
         if (this.z < width) {
             ctx.save();
-            ctx.lineWidth = 1.2 * scale;
-            ctx.strokeStyle = this.color + (opacity * 0.4) + ')';
-            ctx.shadowBlur = 5 * scale;
-            ctx.shadowColor = this.color + '0.5)';
-            
+            // 1. Draw Connecting Lines
+            ctx.lineWidth = 1 * scale; // Slightly thinner for better aesthetics
+            ctx.strokeStyle = this.color + (opacity * 0.15) + ')';
             ctx.beginPath();
             this.points.forEach((p, i) => {
                 let px = (this.x + p.x) * scale + centerX;
@@ -3277,28 +3297,37 @@ class Constellation {
             });
             ctx.stroke();
 
+            // 2. Draw Stars (Sparkle Shape)
             this.points.forEach((p) => {
                 let px = (this.x + p.x) * scale + centerX;
                 let py = (this.y + p.y) * scale + centerY;
-                ctx.fillStyle = this.color + opacity + ')';
-                ctx.beginPath();
-                ctx.arc(px, py, 2.5 * scale, 0, Math.PI * 2);
-                ctx.fill();
+                
+                // Outer glow
+                ctx.shadowBlur = 30 * scale;
+                ctx.shadowColor = this.color + '2)';
+                
+                // Size math
+                let outerRadius = Math.max(1.5, 5 * scale); // Length of the points
+                let innerRadius = outerRadius * 0.25;      // Thickness (smaller = sharper)
+
+                // Draw the main colored sparkle
+                ctx.fillStyle = this.color + (opacity * 1) + ')';
+                drawSparkle(ctx, px, py, outerRadius, innerRadius);
+                
+                // Draw a white core for the "shining" effect
+                ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                drawSparkle(ctx, px, py, outerRadius * 0.7, innerRadius * 0.4);
             });
             ctx.restore();
         }
     }
 }
 
+// ... (init, update, draw 2D loop remains similar)
 function init() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-    centerX = width / 2;
-    centerY = height / 2;
-    portal.maxZ = width;
-    portal.z = portal.maxZ; 
+    width = window.innerWidth; height = window.innerHeight;
+    canvas.width = width; canvas.height = height;
+    centerX = width / 2; centerY = height / 2;
     stars = [];
     for (let i = 0; i < starCount; i++) {
         stars.push({
@@ -3314,56 +3343,26 @@ function init() {
 
 function update() {
     speed += (targetSpeed - speed) * 0.1;
-    if (targetSpeed === boostSpeed) portal.activeOpacity += (1 - portal.activeOpacity) * 0.05;
-    else portal.activeOpacity += (0 - portal.activeOpacity) * 0.1;
-
     stars.forEach(s => {
         s.z -= speed;
         if (s.z <= 0) { s.z = width; s.x = Math.random() * width - centerX; s.y = Math.random() * height - centerY; s.px = 0; s.py = 0; }
     });
     constellations.forEach(c => c.update());
-    portal.z -= speed * 0.5;
-    if (portal.z <= 0) {
-        portal.z = portal.maxZ; 
-        portal.color = portalPalette[Math.floor(Math.random() * portalPalette.length)];
-    }
 }
 
 function draw() {
-    // Increase clear alpha slightly for smoother trails on high-refresh monitors
     ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
     ctx.fillRect(0, 0, width, height);
 
-    let portalScale = (portal.maxZ / (portal.z + 1)); 
-    let portalRadius = portalScale * 20; 
-    let finalOpacity = Math.min(1, (portal.maxZ - portal.z) / (portal.maxZ * 0.2)) * Math.min(1, portal.z / 200) * portal.activeOpacity;
-
-    // 1. Draw Portal (Simplified Gradient)
-    if (finalOpacity > 0.01) {
-        const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, portalRadius);
-        grad.addColorStop(0, 'rgba(0, 0, 0, 1)'); 
-        grad.addColorStop(0.5, `rgba(${portal.color}, ${0.4 * finalOpacity})`); 
-        grad.addColorStop(1, 'rgba(0, 0, 0, 0)'); 
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, portalRadius, 0, Math.PI * 2);
-        ctx.fill();
-    }
-
-    // 2. Draw Stars (Optimized: No shadowBlur)
     stars.forEach(s => {
         let x = (s.x / s.z) * (width / 2) + centerX;
         let y = (s.y / s.z) * (height / 2) + centerY;
         if (s.px !== 0) {
             let op = 1 - (s.z / width);
-            
-            // FAKE BLOOM: Draw a thick faint line behind the star
             ctx.globalAlpha = op * 0.3;
             ctx.strokeStyle = s.color + '1)';
-            ctx.lineWidth = op * 8; // The "glow" width
+            ctx.lineWidth = op * 8;
             ctx.beginPath(); ctx.moveTo(s.px, s.py); ctx.lineTo(x, y); ctx.stroke();
-            
-            // THE CORE: Draw the bright center
             ctx.globalAlpha = op;
             ctx.lineWidth = op * 2;
             ctx.stroke();
@@ -3372,141 +3371,106 @@ function draw() {
         s.px = x; s.py = y;
     });
 
-    // 3. Draw Constellations (Optimized)
-    constellations.forEach(c => {
-        let scale = (width / 2) / c.z;
-        let opacity = Math.min(1, (1 - c.z / width) * 2.5);
-        
-        if (c.z < width) {
-            ctx.save();
-            // Connecting Lines
-            ctx.lineWidth = 1 * scale;
-            ctx.strokeStyle = c.color + (opacity * 0.3) + ')';
-            ctx.beginPath();
-            c.points.forEach((p, i) => {
-                let px = (c.x + p.x) * scale + centerX;
-                let py = (c.y + p.y) * scale + centerY;
-                if (i === 0) ctx.moveTo(px, py);
-                else ctx.lineTo(px, py);
-            });
-            ctx.stroke();
-
-            // Constellation Stars
-            c.points.forEach((p) => {
-                let px = (c.x + p.x) * scale + centerX;
-                let py = (c.y + p.y) * scale + centerY;
-                ctx.fillStyle = c.color + opacity + ')';
-                ctx.beginPath();
-                ctx.arc(px, py, 2 * scale, 0, Math.PI * 2);
-                ctx.fill();
-            });
-            ctx.restore();
-        }
-    });
-
+    constellations.forEach(c => c.draw());
     update();
     requestAnimationFrame(draw);
 }
 
-window.addEventListener('resize', init);
 window.addEventListener('mousedown', () => targetSpeed = boostSpeed);
 window.addEventListener('mouseup', () => targetSpeed = baseSpeed);
-window.addEventListener('touchstart', (e) => { e.preventDefault(); targetSpeed = boostSpeed; });
-window.addEventListener('touchend', () => targetSpeed = baseSpeed);
+window.addEventListener('resize', init);
 
 init();
 draw();
 
-let spaceObjects = []; // Array to store all our 3D models
+// --- THREE.JS LOGIC ---
+
+
 
 function initPlanet() {
     const container = document.getElementById('threeContainer');
-    if (!container) return; 
-
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
 
     scene.add(new THREE.AmbientLight(0xffffff, 1.5));
-    const sun = new THREE.DirectionalLight(0xffffff, 1.2);
-    sun.position.set(5, 5, 5);
-    scene.add(sun);
-
     const loader = new THREE.GLTFLoader();
 
-    // --- ADD YOUR URLS HERE ---
     const modelUrls = [
         'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/bb.glb',
-      'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/mask.glb',
-'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/pom.glb',
-'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/paimon.glb'
-        // Add more .gltf or .glb links here
+        'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/pom.glb',
+        'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/paimon.glb',
+        ...staticUrls
     ];
 
     modelUrls.forEach((url, index) => {
         loader.load(url, (gltf) => {
             let obj = gltf.scene;
 
-            // Auto-Scale standardizer
-            const box = new THREE.Box3().setFromObject(obj);
-            const size = box.getSize(new THREE.Vector3()).length();
-            const scaleFactor = (3 + Math.random() * 2) / size; 
-            obj.scale.set(scaleFactor, scaleFactor, scaleFactor);
+            if (staticUrls.includes(url)) {
+                obj.userData.isStatic = true;
+                obj.userData.baseScale = staticScale;
+            } else {
+                const box = new THREE.Box3().setFromObject(obj);
+                const size = box.getSize(new THREE.Vector3()).length();
+                obj.userData.baseScale = (4 + Math.random() * 2) / size; 
+            }
 
-            // Initial Random Scatter
-            obj.position.z = -((index + 1) * 40 + Math.random() * 50); // Space them out
-            obj.position.x = (Math.random() - 0.5) * 40;
-            obj.position.y = (Math.random() - 0.5) * 20;
+            if (gltf.animations.length) {
+                const mixer = new THREE.AnimationMixer(obj);
+                mixer.clipAction(gltf.animations[0]).play();
+                mixers.push(mixer);
+                obj.userData.hasNativeAnim = true;
+            }
 
-            // Enable Transparency for fading
-            obj.traverse((node) => {
-                if (node.isMesh) {
-                    node.material.transparent = true;
-                    node.material.opacity = 0;
-                }
-            });
+            obj.position.z = -((index + 1) * 70 + 300); // Start far at horizon
+            obj.scale.set(0,0,0); // Start invisible/small
 
+            obj.traverse(n => { if(n.isMesh) { n.material.transparent = true; n.material.opacity = 0; } });
             scene.add(obj);
             spaceObjects.push(obj);
         });
     });
-
     animate3D();
 }
 
 function animate3D() {
     requestAnimationFrame(animate3D);
-    
-    spaceObjects.forEach((obj) => {
-        // Use global 'speed' from your star warp
-        obj.position.z += (speed * 0.11); 
-        obj.rotation.y += 0.01;
-        obj.rotation.x += 0.01;
+    const delta = clock.getDelta();
+    mixers.forEach(m => m.update(delta));
 
-        // Fading logic based on distance
-        let alpha = 1;
-        if (obj.position.z < -80) alpha = (obj.position.z + 120) / 40;
-        else if (obj.position.z > 0) alpha = 1 - (obj.position.z / 10);
+    spaceObjects.forEach(obj => {
+        obj.position.z += (speed * 0.12);
 
-        obj.traverse((node) => {
-            if (node.isMesh) node.material.opacity = Math.max(0, Math.min(1, alpha));
-        });
+        if (!obj.userData.isStatic && !obj.userData.hasNativeAnim) {
+            obj.rotation.y += 0.01;
+            obj.rotation.x += 0.005;
+        }
 
-        // Loop: Reset when it passes camera
-        if (obj.position.z > 20) {
-            obj.position.z = -150;
-            obj.position.x = (Math.random() - 0.5) * 50;
-            obj.position.y = (Math.random() - 0.5) * 30;
+        // Horizon Growth Logic
+        const horizonZ = -400;
+        const fullSizeZ = -150;
+        let progress = (obj.position.z - horizonZ) / (fullSizeZ - horizonZ);
+        progress = Math.max(0, Math.min(1, progress));
+
+        let s = obj.userData.baseScale * progress;
+        obj.scale.set(s, s, s);
+
+        let alpha = progress;
+        if (obj.position.z > 0) alpha = 1 - (obj.position.z / 20);
+
+        obj.traverse(n => { if(n.isMesh) n.material.opacity = alpha; });
+
+        if (obj.position.z > 25) {
+            obj.position.z = horizonZ;
+            obj.position.x = (Math.random() - 0.5) * 100;
+            obj.position.y = (Math.random() - 0.5) * 60;
         }
     });
-
     renderer.render(scene, camera);
 }
-
 initPlanet();
 </script>
 </body>
