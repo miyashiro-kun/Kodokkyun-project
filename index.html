@@ -4,8 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
 <title>KODOK PAGE</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/jsm/loaders/GLTFLoader.js"></script>
 <script src="https://kit.fontawesome.com/424261530c.js" crossorigin="anonymous"></script>
@@ -30,9 +28,6 @@ html, body {
 }
 
 /* Container & Pages */
-.container {
-  
-}
 
 .page {
   width:100%;
@@ -269,9 +264,7 @@ html, body {
   color: white;
 }
 
-* { 
-  -webkit-tap-highlight-color: transparent !important; 
-}
+
 
 .modern-link:hover {
   background: rgba(0,0,0,0.5);
@@ -280,12 +273,13 @@ html, body {
 
 }
 * {
-  /* Disable the blue box highlight on mobile (Chrome/Safari) */
-  -webkit-tap-highlight-color: transparent !important;
-  
-  /* Disable the dotted border on click (Firefox) */
-  outline: none !important;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  outline: none;
 }
+
 
 /* Specifically for buttons and links in Firefox */
 button::-moz-focus-inner,
@@ -443,10 +437,6 @@ a::-moz-focus-inner {
   margin-bottom: 16px;
 }
 
-.extra-tilt2 {
-  display: inline-block; /* Required for transform to work */
-  transform: skewX(-15deg); /* Negative degrees tilt to the right */
-}
 
 .tab-btn {
   flex: 1;
@@ -510,7 +500,11 @@ a::-moz-focus-inner {
   gap: 15px;
 }
 
+
 .link-btn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   width: 90vw;
   max-width: 360px;
   background: #ffffff;
@@ -861,10 +855,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
   pointer-events: none;
   background: rgba(255,255,255,0.0);
 }
-:root {
-    --menu-size: 380px;
-    --content-radius: 135px; 
-  }
+
 .menu-dim {
   position: fixed;
   inset: 0;
@@ -1474,14 +1465,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     width: 100%;
     margin: 5px;
 }
-:root {
-            --accent: #ffd369;
-            --hsr-accent: #69d3ff;
-            --zzz-accent: #9dff69; 
-            --hi3-accent: #ff85d0;
-            --glass: rgba(255, 255, 255, 0.08);
-            --border: rgba(255, 255, 255, 0.15);
-        }
+
 
         .gc-container {
             padding: 10px;
@@ -1702,6 +1686,14 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         --sr-accent: #f29d38;
         --sr-bg-card: rgba(255, 255, 255, 0.08);
         --sr-border: rgba(255, 255, 255, 0.15);
+        --menu-size: 380px;
+        --content-radius: 135px; 
+        --accent: #ffd369;
+        --hsr-accent: #69d3ff;
+        --zzz-accent: #9dff69; 
+        --hi3-accent: #ff85d0;
+        --glass: rgba(255, 255, 255, 0.08);
+        --border: rgba(255, 255, 255, 0.15);
       }
 
       #game-downloader-container {
