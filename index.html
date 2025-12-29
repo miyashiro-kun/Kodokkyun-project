@@ -3242,10 +3242,9 @@ const clock = new THREE.Clock();
  
 // --- SETTINGS FOR STATIC MODELS ---
 const staticUrls = [
-    'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/spaceship.glb',
-    'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/need_some_space.glb'
+    'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/spaceship.glb'
 ];
-const staticScale = 112; 
+const staticScale = 17; 
 
 const patterns = {
     "Aries": [{x:-10,y:0}, {x:0,y:-5}, {x:10,y:5}, {x:15,y:15}],
@@ -3404,17 +3403,24 @@ function initPlanet() {
         'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/paimon.glb',
         ...staticUrls
     ];
-
     modelUrls.forEach((url, index) => {
         loader.load(url, (gltf) => {
             let obj = gltf.scene;
             if (staticUrls.includes(url)) {
+                const side = Math.random() > 0.5 ? 1 : -1;
+                obj.position.x = side * (150 + Math.random() * 1); 
+                obj.position.y = (Math.random() - 0.5) * 5;
+                obj.position.z = 4 - (Math.random() * 10);
                 obj.userData.isStatic = true;
                 obj.userData.baseScale = staticScale;
+                
             } else {
                 const box = new THREE.Box3().setFromObject(obj);
                 const size = box.getSize(new THREE.Vector3()).length();
                 obj.userData.baseScale = (4 + Math.random() * 2) / (size || 1); 
+                obj.position.z = -((index + 1) * 40 + Math.random() * 50);
+                obj.position.x = (Math.random() - 0.5) * 40;
+                 obj.position.y = (Math.random() - 0.5) * 20;
             }
             if (gltf.animations.length) {
                 const mixer = new THREE.AnimationMixer(obj);
@@ -3436,24 +3442,46 @@ function animate3D() {
     requestAnimationFrame(animate3D);
     const delta = clock.getDelta();
     mixers.forEach(m => m.update(delta));
+
     spaceObjects.forEach(obj => {
-        obj.position.z += (speed * 0.12);
+        // 1. Move the object forward based on speed
+        // Static objects (spaceship) move a bit faster to feel more dynamic
+        let moveStep = obj.userData.isStatic ? (speed * 0.18) : (speed * 0.12);
+        obj.position.z += moveStep;
+
+        // 2. Rotation logic for characters (ONLY rotate, don't reset position here!)
         if (!obj.userData.isStatic && !obj.userData.hasNativeAnim) {
             obj.rotation.y += 0.01;
             obj.rotation.x += 0.005;
         }
+
+        // 3. Scale and Opacity (Horizon Growth)
         const horizonZ = -400;
         const fullSizeZ = -150;
         let progress = Math.max(0, Math.min(1, (obj.position.z - horizonZ) / (fullSizeZ - horizonZ)));
+        
         let s = obj.userData.baseScale * progress;
         obj.scale.set(s, s, s);
+
         let alpha = progress;
         if (obj.position.z > 0) alpha = 1 - (obj.position.z / 20);
         obj.traverse(n => { if(n.isMesh) n.material.opacity = alpha; });
+
+        // 4. RESET Logic (When it passes the camera)
         if (obj.position.z > 25) {
-            obj.position.z = horizonZ;
-            obj.position.x = (Math.random() - 0.5) * 100;
-            obj.position.y = (Math.random() - 0.5) * 60;
+            // Randomize arrival time
+            obj.position.z = -300 - (Math.random() * 500);
+
+            if (obj.userData.isStatic) {
+                // Keep the spaceship/static models to the extreme sides
+                const side = Math.random() > 0.5 ? 1 : -1;
+                obj.position.x = side * (10 + Math.random() * 20); 
+                obj.position.y = (Math.random() > 0.5 ? 1 : -1) * (80 + Math.random() * 50);
+            } else {
+                obj.position.z = -((index + 1) * 40 + Math.random() * 50);
+                  obj.position.x = (Math.random() - 0.5) * 40;
+                 obj.position.y = (Math.random() - 0.5) * 20;
+            }
         }
     });
     renderer.render(scene, camera);
