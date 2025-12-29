@@ -2525,7 +2525,7 @@ gcTabBtns.forEach(btn => {
       .resource-tabs {
         display: flex;
         gap: 8px;
-        margin-top: 25px;
+        margin-bottom: 25px;
         justify-content: center;
         flex-wrap: wrap;
       }
@@ -2631,7 +2631,11 @@ gcTabBtns.forEach(btn => {
       }
     </style>
 
-    
+    <div class="resource-tabs">
+      <button class="tab-btn active title-font extra-tilt2" id="tab-sr" onclick="switchGameResource('sr')">STAR RAIL</button>
+      <button class="tab-btn title-font extra-tilt2" id="tab-zzz" onclick="switchGameResource('zzz')">ZENLESS</button>
+      <button class="tab-btn title-font extra-tilt2" id="tab-hi3" onclick="switchGameResource('hi3')">HONKAI IMPACT 3</button>
+    </div>
 
     <div class="resource-banner content-fade" id="res-banner">
       <div id="slide-container"></div>
@@ -2641,13 +2645,13 @@ gcTabBtns.forEach(btn => {
       </div>
     </div>
     
-    <div class="resource-tabs">
-      <button class="tab-btn active title-font extra-tilt2" id="tab-sr" onclick="switchGameResource('sr')">STAR RAIL</button>
-      <button class="tab-btn title-font extra-tilt2" id="tab-zzz" onclick="switchGameResource('zzz')">ZENLESS</button>
-      <button class="tab-btn title-font extra-tilt2" id="tab-hi3" onclick="switchGameResource('hi3')">HONKAI IMPACT 3</button>
-    </div>
+    
 
     <div id="fade-wrapper" class="content-fade">
+        <div class="resource-section">
+          <h3 id="pre-title" style="display:none; color: var(--sr-accent); margin-top:20px;">Pre-Download Packages</h3>
+         <div id="pre-list" class="res-grid"></div>
+        </div>
         <div class="resource-section">
             <h2>Main Full Packages</h2>
             <div id="main-list" class="package-grid"></div>
@@ -2657,10 +2661,7 @@ gcTabBtns.forEach(btn => {
             <h2>Update Patches</h2>
             <div id="patch-list" class="package-grid"></div>
         </div>
-        <div class="resource-section">
-        <h3 id="pre-title" style="display:none; color: var(--sr-accent); margin-top:20px;">Pre-Download Packages</h3>
-        <div id="pre-list" class="res-grid"></div>
-        </div>
+        
     </div>
 
     <script>
