@@ -3379,6 +3379,8 @@ function draw() {
 window.addEventListener('mousedown', () => targetSpeed = boostSpeed);
 window.addEventListener('mouseup', () => targetSpeed = baseSpeed);
 window.addEventListener('resize', init);
+window.addEventListener('touchstart', (e) => { e.preventDefault(); targetSpeed = boostSpeed; });
+
 
 init();
 draw();
