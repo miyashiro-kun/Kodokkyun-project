@@ -6,6 +6,8 @@
 <title>KODOK PAGE</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/jsm/loaders/GLTFLoader.js"></script>
 <script src="https://kit.fontawesome.com/424261530c.js" crossorigin="anonymous"></script>
 <style>
 * { box-sizing: border-box; 
@@ -3205,7 +3207,21 @@ function togglePanel(btn) {
 // Start
 fetchCodes();
 </script>
-<script>
+<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
 const canvas = document.getElementById('warpCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -3223,10 +3239,10 @@ let scene, camera, renderer;
 let spaceObjects = [];
 let mixers = []; 
 const clock = new THREE.Clock(); 
-
+ 
 // --- SETTINGS FOR STATIC MODELS ---
 const staticUrls = [
-    'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/gakaxy.glb',
+    'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/spaceship.glb',
     'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/need_some_space.glb'
 ];
 const staticScale = 112; 
@@ -3246,20 +3262,14 @@ const patterns = {
     "Pisces": [{x:-20,y:-20}, {x:0,y:0}, {x:20,y:0}, {x:10,y:20}]
 };
 
-
-
 const colors = ['rgba(130, 200, 255,', 'rgba(100, 255, 230,', 'rgba(255, 255, 255,', 'rgba(180, 150, 255,'];
-// Add this helper function to draw the custom star shape
+
 function drawSparkle(ctx, cx, cy, outerRadius, innerRadius) {
     ctx.beginPath();
     ctx.moveTo(cx, cy - outerRadius);
-    // Top to Right
     ctx.bezierCurveTo(cx + innerRadius, cy - innerRadius, cx + innerRadius, cy - innerRadius, cx + outerRadius, cy);
-    // Right to Bottom
     ctx.bezierCurveTo(cx + innerRadius, cy + innerRadius, cx + innerRadius, cy + innerRadius, cx, cy + outerRadius);
-    // Bottom to Left
     ctx.bezierCurveTo(cx - innerRadius, cy + innerRadius, cx - innerRadius, cy + innerRadius, cx - outerRadius, cy);
-    // Left to Top
     ctx.bezierCurveTo(cx - innerRadius, cy - innerRadius, cx - innerRadius, cy - innerRadius, cx, cy - outerRadius);
     ctx.closePath();
     ctx.fill();
@@ -3282,48 +3292,34 @@ class Constellation {
     draw() {
         let scale = (width / 2) / this.z;
         let opacity = Math.min(1, (1 - this.z / width) * 2);
-        
         if (this.z < width) {
             ctx.save();
-            // 1. Draw Connecting Lines
-            ctx.lineWidth = 1 * scale; // Slightly thinner for better aesthetics
+            ctx.lineWidth = 0.8 * scale;
             ctx.strokeStyle = this.color + (opacity * 0.15) + ')';
             ctx.beginPath();
             this.points.forEach((p, i) => {
                 let px = (this.x + p.x) * scale + centerX;
                 let py = (this.y + p.y) * scale + centerY;
-                if (i === 0) ctx.moveTo(px, py);
-                else ctx.lineTo(px, py);
+                if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
             });
             ctx.stroke();
-
-            // 2. Draw Stars (Sparkle Shape)
             this.points.forEach((p) => {
                 let px = (this.x + p.x) * scale + centerX;
                 let py = (this.y + p.y) * scale + centerY;
-                
-                // Outer glow
-                ctx.shadowBlur = 30 * scale;
-                ctx.shadowColor = this.color + '2)';
-                
-                // Size math
-                let outerRadius = Math.max(1.5, 5 * scale); // Length of the points
-                let innerRadius = outerRadius * 0.25;      // Thickness (smaller = sharper)
-
-                // Draw the main colored sparkle
-                ctx.fillStyle = this.color + (opacity * 1) + ')';
-                drawSparkle(ctx, px, py, outerRadius, innerRadius);
-                
-                // Draw a white core for the "shining" effect
+                ctx.shadowBlur = 10 * scale;
+                ctx.shadowColor = this.color + '1)';
+                let oR = Math.max(0.8, 5 * scale);
+                let iR = oR * 0.25;
+                ctx.fillStyle = this.color + (opacity * 0.8) + ')';
+                drawSparkle(ctx, px, py, oR, iR);
                 ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-                drawSparkle(ctx, px, py, outerRadius * 0.7, innerRadius * 0.4);
+                drawSparkle(ctx, px, py, oR * 0.4, iR * 0.4);
             });
             ctx.restore();
         }
     }
 }
 
-// ... (init, update, draw 2D loop remains similar)
 function init() {
     width = window.innerWidth; height = window.innerHeight;
     canvas.width = width; canvas.height = height;
@@ -3353,7 +3349,6 @@ function update() {
 function draw() {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
     ctx.fillRect(0, 0, width, height);
-
     stars.forEach(s => {
         let x = (s.x / s.z) * (width / 2) + centerX;
         let y = (s.y / s.z) * (height / 2) + centerY;
@@ -3363,42 +3358,45 @@ function draw() {
             ctx.strokeStyle = s.color + '1)';
             ctx.lineWidth = op * 8;
             ctx.beginPath(); ctx.moveTo(s.px, s.py); ctx.lineTo(x, y); ctx.stroke();
-            ctx.globalAlpha = op;
-            ctx.lineWidth = op * 2;
-            ctx.stroke();
+            ctx.globalAlpha = op; ctx.lineWidth = op * 2; ctx.stroke();
             ctx.globalAlpha = 1;
         }
         s.px = x; s.py = y;
     });
-
     constellations.forEach(c => c.draw());
     update();
     requestAnimationFrame(draw);
 }
 
-window.addEventListener('mousedown', () => targetSpeed = boostSpeed);
-window.addEventListener('mouseup', () => targetSpeed = baseSpeed);
+const resetSpeed = () => { targetSpeed = baseSpeed; };
+const boost = () => { targetSpeed = boostSpeed; };
+window.addEventListener('mousedown', boost);
+window.addEventListener('mouseup', resetSpeed);
+window.addEventListener('touchstart', (e) => { boost(); }, { passive: false });
+window.addEventListener('touchend', resetSpeed);
+document.addEventListener('visibilitychange', () => { if (document.hidden) resetSpeed(); });
+window.addEventListener('blur', resetSpeed);
+window.addEventListener('focus', resetSpeed);
 window.addEventListener('resize', init);
-window.addEventListener('touchstart', (e) => { e.preventDefault(); targetSpeed = boostSpeed; });
-
 
 init();
 draw();
 
 // --- THREE.JS LOGIC ---
-
-
-
 function initPlanet() {
     const container = document.getElementById('threeContainer');
+    if(!container) return;
+    
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.5));
-    const loader = new THREE.GLTFLoader();
+    scene.add(new THREE.AmbientLight(0xffffff, 2.0));
+    const loader = new GLTFLoader();
 
     const modelUrls = [
         'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/bb.glb',
@@ -3410,30 +3408,26 @@ function initPlanet() {
     modelUrls.forEach((url, index) => {
         loader.load(url, (gltf) => {
             let obj = gltf.scene;
-
             if (staticUrls.includes(url)) {
                 obj.userData.isStatic = true;
                 obj.userData.baseScale = staticScale;
             } else {
                 const box = new THREE.Box3().setFromObject(obj);
                 const size = box.getSize(new THREE.Vector3()).length();
-                obj.userData.baseScale = (4 + Math.random() * 2) / size; 
+                obj.userData.baseScale = (4 + Math.random() * 2) / (size || 1); 
             }
-
             if (gltf.animations.length) {
                 const mixer = new THREE.AnimationMixer(obj);
                 mixer.clipAction(gltf.animations[0]).play();
                 mixers.push(mixer);
                 obj.userData.hasNativeAnim = true;
             }
-
-            obj.position.z = -((index + 1) * 70 + 300); // Start far at horizon
-            obj.scale.set(0,0,0); // Start invisible/small
-
+            obj.position.z = -((index + 1) * 70 + 350);
+            obj.scale.set(0,0,0);
             obj.traverse(n => { if(n.isMesh) { n.material.transparent = true; n.material.opacity = 0; } });
             scene.add(obj);
             spaceObjects.push(obj);
-        });
+        }, undefined, (error) => console.error("Error loading model:", url, error));
     });
     animate3D();
 }
@@ -3442,29 +3436,20 @@ function animate3D() {
     requestAnimationFrame(animate3D);
     const delta = clock.getDelta();
     mixers.forEach(m => m.update(delta));
-
     spaceObjects.forEach(obj => {
         obj.position.z += (speed * 0.12);
-
         if (!obj.userData.isStatic && !obj.userData.hasNativeAnim) {
             obj.rotation.y += 0.01;
             obj.rotation.x += 0.005;
         }
-
-        // Horizon Growth Logic
         const horizonZ = -400;
         const fullSizeZ = -150;
-        let progress = (obj.position.z - horizonZ) / (fullSizeZ - horizonZ);
-        progress = Math.max(0, Math.min(1, progress));
-
+        let progress = Math.max(0, Math.min(1, (obj.position.z - horizonZ) / (fullSizeZ - horizonZ)));
         let s = obj.userData.baseScale * progress;
         obj.scale.set(s, s, s);
-
         let alpha = progress;
         if (obj.position.z > 0) alpha = 1 - (obj.position.z / 20);
-
         obj.traverse(n => { if(n.isMesh) n.material.opacity = alpha; });
-
         if (obj.position.z > 25) {
             obj.position.z = horizonZ;
             obj.position.x = (Math.random() - 0.5) * 100;
