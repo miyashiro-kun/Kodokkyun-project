@@ -3345,6 +3345,13 @@ const staticUrls = [
 ];
 const staticScale = 17; 
 
+let portal = {
+    z: 0,
+    maxZ: 0,
+    color: '0, 100, 255',
+    activeOpacity: 0
+};
+
 const patterns = {
     "Aries": [{x:-10,y:0}, {x:0,y:-5}, {x:10,y:5}, {x:15,y:15}],
     "Taurus": [{x:-20,y:-20}, {x:-10,y:-10}, {x:0,y:0}, {x:10,y:-10}, {x:20,y:-20}, {x:0,y:15}, {x:-5,y:25}],
@@ -3361,6 +3368,7 @@ const patterns = {
 };
 
 const colors = ['rgba(130, 200, 255,', 'rgba(100, 255, 230,', 'rgba(255, 255, 255,', 'rgba(180, 150, 255,'];
+const portalPalette = ['0, 100, 255', '0, 255, 150', '200, 50, 255', '180, 150, 255'];
 
 function drawSparkle(ctx, cx, cy, outerRadius, innerRadius) {
     ctx.beginPath();
@@ -3422,7 +3430,10 @@ function init() {
     width = window.innerWidth; height = window.innerHeight;
     canvas.width = width; canvas.height = height;
     centerX = width / 2; centerY = height / 2;
+    portal.maxZ = width;
+    portal.z = portal.maxZ; 
     stars = [];
+    
     for (let i = 0; i < starCount; i++) {
         stars.push({
             x: Math.random() * width - centerX,
@@ -3436,17 +3447,42 @@ function init() {
 }
 
 function update() {
-    speed += (targetSpeed - speed) * 0.1;
+     speed += (targetSpeed - speed) * 0.1;
+    if (targetSpeed === boostSpeed) portal.activeOpacity += (1 - portal.activeOpacity) * 0.05;
+    else portal.activeOpacity += (0 - portal.activeOpacity) * 0.1;
+    
+    
     stars.forEach(s => {
         s.z -= speed;
         if (s.z <= 0) { s.z = width; s.x = Math.random() * width - centerX; s.y = Math.random() * height - centerY; s.px = 0; s.py = 0; }
     });
     constellations.forEach(c => c.update());
+    portal.z -= speed * 0.5;
+    if (portal.z <= 0) {
+        portal.z = portal.maxZ; 
+        portal.color = portalPalette[Math.floor(Math.random() * portalPalette.length)];
+    }
 }
 
 function draw() {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
     ctx.fillRect(0, 0, width, height);
+    
+    let portalScale = (portal.maxZ / (portal.z + 1)); 
+    let portalRadius = portalScale * 20; 
+    let finalOpacity = Math.min(1, (portal.maxZ - portal.z) / (portal.maxZ * 0.2)) * Math.min(1, portal.z / 200) * portal.activeOpacity;
+
+    // 1. Draw Portal (Simplified Gradient)
+    if (finalOpacity > 0.01) {
+        const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, portalRadius);
+        grad.addColorStop(0, 'rgba(0, 0, 0, 1)'); 
+        grad.addColorStop(0.5, `rgba(${portal.color}, ${0.4 * finalOpacity})`); 
+        grad.addColorStop(1, 'rgba(0, 0, 0, 0)'); 
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, portalRadius, 0, Math.PI * 2);
+        ctx.fill();
+    }
     stars.forEach(s => {
         let x = (s.x / s.z) * (width / 2) + centerX;
         let y = (s.y / s.z) * (height / 2) + centerY;
@@ -3510,14 +3546,14 @@ function initPlanet() {
             } else {
                 const box = new THREE.Box3().setFromObject(obj);
                 const size = box.getSize(new THREE.Vector3()).length();
-                obj.userData.baseScale = (5 + Math.random() * 2) / (size || 1); 
+                obj.userData.baseScale = (6 + Math.random() * 2) / (size || 1); 
             }
 
-            obj.position.z = -((index + 1) * 100 + 300);
+            obj.position.z = -((index + 1) * 150 + 400);
             obj.position.x = 0;
             obj.position.y = 0;
 
-            const spreadFactor = obj.userData.isStatic ? 0.12 : 0.02;
+            const spreadFactor = obj.userData.isStatic ? 0.14 : 0.015;
             obj.userData.vx = (Math.random() - 0.5) * spreadFactor;
             obj.userData.vy = (Math.random() - 0.5) * spreadFactor;
 
@@ -3547,33 +3583,33 @@ function animate3D() {
         obj.position.z += moveStep;
 
         if (obj.userData.vx !== undefined) {
-            obj.position.x += obj.userData.vx * (speed * 0.5);
-            obj.position.y += obj.userData.vy * (speed * 0.5);
+            obj.position.x += obj.userData.vx * (speed * 0.4);
+            obj.position.y += obj.userData.vy * (speed * 0.4);
         }
 
         if (!obj.userData.isStatic && !obj.userData.hasNativeAnim) {
             obj.rotation.y += 0.02;
             obj.rotation.z += 0.01;
         } else if (obj.userData.isStatic) {
-            obj.rotation.z = obj.userData.vx * 5; 
+            obj.rotation.z = obj.userData.vx * 6; 
         }
 
-        const horizonZ = -500;
+        const horizonZ = -600;
         const fullSizeZ = -50;
         let progress = Math.max(0, Math.min(1, (obj.position.z - horizonZ) / (fullSizeZ - horizonZ)));
         
         let s = obj.userData.baseScale * progress;
         obj.scale.set(s, s, s);
 
-        let alpha = progress;
-        if (obj.position.z > 0) alpha = 1 - (obj.position.z / 25);
+        let alpha = Math.min(1, progress * 1.5);
+        if (obj.position.z > 5) alpha = 1 - (obj.position.z / 20);
         obj.traverse(n => { if(n.isMesh) n.material.opacity = alpha; });
 
         if (obj.position.z > 25) {
-            obj.position.z = -500 - (Math.random() * 300);
+            obj.position.z = -600 - (Math.random() * 300);
             obj.position.x = 0;
             obj.position.y = 0;
-            const spread = obj.userData.isStatic ? 0.12 : 0.02;
+            const spread = obj.userData.isStatic ? 0.14 : 0.015;
             obj.userData.vx = (Math.random() - 0.5) * spread;
             obj.userData.vy = (Math.random() - 0.5) * spread;
         }
