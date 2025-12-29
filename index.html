@@ -294,14 +294,14 @@ a::-moz-focus-inner {
   user-select: none;
 }
 .modern-link:hover .link-text {
-  background: linear-gradient(135deg, #22c55e, #38bdf8); !important; /* Forces the text to stay white even on hover */
+  background: linear-gradient(135deg, #22c55e, #38bdf8); /* Forces the text to stay white even on hover */
     -webkit-background-clip: text;
             background-clip: text;
     -webkit-text-fill-color: transparent; Forces the text to stay white even on hover */
 }
 
 .modern-link:active .link-text:hover {
-   background: linear-gradient(135deg, #22c55e, #38bdf8); !important; /* Forces the text to stay white even on hover */
+   background: linear-gradient(135deg, #22c55e, #38bdf8); /* Forces the text to stay white even on hover */
     -webkit-background-clip: text;
             background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1513,78 +1513,81 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             border-left: 3px solid var(--accent);
             padding-left: 10px;
         }
-
+        /* Specific Glow Colors based on the active tab */
+.gc-tab-btn.active[data-game="genshin"] ~ .gc-content .e-card:hover { 
+    box-shadow: 0 0 20px rgba(255, 211, 105, 0.4); 
+    border-color: #ffd369; 
+    transition: all 0.3s ease;
+}
+.gc-tab-btn.active[data-game="hsr"] ~ .gc-content .e-card:hover { 
+    box-shadow: 0 0 20px rgba(105, 211, 255, 0.4); 
+    border-color: #69d3ff; 
+    transition: all 0.3s ease;
+}
+.gc-tab-btn.active[data-game="zzz"] ~ .gc-content .e-card:hover { 
+    box-shadow: 0 0 20px rgba(157, 255, 105, 0.4); 
+    border-color: #9dff69; 
+    transition: all 0.3s ease;
+}
         .banner-row { display: flex; flex-direction: column; gap: 12px; padding-bottom: 10px; }
         .b-card { width: 100%; background: linear-gradient(135deg, #1a1a1a, #000); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
         .b-head { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
         .b-icons { display: flex; gap: 5px; flex-wrap: wrap; }
         .m-icon { width: 45px; height: 45px; border-radius: 8px; background: var(--glass); border: 1px solid var(--border); object-fit: cover;}
 
-        .e-grid { display: flex; flex-direction: column; gap: 15px; }
+        .e-grid { display: flex; flex-direction: column; gap: 15px; transition: all 2.3s ease; }
             
-            .e-card {
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    cursor: pointer;
+            .e-card {text-decoration: none !important;
+    transition: all 2.3s ease;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
+    border : solid 1px #fff;
+    border-radius: 10px;/* Needed for the shimmer effect */
 }
 
+.e-thumb{width: 100%;
+        object-fit: cover;
+        background-size: cover;
+        background-position: center;
+}
 .e-card:hover {
-    transform: translateY(-12px) scale(1.03) rotateX(5deg); /* 3D Lift & Tilt */
+    transform: translateY(-15px) scale(1.05) rotateX(8deg) rotateY(-5deg) !important; 
+    transition: all 4.4s ease !important;
     z-index: 10;
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    border-color: #38bdf8; /* Uses your theme blue */
+    box-shadow: 
+        0 0 20px rgba(56, 189, 248, 0.4), /* Outer Glow */
+        0 25px 50px rgba(0, 0, 0, 0.7);
+    filter: brightness(1.1);
 }
 
-/* Specific Glow Colors based on the active tab */
-.gc-tab-btn.active[data-game="genshin"] ~ .gc-content .e-card:hover { 
-    box-shadow: 0 0 20px rgba(255, 211, 105, 0.4); 
-    border-color: #ffd369; 
-}
-.gc-tab-btn.active[data-game="hsr"] ~ .gc-content .e-card:hover { 
-    box-shadow: 0 0 20px rgba(105, 211, 255, 0.4); 
-    border-color: #69d3ff; 
-}
-.gc-tab-btn.active[data-game="zzz"] ~ .gc-content .e-card:hover { 
-    box-shadow: 0 0 20px rgba(157, 255, 105, 0.4); 
-    border-color: #9dff69; 
-}
-
-/* Shine effect on hover */
+/* The "Shimmer" Flash effect */
 .e-card::after {
     content: '';
     position: absolute;
     top: -50%;
-    
-    left: -50%;
-    width: 200%;
+    left: -60%;
+    width: 20%;
     height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-    transform: rotate(45deg);
-    transition: 0.6s;
+    background: linear-gradient(
+        to right, 
+        rgba(255,255,255,0) 0%, 
+        rgba(255,255,255,0.3) 50%, 
+        rgba(255,255,255,0) 100%
+    );
+    transform: rotate(30deg);
+    transition: all 1.4s ease !important;
 }
 
 .e-card:hover::after {
-    left: 100%;
-}
-        
-        .e-thumb { width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block; }
-        .e-body { padding: 12px; }
-        .e-card:hover {
-    transform: translateY(-8px) scale(1.02); /* Mengangkat kartu ke atas */
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5); /* Memberi kedalaman bayangan */
-    border-color: rgba(255, 255, 255, 0.4); /* Memperjelas border saat hover */
-    z-index: 10; /* Memastikan kartu yang di-hover berada di paling depan */
+    left: 120%;
+    transition: all 1.4s ease !important;
 }
 
 /* Efek saat ditekan (untuk mobile) */
 .e-card:active {
     transform: scale(0.97);
-    transition: all 0.4s ease;
+    transition: all 1.4s ease;
 }
         .e-date {
             display: inline-block;
@@ -1598,9 +1601,12 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
             text-transform: uppercase;
         }
 
-        .e-name { font-weight: bold; font-size: 1rem; margin-bottom: 5px; line-height: 1.2; }
+        .e-name {color: #ffffff !important; text-decoration: none !important; font-weight: bold; font-size: 1rem; margin-bottom: 5px; line-height: 1.2; }
         .e-desc { font-size: 0.82rem; color: #ccc; line-height: 1.4; margin-bottom: 10px; }
-
+        .e-name a, a.e-name {
+    color: inherit;
+    text-decoration: none !important;
+}
         .r-row {
             display: flex; gap: 8px; background: rgba(0,0,0,0.4);
             padding: 8px; border-radius: 8px; overflow-x: auto;
@@ -1620,12 +1626,14 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     display: block;
     column-count: 1;
     column-gap: 14px;
+    transition: all 2.3s ease;
 }
 
 /* Landscape phones */
 @media (orientation: landscape) and (min-width: 480px) {
     .page5 .e-grid {
         column-count: 2;
+        transition: all 2.3s ease;
     }
 }
 
@@ -1633,6 +1641,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 @media (orientation: landscape) and (min-width: 900px) {
     .page5 .e-grid {
         column-count: 3;
+        transition: all 2.3s ease;
     }
 }
 
@@ -1644,6 +1653,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
     break-inside: avoid;
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
+    transition: all 2.3s ease;
 }
 
 /* Optional: reduce vertical bulk in landscape */
@@ -1661,6 +1671,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 /* Optional: smooth appearance */
 .page5 .e-card {
     animation: masonryFade 0.35s ease both;
+    transition: all 3.3s ease;
 }
 
 @keyframes masonryFade {
@@ -1679,6 +1690,7 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
 @media (min-width: 900px) and (orientation: landscape) {
     .page5 .e-grid {
         grid-template-columns: repeat(3, 1fr);
+        transition: all 0.3s ease;
     }
 }
 :root {
@@ -1814,6 +1826,35 @@ background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_
         text-transform: uppercase;
         letter-spacing: 1px;
       }
+      
+      /* Animation for Page 5 content */
+@keyframes eventReveal {
+  0% { 
+    opacity: 0; 
+    transform: translateY(20px); 
+    filter: blur(10px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0); 
+    filter: blur(0);
+  }
+}
+
+/* Apply this class to trigger the animation */
+.reveal-content #event-list, 
+.reveal-content #banner-section {
+  animation: eventReveal 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Optional: Stagger the items for a better feel */
+#event-list > div {
+    opacity: 0;
+}
+.reveal-content #event-list > div {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
 </style>
 </head>
 <body>
@@ -2585,12 +2626,34 @@ gcTabBtns.forEach(btn => {
         }
 
         document.querySelectorAll('.gc-tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.gc-tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                loadGame(btn.dataset.game);
-            });
-        });
+    btn.addEventListener('click', async () => {
+        const content = document.getElementById('calendar-content');
+        
+        // 1. Set Active Tab UI
+        document.querySelectorAll('.gc-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // 2. Show Syncing State & Reset Animations
+        // We keep the structure but show a loader inside the list area
+        content.classList.remove('reveal-content');
+        const eventList = document.getElementById('event-list');
+        if (eventList) eventList.innerHTML = '<div class="loader">Syncing Data...</div>';
+
+        try {
+            // 3. Call your existing loadGame function
+            // Ensure this function internally populates #event-list and #banner-list
+            await loadGame(btn.dataset.game); 
+            
+            // 4. Trigger the Animation once data is loaded
+            setTimeout(() => {
+                content.classList.add('reveal-content');
+            }, 50);
+        } catch (err) {
+            console.error("Sync failed:", err);
+            if (eventList) eventList.innerHTML = '<div class="loader" style="color:red;">Failed to sync data.</div>';
+        }
+    });
+});
         document.querySelector('.gc-tab-btn[data-game="genshin"]').click();
         loadGame('genshin');
     </script>
@@ -3187,7 +3250,7 @@ function renderCodes(game) {
     const delay = i * 100; 
     
     return `
-    <div class="code-card" style="animation-delay: ${delay}ms">
+    <div class="code-card" style="">
       <div class="code-row">
         <div class="code-text title-font">${item.code}</div>
         <div class="buttons-group">
@@ -3446,8 +3509,8 @@ function initPlanet() {
             let obj = gltf.scene;
             if (staticUrls.includes(url)) {
                 const side = Math.random() > 0.5 ? 1 : -1;
-                obj.position.x = side * (150 + Math.random() * 1); 
-                obj.position.y = (Math.random() - 0.5) * 5;
+                obj.position.x = side * (50 + Math.random() * 1); 
+                obj.position.y = side * (5 + Math.random() * 1);
                 obj.position.z = 4 - (Math.random() * 10);
                 obj.userData.isStatic = true;
                 obj.userData.baseScale = staticScale;
@@ -3495,7 +3558,7 @@ function animate3D() {
 
         // 3. Scale and Opacity (Horizon Growth)
         const horizonZ = -400;
-        const fullSizeZ = -150;
+        const fullSizeZ = 0;
         let progress = Math.max(0, Math.min(1, (obj.position.z - horizonZ) / (fullSizeZ - horizonZ)));
         
         let s = obj.userData.baseScale * progress;
@@ -3506,18 +3569,18 @@ function animate3D() {
         obj.traverse(n => { if(n.isMesh) n.material.opacity = alpha; });
 
         // 4. RESET Logic (When it passes the camera)
-        if (obj.position.z > 25) {
+        if (obj.position.z > 15) {
             // Randomize arrival time
-            obj.position.z = -300 - (Math.random() * 500);
+            obj.position.z = -300 - (Math.random() * 400);
 
             if (obj.userData.isStatic) {
                 // Keep the spaceship/static models to the extreme sides
                 const side = Math.random() > 0.5 ? 1 : -1;
-                obj.position.x = side * (10 + Math.random() * 20); 
-                obj.position.y = (Math.random() > 0.5 ? 1 : -1) * (80 + Math.random() * 50);
+                obj.position.x = side * (50 + Math.random() * 1); 
+                obj.position.y = side * (35 + Math.random() * 1);
             } else {
                 obj.position.z = -((index + 1) * 40 + Math.random() * 50);
-                  obj.position.x = (Math.random() - 0.5) * 40;
+                 obj.position.x = (Math.random() - 0.5) * 40;
                  obj.position.y = (Math.random() - 0.5) * 20;
             }
         }
