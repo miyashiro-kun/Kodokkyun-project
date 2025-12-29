@@ -2657,6 +2657,10 @@ gcTabBtns.forEach(btn => {
             <h2>Update Patches</h2>
             <div id="patch-list" class="package-grid"></div>
         </div>
+        <div class="resource-section">
+        <h3 id="pre-title" style="display:none; color: var(--sr-accent); margin-top:20px;">Pre-Download Packages</h3>
+        <div id="pre-list" class="res-grid"></div>
+        </div>
     </div>
 
     <script>
@@ -2761,26 +2765,57 @@ gcTabBtns.forEach(btn => {
         }
 
         async function renderResources(apiUrl) {
-          const mList = document.getElementById('main-list');
-          const pList = document.getElementById('patch-list');
+  const mList = document.getElementById('main-list');
+  const pList = document.getElementById('patch-list');
+  const preList = document.getElementById('pre-list');
+  const preTitle = document.getElementById('pre-title');
 
-          try {
-            const res = await fetch(apiUrl);
-            const json = await res.json();
-            const data = json.data.game_packages[0];
+  // Reset view
+  mList.innerHTML = '';
+  pList.innerHTML = '';
+  preList.innerHTML = '';
+  preTitle.style.display = 'none';
 
-            mList.innerHTML = '';
-            pList.innerHTML = '';
+  try {
+    const res = await fetch(apiUrl);
+    const json = await res.json();
+    const gameData = json.data.game_packages[0];
 
-            data.main.major.game_pkgs.forEach(p => createItem(mList, p, 'Game'));
-            data.main.major.audio_pkgs.forEach(p => createItem(mList, p, 'Audio'));
-            
-            data.main.patches.forEach(pSet => {
-              pSet.game_pkgs.forEach(p => createItem(pList, p, 'Patch'));
-              pSet.audio_pkgs.forEach(p => createItem(pList, p, 'Audio Patch'));
+    // 1. Render MAIN Packages
+    const main = gameData.main;
+    if (main) {
+        main.major.game_pkgs.forEach(p => createItem(mList, p, 'Game'));
+        main.major.audio_pkgs.forEach(p => createItem(mList, p, 'Audio'));
+        
+        main.patches.forEach(pSet => {
+          pSet.game_pkgs.forEach(p => createItem(pList, p, 'Patch'));
+          pSet.audio_pkgs.forEach(p => createItem(pList, p, 'Audio Patch'));
+        });
+    }
+
+    // 2. Render PRE-DOWNLOAD (Only if it exists in API)
+    const pre = gameData.pre_download;
+    if (pre && pre.major && (pre.major.game_pkgs.length > 0 || pre.major.audio_pkgs.length > 0)) {
+        preTitle.style.display = 'block'; // Show the "Pre-Download" heading
+        
+        // Add Pre-download Game Files
+        pre.major.game_pkgs.forEach(p => createItem(preList, p, 'Pre-Game'));
+        
+        // Add Pre-download Audio Files
+        pre.major.audio_pkgs.forEach(p => createItem(preList, p, 'Pre-Audio'));
+
+        // Add Pre-download Patches
+        if (pre.patches) {
+            pre.patches.forEach(pSet => {
+                pSet.game_pkgs.forEach(p => createItem(preList, p, 'Pre-Patch'));
             });
-          } catch (e) { mList.innerHTML = '<p>Manifest Offline.</p>'; }
         }
+    }
+  } catch (e) { 
+    console.error(e);
+    mList.innerHTML = '<p>Manifest Offline.</p>'; 
+  }
+}
 
         function createItem(container, pkg, type) {
           const div = document.createElement('div');
