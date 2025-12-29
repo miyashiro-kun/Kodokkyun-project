@@ -3335,13 +3335,11 @@ const boostSpeed = 17;
 let speed = baseSpeed;
 let targetSpeed = baseSpeed;
 
-// Three.js Globals
 let scene, camera, renderer;
 let spaceObjects = [];
 let mixers = []; 
 const clock = new THREE.Clock(); 
  
-// --- SETTINGS FOR STATIC MODELS ---
 const staticUrls = [
     'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/spaceship.glb'
 ];
@@ -3475,14 +3473,11 @@ window.addEventListener('mouseup', resetSpeed);
 window.addEventListener('touchstart', (e) => { boost(); }, { passive: false });
 window.addEventListener('touchend', resetSpeed);
 document.addEventListener('visibilitychange', () => { if (document.hidden) resetSpeed(); });
-window.addEventListener('blur', resetSpeed);
-window.addEventListener('focus', resetSpeed);
 window.addEventListener('resize', init);
 
 init();
 draw();
 
-// --- THREE.JS LOGIC ---
 function initPlanet() {
     const container = document.getElementById('threeContainer');
     if(!container) return;
@@ -3504,37 +3499,40 @@ function initPlanet() {
         'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/paimon.glb',
         ...staticUrls
     ];
+
     modelUrls.forEach((url, index) => {
         loader.load(url, (gltf) => {
             let obj = gltf.scene;
-            if (staticUrls.includes(url)) {
-                const side = Math.random() > 0.5 ? 1 : -1;
-                obj.position.x = side * (50 + Math.random() * 1); 
-                obj.position.y = side * (5 + Math.random() * 1);
-                obj.position.z = 4 - (Math.random() * 10);
-                obj.userData.isStatic = true;
+            obj.userData.isStatic = staticUrls.includes(url);
+
+            if (obj.userData.isStatic) {
                 obj.userData.baseScale = staticScale;
-                
             } else {
                 const box = new THREE.Box3().setFromObject(obj);
                 const size = box.getSize(new THREE.Vector3()).length();
-                obj.userData.baseScale = (4 + Math.random() * 2) / (size || 1); 
-                obj.position.z = -((index + 1) * 40 + Math.random() * 50);
-                obj.position.x = (Math.random() - 0.5) * 40;
-                 obj.position.y = (Math.random() - 0.5) * 20;
+                obj.userData.baseScale = (5 + Math.random() * 2) / (size || 1); 
             }
+
+            obj.position.z = -((index + 1) * 100 + 300);
+            obj.position.x = 0;
+            obj.position.y = 0;
+
+            const spreadFactor = obj.userData.isStatic ? 0.12 : 0.02;
+            obj.userData.vx = (Math.random() - 0.5) * spreadFactor;
+            obj.userData.vy = (Math.random() - 0.5) * spreadFactor;
+
             if (gltf.animations.length) {
                 const mixer = new THREE.AnimationMixer(obj);
                 mixer.clipAction(gltf.animations[0]).play();
                 mixers.push(mixer);
                 obj.userData.hasNativeAnim = true;
             }
-            obj.position.z = -((index + 1) * 70 + 350);
+
             obj.scale.set(0,0,0);
             obj.traverse(n => { if(n.isMesh) { n.material.transparent = true; n.material.opacity = 0; } });
             scene.add(obj);
             spaceObjects.push(obj);
-        }, undefined, (error) => console.error("Error loading model:", url, error));
+        });
     });
     animate3D();
 }
@@ -3545,44 +3543,39 @@ function animate3D() {
     mixers.forEach(m => m.update(delta));
 
     spaceObjects.forEach(obj => {
-        // 1. Move the object forward based on speed
-        // Static objects (spaceship) move a bit faster to feel more dynamic
-        let moveStep = obj.userData.isStatic ? (speed * 0.18) : (speed * 0.12);
+        let moveStep = speed * 0.15;
         obj.position.z += moveStep;
 
-        // 2. Rotation logic for characters (ONLY rotate, don't reset position here!)
-        if (!obj.userData.isStatic && !obj.userData.hasNativeAnim) {
-            obj.rotation.y += 0.01;
-            obj.rotation.x += 0.005;
+        if (obj.userData.vx !== undefined) {
+            obj.position.x += obj.userData.vx * (speed * 0.5);
+            obj.position.y += obj.userData.vy * (speed * 0.5);
         }
 
-        // 3. Scale and Opacity (Horizon Growth)
-        const horizonZ = -400;
-        const fullSizeZ = 0;
+        if (!obj.userData.isStatic && !obj.userData.hasNativeAnim) {
+            obj.rotation.y += 0.02;
+            obj.rotation.z += 0.01;
+        } else if (obj.userData.isStatic) {
+            obj.rotation.z = obj.userData.vx * 5; 
+        }
+
+        const horizonZ = -500;
+        const fullSizeZ = -50;
         let progress = Math.max(0, Math.min(1, (obj.position.z - horizonZ) / (fullSizeZ - horizonZ)));
         
         let s = obj.userData.baseScale * progress;
         obj.scale.set(s, s, s);
 
         let alpha = progress;
-        if (obj.position.z > 0) alpha = 1 - (obj.position.z / 20);
+        if (obj.position.z > 0) alpha = 1 - (obj.position.z / 25);
         obj.traverse(n => { if(n.isMesh) n.material.opacity = alpha; });
 
-        // 4. RESET Logic (When it passes the camera)
-        if (obj.position.z > 15) {
-            // Randomize arrival time
-            obj.position.z = -300 - (Math.random() * 400);
-
-            if (obj.userData.isStatic) {
-                // Keep the spaceship/static models to the extreme sides
-                const side = Math.random() > 0.5 ? 1 : -1;
-                obj.position.x = side * (50 + Math.random() * 1); 
-                obj.position.y = side * (35 + Math.random() * 1);
-            } else {
-                obj.position.z = -((index + 1) * 40 + Math.random() * 50);
-                 obj.position.x = (Math.random() - 0.5) * 40;
-                 obj.position.y = (Math.random() - 0.5) * 20;
-            }
+        if (obj.position.z > 25) {
+            obj.position.z = -500 - (Math.random() * 300);
+            obj.position.x = 0;
+            obj.position.y = 0;
+            const spread = obj.userData.isStatic ? 0.12 : 0.02;
+            obj.userData.vx = (Math.random() - 0.5) * spread;
+            obj.userData.vy = (Math.random() - 0.5) * spread;
         }
     });
     renderer.render(scene, camera);
