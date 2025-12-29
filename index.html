@@ -4,8 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
 <title>KODOK PAGE</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/jsm/loaders/GLTFLoader.js"></script>
 <script src="https://kit.fontawesome.com/424261530c.js" crossorigin="anonymous"></script>
@@ -2648,21 +2646,30 @@ gcTabBtns.forEach(btn => {
     
 
     <div id="fade-wrapper" class="content-fade">
-        <div class="resource-section">
-          <h3 id="pre-title" style="display:none; color: var(--sr-accent); margin-top:20px;">Pre-Download Packages</h3>
-         <div id="pre-list" class="res-grid"></div>
-        </div>
-        <div class="resource-section">
-            <h2>Main Full Packages</h2>
-            <div id="main-list" class="package-grid"></div>
-        </div>
+    
 
-        <div class="resource-section">
-            <h2>Update Patches</h2>
-            <div id="patch-list" class="package-grid"></div>
-        </div>
-        
+    <div class="resource-section" id="pre-major-section" style="display:none;">
+        <h2 style="color: #00ffcc;">Pre-Download Full Packages
+            <span id="pre-major-version" style="font-size: 0.6em; opacity: 0.8; margin-left: 10px; background: rgba(0,255,204,0.2); padding: 2px 8px; border-radius: 4px;"></span>
+        </h2>
+        <div id="pre-major-list" class="package-grid"></div>
     </div>
+
+    <div class="resource-section" id="pre-patch-section" style="display:none;">
+        <h2 style="color: #00ffcc;">Pre-Download Patches</h2>
+        <div id="pre-patch-list" class="package-grid"></div>
+    </div>
+    
+    <div class="resource-section">
+        <h2>Main Full Packages</h2>
+        <div id="main-list" class="package-grid"></div>
+    </div>
+
+    <div class="resource-section">
+        <h2>Update Patches</h2>
+        <div id="patch-list" class="package-grid"></div>
+    </div>
+</div>
 
     <script>
       (function() {
@@ -2766,57 +2773,79 @@ gcTabBtns.forEach(btn => {
         }
 
         async function renderResources(apiUrl) {
-  const mList = document.getElementById('main-list');
-  const pList = document.getElementById('patch-list');
-  const preList = document.getElementById('pre-list');
-  const preTitle = document.getElementById('pre-title');
+          const mList = document.getElementById('main-list');
+          const pList = document.getElementById('patch-list');
+          
+          // Pre-download Elements
+          const preMajorList = document.getElementById('pre-major-list');
+          const preMajorSec = document.getElementById('pre-major-section');
+          const preMajorVer = document.getElementById('pre-major-version');
+          
+          const prePatchList = document.getElementById('pre-patch-list');
+          const prePatchSec = document.getElementById('pre-patch-section');
 
-  // Reset view
-  mList.innerHTML = '';
-  pList.innerHTML = '';
-  preList.innerHTML = '';
-  preTitle.style.display = 'none';
+          try {
+            const res = await fetch(apiUrl);
+            const json = await res.json();
+            const data = json.data.game_packages[0];
 
-  try {
-    const res = await fetch(apiUrl);
-    const json = await res.json();
-    const gameData = json.data.game_packages[0];
+            // 1. Reset everything before rendering
+            mList.innerHTML = '';
+            pList.innerHTML = '';
+            
+            if (preMajorList) preMajorList.innerHTML = '';
+            if (prePatchList) prePatchList.innerHTML = '';
+            if (preMajorVer) preMajorVer.textContent = '';
+            
+            if (preMajorSec) preMajorSec.style.display = 'none';
+            if (prePatchSec) prePatchSec.style.display = 'none';
 
-    // 1. Render MAIN Packages
-    const main = gameData.main;
-    if (main) {
-        main.major.game_pkgs.forEach(p => createItem(mList, p, 'Game'));
-        main.major.audio_pkgs.forEach(p => createItem(mList, p, 'Audio'));
-        
-        main.patches.forEach(pSet => {
-          pSet.game_pkgs.forEach(p => createItem(pList, p, 'Patch'));
-          pSet.audio_pkgs.forEach(p => createItem(pList, p, 'Audio Patch'));
-        });
-    }
+            // 2. Render MAIN Full Packages
+            if (data.main && data.main.major) {
+                data.main.major.game_pkgs.forEach(p => createItem(mList, p, 'Game'));
+                data.main.major.audio_pkgs.forEach(p => createItem(mList, p, 'Audio'));
+            }
 
-    // 2. Render PRE-DOWNLOAD (Only if it exists in API)
-    const pre = gameData.pre_download;
-    if (pre && pre.major && (pre.major.game_pkgs.length > 0 || pre.major.audio_pkgs.length > 0)) {
-        preTitle.style.display = 'block'; // Show the "Pre-Download" heading
-        
-        // Add Pre-download Game Files
-        pre.major.game_pkgs.forEach(p => createItem(preList, p, 'Pre-Game'));
-        
-        // Add Pre-download Audio Files
-        pre.major.audio_pkgs.forEach(p => createItem(preList, p, 'Pre-Audio'));
+            // 3. Render MAIN Update Patches
+            if (data.main && data.main.patches) {
+                data.main.patches.forEach(pSet => {
+                    pSet.game_pkgs.forEach(p => createItem(pList, p, 'Patch'));
+                    pSet.audio_pkgs.forEach(p => createItem(pList, p, 'Audio Patch'));
+                });
+            }
 
-        // Add Pre-download Patches
-        if (pre.patches) {
-            pre.patches.forEach(pSet => {
-                pSet.game_pkgs.forEach(p => createItem(preList, p, 'Pre-Patch'));
-            });
+            // 4. Render PRE-DOWNLOAD Section
+            if (data.pre_download) {
+                const pre = data.pre_download;
+
+                // --- Handle Pre-Download Major (Full Packages) ---
+                if (pre.major && pre.major.game_pkgs && pre.major.game_pkgs.length > 0) {
+                    if (preMajorSec) preMajorSec.style.display = 'block';
+                    
+                    // Show version badge if available
+                    if (preMajorVer && pre.major.version) {
+                        preMajorVer.textContent = `v${pre.major.version}`;
+                    }
+
+                    pre.major.game_pkgs.forEach(p => createItem(preMajorList, p, 'Pre-Game'));
+                    pre.major.audio_pkgs.forEach(p => createItem(preMajorList, p, 'Pre-Audio'));
+                }
+
+                // --- Handle Pre-Download Patches (Update Only) ---
+                if (pre.patches && pre.patches.length > 0) {
+                    if (prePatchSec) prePatchSec.style.display = 'block';
+                    
+                    pre.patches.forEach(pSet => {
+                        pSet.game_pkgs.forEach(p => createItem(prePatchList, p, 'Pre-Patch'));
+                        pSet.audio_pkgs.forEach(p => createItem(prePatchList, p, 'Pre-Audio Patch'));
+                    });
+                }
+            }
+          } catch (e) { 
+              console.error("Resource Load Error:", e);
+              mList.innerHTML = '<p style="color:white;text-align:center;">Manifest Offline or API Error.</p>'; 
+          }
         }
-    }
-  } catch (e) { 
-    console.error(e);
-    mList.innerHTML = '<p>Manifest Offline.</p>'; 
-  }
-}
 
         function createItem(container, pkg, type) {
           const div = document.createElement('div');
