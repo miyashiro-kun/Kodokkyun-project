@@ -3343,7 +3343,7 @@ const clock = new THREE.Clock();
 const staticUrls = [
     'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/spaceship.glb'
 ];
-const staticScale = 17; 
+const staticScale = Math.floor(Math.random() * (70 - 10 + 1)) + 10; 
 
 let portal = {
     z: 0,
@@ -3602,10 +3602,11 @@ function animate3D() {
         obj.scale.set(s, s, s);
 
         let alpha = Math.min(1, progress * 1.5);
+        const exitPoint = obj.userData.isStatic ? 80 : 25;
         if (obj.position.z > 5) alpha = 1 - (obj.position.z / 20);
         obj.traverse(n => { if(n.isMesh) n.material.opacity = alpha; });
 
-        if (obj.position.z > 25) {
+        if (obj.position.z > 45) {
             obj.position.z = -600 - (Math.random() * 300);
             obj.position.x = 0;
             obj.position.y = 0;
