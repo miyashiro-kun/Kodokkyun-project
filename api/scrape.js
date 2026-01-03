@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 
 export default async function handler(req, res) {
   try {
-    const TARGET_URL = "https://wutheringwaves.fandom.com/wiki/Redemption_Code; // replace
+    const TARGET_URL = "https://wutheringwaves.fandom.com/wiki/Redemption_Code;" // replace
 
     const response = await fetch(TARGET_URL, {
       headers: {
