@@ -105,7 +105,6 @@ html, body {
 
 .page1 {
     padding: 5vh 3vw;
-  overflow:auto;
     position: relative;
     overflow: hidden; /* Prevent stars from showing outside page boundaries */
     background: url(https://act.hoyoverse.com/sr/event/e20230216gift-97w0/images/bg_mian_pc-sea.3870807c..jpeg) center / cover no-repeat;
@@ -273,7 +272,6 @@ html, body {
 
 }
 * {
-  box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
@@ -3341,6 +3339,7 @@ let mixers = [];
 const clock = new THREE.Clock(); 
  
 const staticUrls = [
+    'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/train2.glb',
     'https://raw.githubusercontent.com/miyashiro-kun/kodokkyun-project/refs/heads/main/Model/spaceship.glb'
 ];
 const staticScale = Math.floor(Math.random() * (70 - 10 + 1)) + 10; 
@@ -3543,17 +3542,19 @@ function initPlanet() {
             obj.userData.isStatic = staticUrls.includes(url);
 
             if (obj.userData.isStatic) {
+                const randomOffset = Math.random() * 1200; // distance variation
+                obj.position.z -= randomOffset;
                 obj.userData.baseScale = staticScale;
             } else {
                 const box = new THREE.Box3().setFromObject(obj);
                 const size = box.getSize(new THREE.Vector3()).length();
                 obj.userData.baseScale = (6 + Math.random() * 2) / (size || 1); 
             }
-
+            
             obj.position.z = -((index + 1) * 150 + 400);
             obj.position.x = 0;
             obj.position.y = 0;
-
+            
             const spreadFactor = obj.userData.isStatic ? 0.14 : 0.015;
             obj.userData.vx = (Math.random() - 0.5) * spreadFactor;
             obj.userData.vy = (Math.random() - 0.5) * spreadFactor;
@@ -3566,7 +3567,7 @@ function initPlanet() {
             }
 
             obj.scale.set(0,0,0);
-            obj.traverse(n => { if(n.isMesh) { n.material.transparent = true; n.material.opacity = 0; } });
+            obj.traverse(n => { if(n.isMesh) { n.material.transparent = true; n.material.opacity = 0;n.material.metalness = 0.5;n.material.roughness = 0.1; } });
             scene.add(obj);
             spaceObjects.push(obj);
         });
